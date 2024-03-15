@@ -11,16 +11,18 @@ private:
 
 	vector<unsigned char> _key;
 
-	void rc4(vector<unsigned char>& data)
+	void rc4(ifstream *inputFile, ofstream *outputFile)
 	{
 		int i = 0;
 		int j = 0;
+		char ch;
 
 		vector<unsigned char> state = ksa(_key);
 
-		for (int n = 0; n < data.size(); n++)
+		while ((*inputFile).get(ch))
 		{
-			data[n] ^= prga(&state, &i, &j);
+			ch ^= prga(&state, &i, &j);
+			(*outputFile).put(ch);
 		}
 	}
 
@@ -53,7 +55,7 @@ private:
 
 		swap(state[*i], state[*j]);
 
-		int pseudoRandomIndex = (*state)[((*state)[*i] + (*state)[*j]) % _stateSize];
+		unsigned char pseudoRandomIndex = (*state)[((*state)[*i] + (*state)[*j]) % _stateSize];
 
 		return pseudoRandomIndex;
 	}
@@ -75,10 +77,16 @@ public:
 		_key = other._key;
 	}
 
-	void encode(const char* inputFilePath, const char* outputFilePath, bool encrypt)
+	void encode(string inputFilePath, const char* outputFilePath, bool encrypt)
 	{
+		if (inputFilePath == outputFilePath)
+		{
+			cerr << "Error. You should use different files." << endl;
+			return;
+		}
+
 		ifstream inputFile(inputFilePath, ios::binary);
-		ofstream outputFile(outputFilePath, ios::binary);
+		ofstream outputFile(outputFilePath, ios::binary | ios::trunc);
 
 		if (!inputFile.is_open())
 		{
@@ -94,11 +102,11 @@ public:
 
 		if (encrypt)
 		{
-
+			rc4(&inputFile, &outputFile);
 		}
 		else
 		{
-
+			rc4(&inputFile, &outputFile);
 		}
 
 		inputFile.close();
