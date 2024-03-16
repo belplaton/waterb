@@ -127,10 +127,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="logval.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="rc4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="logval.h" />
     <ClInclude Include="rc4.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
