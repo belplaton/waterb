@@ -2,7 +2,6 @@
 
 using namespace std;
 
-// Encoder which based on RC4 alghoritm
 class Encoder
 {
 
@@ -30,7 +29,6 @@ private:
 		}
 	}
 
-	// Key-Scheduling Algorithm
 	vector<unsigned char> ksa(vector<unsigned char> key)
 	{
 		vector<unsigned char> state(_stateSize);
@@ -51,7 +49,6 @@ private:
 		return state;
 	}
 
-	// Pseudo-Random Generator Alghoritm
 	unsigned char prga(vector<unsigned char> *state, int *i, int *j)
 	{
 		*i = (*i + 1) % _stateSize;

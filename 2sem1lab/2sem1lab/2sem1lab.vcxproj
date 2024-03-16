@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,11 +128,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="comval.cpp" />
     <ClCompile Include="logval.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="rc4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="comval.h" />
     <ClInclude Include="logval.h" />
     <ClInclude Include="rc4.h" />
   </ItemGroup>

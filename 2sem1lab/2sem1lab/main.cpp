@@ -1,15 +1,18 @@
-#include "rc4.cpp"
-#include "logval.cpp"
+#include "rc4.h"
+#include "logval.h"
+#include "comval.h"
 
 using namespace std;
 
 void rc4_check();
 void logval();
+void comval();
 
 int main()
 {
     // rc4_check();
-    logval();
+    // logval();
+    comval();
 
     return 0;
 }
@@ -54,9 +57,23 @@ void logval()
     int string_length = sizeof(unsigned char) * 8;
     char* binary_string = (char*)malloc(string_length + 1);
 
-    a.to_binary_string(binary_string, string_length);
+    a.to_string(binary_string, string_length);
 
     cout << "Binary representation of a: " << binary_string << endl;
 
     free(binary_string);
+}
+
+void comval()
+{
+    complex_value z1(7, 8);
+    complex_value z2(-9, 6);
+
+    cout << "Sum: " << z1 + z2 << endl;
+    cout << "Dif: " << z1 - z2 << endl;
+    cout << "Mult: " << z1 * z2 << endl;
+    cout << "Div: " << z1 / z2 << endl;
+
+    cout << "Modulus of z1: " << z1.modulus() << endl;
+    cout << "Argument of z2: " << z2.argument() << endl;
 }
