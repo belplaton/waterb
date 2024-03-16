@@ -2,20 +2,29 @@
 
 using namespace std;
 
+void rc4_check();
+
 int main()
 {
-    unsigned char key[] = { 0x01, 0x23, 0x45, 0x67, 0x89 }; // Example key
+    rc4_check();
+
+    return 0;
+}
+
+void rc4_check()
+{
+    cout << "[First exercise --]\n" << endl;
+
+    unsigned char key[] = { 0x01, 0x23, 0x45, 0x67, 0x89 };
     size_t keySize = sizeof(key) / sizeof(key[0]);
 
     Encoder encoder(key, keySize);
 
-    // Encrypting a file
-    encoder.encode("input.txt", "encrypted.txt", true);
-    cout << "File encrypted successfully!" << endl;
+    encoder.encode("rc4_input.txt", "rc4_encrypted.txt", true);
+    cout << "File \"rc4_input.txt\" encrypted to \"rc4_encrypted.txt\" successfully!" << endl;
 
-    // Decrypting the encrypted file
-    encoder.encode("encrypted.txt", "decrypted.txt", false);
-    cout << "File decrypted successfully!" << endl;
+    encoder.encode("rc4_encrypted.txt", "rc4_decrypted.txt", false);
+    cout << "File \"rc4_encrypted.txt\" decrypted to \"rc4_decrypted.txt\" successfully!" << endl;
 
-    return 0;
+    cout << "\n[-- First exercise]" << endl;
 }

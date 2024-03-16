@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// Encoder which based on RC4 alghoritm
 class Encoder
 {
 
@@ -17,11 +18,14 @@ private:
 		int j = 0;
 		char ch;
 
+		// Create Encrypt State.
 		vector<unsigned char> state = ksa(_key);
 
+		// XOR all symbols to output file.
 		while ((*inputFile).get(ch))
 		{
 			ch ^= prga(&state, &i, &j);
+
 			(*outputFile).put(ch);
 		}
 	}
@@ -53,7 +57,7 @@ private:
 		*i = (*i + 1) % _stateSize;
 		*j = (*j + (*state)[*i]) % _stateSize;
 
-		swap(state[*i], state[*j]);
+		swap((*state)[*i], (*state)[*j]);
 
 		unsigned char pseudoRandomIndex = (*state)[((*state)[*i] + (*state)[*j]) % _stateSize];
 
@@ -79,23 +83,15 @@ public:
 
 	void encode(string inputFilePath, const string& outputFilePath, bool encrypt)
 	{
-		cout << "__hui" << endl;
-
 		if (inputFilePath == outputFilePath)
 		{
 			cerr << "Error. You should use different files." << endl;
 			return;
 		}
 
-		cout << "hui3" << endl;
-
+		// Open input and output files.
 		ifstream inputFile(inputFilePath, ios::binary);
-
-		cout << "hui1" << endl;
-
 		ofstream outputFile(outputFilePath, ios::binary | ios::trunc);
-
-		cout << "hui2" << endl;
 
 		if (!inputFile.is_open())
 		{
@@ -103,16 +99,13 @@ public:
 			return;
 		}
 
-		cout << "hui" << endl;
-
 		if (!outputFile.is_open())
 		{
 			cerr << "Error with opening output file." << endl;
 			return;
 		}
 
-		cout << "hui" << endl;
-
+		// Same alghoritms.
 		if (encrypt)
 		{
 			rc4(&inputFile, &outputFile);
@@ -122,6 +115,7 @@ public:
 			rc4(&inputFile, &outputFile);
 		}
 
+		// Make closed opened files.
 		inputFile.close();
 		outputFile.close();
 	}
