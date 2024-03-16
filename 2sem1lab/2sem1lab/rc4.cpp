@@ -77,28 +77,41 @@ public:
 		_key = other._key;
 	}
 
-	void encode(string inputFilePath, const char* outputFilePath, bool encrypt)
+	void encode(string inputFilePath, const string& outputFilePath, bool encrypt)
 	{
+		cout << "__hui" << endl;
+
 		if (inputFilePath == outputFilePath)
 		{
 			cerr << "Error. You should use different files." << endl;
 			return;
 		}
 
+		cout << "hui3" << endl;
+
 		ifstream inputFile(inputFilePath, ios::binary);
+
+		cout << "hui1" << endl;
+
 		ofstream outputFile(outputFilePath, ios::binary | ios::trunc);
+
+		cout << "hui2" << endl;
 
 		if (!inputFile.is_open())
 		{
-			cerr << "Error with openingg input file." << endl;
+			cerr << "Error with opening input file." << endl;
 			return;
 		}
 
+		cout << "hui" << endl;
+
 		if (!outputFile.is_open())
 		{
-			cerr << "Error with openingg output file." << endl;
+			cerr << "Error with opening output file." << endl;
 			return;
 		}
+
+		cout << "hui" << endl;
 
 		if (encrypt)
 		{
