@@ -79,6 +79,7 @@ double complex_value::argument() const
 std::string complex_value::to_string() const
 {
 	return std::to_string(_real)
-		+ ((_imaginary < 0) ? '-' : '+')
-		+ std::to_string(abs(_imaginary));
+		+ ((_imaginary < 0) ? " -" : " +")
+		+ std::to_string(abs(_imaginary))
+		+ 'i';
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 class logical_values_array
 {
 

@@ -1,6 +1,16 @@
 ﻿  comval.cpp
   logval.cpp
   main.cpp
+  matrix.cpp
   rc4.cpp
   Создание кода...
-  2sem1lab.vcxproj -> D:\_Platon\_Files\GitHub\waterb\2sem1lab\x64\Debug\2sem1lab.exe
+D:\_Platon\_Files\GitHub\waterb\2sem1lab\2sem1lab\matrix.cpp(9): warning C5082: второй аргумент для "va_start" не является последним именованным параметром
+D:\_Platon\_Files\GitHub\waterb\2sem1lab\2sem1lab\matrix.cpp(4): fatal  error C1001: Внутренняя ошибка компилятора.
+  (Файл компилятора "D:\a\_work\1\s\src\vctools\Compiler\Utc\src\p2\main.c", строка 234.)
+   Чтобы обойти эту проблему, попытайтесь упростить или изменить программу в строках около указанной позиции.
+  Если это возможно, предоставьте шаги, которые привели к возникновению проблемы, на следующей странице: https://developercommunity.visualstudio.com.
+  Для получения дополнительных сведений выберите команду "Техническая поддержка"
+  в меню "Справка" Visual C++ или откройте файл справки технической поддержки.
+D:\_Platon\_Files\GitHub\waterb\2sem1lab\2sem1lab\matrix.cpp(237): warning C4715: matrix::determinant: значение возвращается не при всех путях выполнения
+    CL!InvokeCompilerPassW()+0x54643
+    CL!InvokeCompilerPassW()+0x54643

@@ -37,6 +37,8 @@ void rc4_check()
 
 void logval()
 {
+    cout << "[Second exercise --]\n" << endl;
+
     logical_values_array a(14);
     logical_values_array b(28);
 
@@ -62,11 +64,14 @@ void logval()
     cout << "Binary representation of a: " << binary_string << endl;
 
     free(binary_string);
-}
 
+    cout << "\n[-- Second exercise]" << endl;
+}
 
 void comval()
 {
+    cout << "[Third exercise --]\n" << endl;
+
     complex_value z1(7, 8);
     complex_value z2(-9, 6);
 
@@ -77,4 +82,7 @@ void comval()
 
     cout << "Modulus of z1: " << z1.modulus() << endl;
     cout << "Argument of z2: " << z2.argument() << endl;
+
+    cout << "\n[-- Third exercise]" << endl;
 }
+
