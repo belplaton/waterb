@@ -1,124 +1,110 @@
 #include "rc4.h"
 
-using namespace std;
-
-class Encoder
+void encoder::rc4(std::ifstream *inputFile, std::ofstream *outputFile)
 {
+	int i = 0;
+	int j = 0;
+	char ch;
 
-private:
+	// Create Encrypt State.
+	std::vector<unsigned char> state = ksa(_key);
 
-	const int _stateSize = 256;
-
-	vector<unsigned char> _key;
-
-	void rc4(ifstream *inputFile, ofstream *outputFile)
+	// XOR all symbols to output file.
+	while ((*inputFile).get(ch))
 	{
-		int i = 0;
-		int j = 0;
-		char ch;
+		ch ^= prga(&state, &i, &j);
 
-		// Create Encrypt State.
-		vector<unsigned char> state = ksa(_key);
+		(*outputFile).put(ch);
+	}
+}
 
-		// XOR all symbols to output file.
-		while ((*inputFile).get(ch))
-		{
-			ch ^= prga(&state, &i, &j);
+std::vector<unsigned char> encoder::ksa(std::vector<unsigned char> key)
+{
+	std::vector<unsigned char> state(_stateSize);
 
-			(*outputFile).put(ch);
-		}
+	for (int n = 0; n < _stateSize; n++)
+	{
+		state[n] = n;
 	}
 
-	vector<unsigned char> ksa(vector<unsigned char> key)
+	int j = 0;
+
+	for (int i = 0; i < _stateSize; i++)
 	{
-		vector<unsigned char> state(_stateSize);
-
-		for (int n = 0; n < _stateSize; n++)
-		{
-			state[n] = n;
-		}
-
-		int j = 0;
-
-		for (int i = 0; i < _stateSize; i++)
-		{
-			j = (j + state[i] + key[i % key.size()]) % _stateSize;
-			swap(state[i], state[j]);
-		}
-
-		return state;
+		j = (j + state[i] + key[i % key.size()]) % _stateSize;
+		std::swap(state[i], state[j]);
 	}
 
-	unsigned char prga(vector<unsigned char> *state, int *i, int *j)
+	return state;
+}
+
+unsigned char encoder::prga(std::vector<unsigned char> *state, int *i, int *j)
+{
+	*i = (*i + 1) % _stateSize;
+	*j = (*j + (*state)[*i]) % _stateSize;
+
+	std::swap((*state)[*i], (*state)[*j]);
+
+	unsigned char pseudoRandomIndex = (*state)[((*state)[*i] + (*state)[*j]) % _stateSize];
+
+	return pseudoRandomIndex;
+}
+
+encoder::encoder(unsigned char const * keyBytes, size_t keySize)
+{
+	_key.assign(keyBytes, keyBytes + keySize);
+}
+
+encoder::~encoder()
+{
+	_key.clear();
+}
+
+encoder::encoder(const encoder& other)
+{
+	_key = other._key;
+}
+
+void encoder::encode(const std::string& inputFilePath, const std::string& outputFilePath, bool encrypt)
+{
+	if (inputFilePath == outputFilePath)
 	{
-		*i = (*i + 1) % _stateSize;
-		*j = (*j + (*state)[*i]) % _stateSize;
-
-		swap((*state)[*i], (*state)[*j]);
-
-		unsigned char pseudoRandomIndex = (*state)[((*state)[*i] + (*state)[*j]) % _stateSize];
-
-		return pseudoRandomIndex;
+		std::cerr << "Error. You should use different files." << std::endl;
+		return;
 	}
 
-public:
+	// Open input and output files.
+	std::ifstream inputFile(inputFilePath, std::ios::binary);
+	std::ofstream outputFile(outputFilePath, std::ios::binary | std::ios::trunc);
 
-	Encoder(unsigned char const * keyBytes, size_t keySize)
+	if (!inputFile.is_open())
 	{
-		_key.assign(keyBytes, keyBytes + keySize);
+		std::cerr << "Error with opening input file." << std::endl;
+		return;
 	}
 
-	~Encoder()
+	if (!outputFile.is_open())
 	{
-		_key.clear();
+		std::cerr << "Error with opening output file." << std::endl;
+		return;
 	}
 
-	Encoder(const Encoder& other)
+	// Same alghoritms.
+	if (encrypt)
 	{
-		_key = other._key;
+		rc4(&inputFile, &outputFile);
+	}
+	else
+	{
+		rc4(&inputFile, &outputFile);
 	}
 
-	void encode(string inputFilePath, const string& outputFilePath, bool encrypt)
-	{
-		if (inputFilePath == outputFilePath)
-		{
-			cerr << "Error. You should use different files." << endl;
-			return;
-		}
+	// Make closed opened files.
+	inputFile.close();
+	outputFile.close();
+}
 
-		// Open input and output files.
-		ifstream inputFile(inputFilePath, ios::binary);
-		ofstream outputFile(outputFilePath, ios::binary | ios::trunc);
-
-		if (!inputFile.is_open())
-		{
-			cerr << "Error with opening input file." << endl;
-			return;
-		}
-
-		if (!outputFile.is_open())
-		{
-			cerr << "Error with opening output file." << endl;
-			return;
-		}
-
-		// Same alghoritms.
-		if (encrypt)
-		{
-			rc4(&inputFile, &outputFile);
-		}
-		else
-		{
-			rc4(&inputFile, &outputFile);
-		}
-
-		// Make closed opened files.
-		inputFile.close();
-		outputFile.close();
-	}
-
-	inline void set_key(unsigned char const* keyBytes, size_t keySize)
-	{
-		_key.assign(keyBytes, keyBytes + keySize);
-	}
-};
+inline void encoder::set_key(unsigned char const* keyBytes, size_t keySize)
+{
+	_key.assign(keyBytes, keyBytes + keySize);
+}

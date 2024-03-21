@@ -5,37 +5,37 @@
 #include <string>
 
 // Encoder which based on RC4 alghoritm
-class Encoder
+class encoder
 {
 
 private:
 
 	const int _stateSize = 256;
 
-	vector<unsigned char> _key;
+	std::vector<unsigned char> _key;
 
 	// RC4
-	void rc4(ifstream* inputFile, ofstream* outputFile);
+	void rc4(std::ifstream* inputFile, std::ofstream* outputFile);
 
 	// Key-Scheduling Algorithm
-	vector<unsigned char> ksa(vector<unsigned char> key);
+	std::vector<unsigned char> ksa(std::vector<unsigned char> key);
 
 	// Pseudo-Random Generator Alghoritm
-	unsigned char prga(vector<unsigned char>* state, int* i, int* j);
+	unsigned char prga(std::vector<unsigned char>* state, int* i, int* j);
 
 public:
 
 	// Конструктор
-	Encoder(unsigned char const* keyBytes, size_t keySize);
+	encoder(unsigned char const* keyBytes, size_t keySize);
 
 	// Деструктор
-	~Encoder();
+	~encoder();
 
 	// Конструктор клонирования
-	Encoder(const Encoder& other);
+	encoder(const encoder& other);
 
 	// Кодирование или декодирование ключем
-	void encode(string inputFilePath, const string& outputFilePath, bool encrypt);
+	void encode(const std::string& inputFilePath, const std::string& outputFilePath, bool encrypt);
 
 	// Мутатор для ключа
 	inline void set_key(unsigned char const* keyBytes, size_t keySize);

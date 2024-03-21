@@ -10,8 +10,8 @@ void comval();
 
 int main()
 {
-    // rc4_check();
-    // logval();
+    rc4_check();
+    logval();
     comval();
 
     return 0;
@@ -24,7 +24,7 @@ void rc4_check()
     unsigned char key[] = { 0x01, 0x23, 0x45, 0x67, 0x89 };
     size_t keySize = sizeof(key) / sizeof(key[0]);
 
-    Encoder encoder(key, keySize);
+    encoder encoder(key, keySize);
 
     encoder.encode("rc4_input.txt", "rc4_encrypted.txt", true);
     cout << "File \"rc4_input.txt\" encrypted to \"rc4_encrypted.txt\" successfully!" << endl;
@@ -63,6 +63,7 @@ void logval()
 
     free(binary_string);
 }
+
 
 void comval()
 {
