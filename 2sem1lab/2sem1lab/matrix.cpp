@@ -1,25 +1,40 @@
 #include "matrix.h"
 
-matrix::matrix(size_t size, ...) : _size(size)
+matrix::matrix(size_t size, int count, ...) : _size(size)
 {
 	_elements = new double* [_size];
 
 	va_list args;
-	va_start(args, _size);
+	va_start(args, count);
 
-	for (size_t i = 0; i < _size; i++)
+	int k = 0;
+	for (auto i = 0; i < _size; i++)
 	{
 		_elements[i] = new double[_size];
-		auto row = va_arg(args, std::vector<double>);
-		auto row_size = row.size();
 
-		for (size_t j = 0; j < _size; j++)
+		if (k < count)
 		{
-			if (j < row_size)
+			std::vector<double> row = va_arg(args, std::vector<double>);
+
+			auto row_size = row.size();
+
+			for (auto j = 0; j < _size; j++)
 			{
-				_elements[i][j] = row[j];
+				if (j < row_size)
+				{
+					_elements[i][j] = row[j];
+				}
+				else
+				{
+					_elements[i][j] = 0.0;
+				}
 			}
-			else
+
+			k++;
+		}
+		else
+		{
+			for (auto j = 0; j < _size; j++)
 			{
 				_elements[i][j] = 0.0;
 			}
@@ -33,20 +48,20 @@ matrix::matrix(const matrix& other) : _size(other._size)
 {
 	_elements = new double* [_size];
 	
-	for (size_t i = 0; i < _size; i++)
+	for (auto i = 0; i < _size; i++)
 	{
 		_elements[i] = new double[_size];
 
-		for (size_t j = 0; j < _size; j++)
+		for (auto j = 0; j < _size; j++)
 		{
-			_elements[i][j] = other._elements[i][j];
+			_elements[i][j] = other[i][j];
 		}
 	}
 }
 
 matrix::~matrix()
 {
-	for (size_t i = 0; i < _size; i++)
+	for (auto i = 0; i < _size; i++)
 	{
 		delete[] _elements[i];
 	}
@@ -61,7 +76,7 @@ matrix& matrix::operator = (const matrix& other)
 		return *this;
 	}
 
-	for (size_t i = 0; i < _size; i++)
+	for (auto i = 0; i < _size; i++)
 	{
 		delete[] _elements[i];
 	}
@@ -71,13 +86,13 @@ matrix& matrix::operator = (const matrix& other)
 	_size = other._size;
 	_elements = new double* [_size];
 
-	for (size_t i = 0; i < _size; i++)
+	for (auto i = 0; i < _size; i++)
 	{
 		_elements[i] = new double[_size];
 
-		for (size_t j = 0; j < _size; j++)
+		for (auto j = 0; j < _size; j++)
 		{
-			_elements[i][j] = other._elements[i][j];
+			_elements[i][j] = other[i][j];
 		}
 	}
 
@@ -91,13 +106,13 @@ matrix matrix::operator + (const matrix& other) const
 		throw std::invalid_argument("Cannot add matrixes with different sizes.");
 	}
 
-	matrix result(_size);
+	matrix result(_size, 0);
 
-	for (size_t i = 0; i < _size; i++)
+	for (auto i = 0; i < _size; i++)
 	{
-		for (size_t j = 0; j < _size; j++)
+		for (auto j = 0; j < _size; j++)
 		{
-			result._elements[i][j] = _elements[i][j] + other._elements[i][j];
+			result[i][j] = _elements[i][j] + other[i][j];
 		}
 	}
 
@@ -112,13 +127,13 @@ matrix matrix::operator - (const matrix& other) const
 		throw std::invalid_argument("Cannot subtract matrixes with different sizes.");
 	}
 
-	matrix result(_size);
+	matrix result(_size, 0);
 
-	for (size_t i = 0; i < _size; i++)
+	for (auto i = 0; i < _size; i++)
 	{
-		for (size_t j = 0; j < _size; j++)
+		for (auto j = 0; j < _size; j++)
 		{
-			result._elements[i][j] = _elements[i][j] - other._elements[i][j];
+			result[i][j] = _elements[i][j] - other[i][j];
 		}
 	}
 
@@ -132,15 +147,15 @@ matrix matrix::operator * (const matrix& other) const
 		throw std::invalid_argument("Cannot multiply matrixes with different sizes.");
 	}
 
-	matrix result(_size);
+	matrix result(_size, 0);
 
-	for (size_t i = 0; i < _size; i++)
+	for (auto i = 0; i < _size; i++)
 	{
-		for (size_t j = 0; j < _size; j++)
+		for (auto j = 0; j < _size; j++)
 		{
-			for (size_t k = 0; k < _size; k++)
+			for (auto k = 0; k < _size; k++)
 			{
-				result._elements[i][j] += _elements[i][k] * other._elements[k][j];
+				result[i][j] += _elements[i][k] * other[k][j];
 			}
 		}
 	}
@@ -150,13 +165,13 @@ matrix matrix::operator * (const matrix& other) const
 
 matrix matrix::operator * (double value) const
 {
-	matrix result(_size);
+	matrix result(_size, 0);
 
-	for (size_t i = 0; i < _size; i++)
+	for (auto i = 0; i < _size; i++)
 	{
-		for (size_t j = 0; j < _size; j++)
+		for (auto j = 0; j < _size; j++)
 		{
-			result._elements[i][j] = _elements[i][j] * value;
+			result[i][j] = _elements[i][j] * value;
 		}
 	}
 
@@ -195,7 +210,7 @@ double matrix::determinant() const
 		size_t pivot_j = i;
 
 		// »щем точку не равную нулю
-		while (pivot_j < _size && temp._elements[pivot_j][i] == 0)
+		while (pivot_j < _size && temp[pivot_j][i] == 0)
 		{
 			pivot_j++;
 		}
@@ -213,24 +228,129 @@ double matrix::determinant() const
 			det *= -1;
 		}
 
-		double pivot = temp._elements[i][pivot_j];
+		double pivot = temp[i][pivot_j];
 		det *= pivot;
 
 		// Ќормализируем, преобразуем элемент по главной диагонали в единицу
-		for (size_t j = i; j < _size; j++)
+		for (auto j = i; j < _size; j++)
 		{
-			temp._elements[i][j] /= pivot;
+			temp[i][j] /= pivot;
 		}
 
 		// ¬ычитаем из каждой строки ниже элемента по главной диагонали значени€, эту строку,
 		// помноженную на некоторый множитель, чем €вл€етс€ значение под элементом необходимым нам
-		for (size_t k = i + 1; k < _size; k++)
+		for (auto k = i + 1; k < _size; k++)
 		{
-			double factor = temp._elements[k][i];
-			for (size_t j = i; j < _size; j++)
+			double factor = temp[k][i];
+			for (auto j = i; j < _size; j++)
 			{
-				temp._elements[k][j] -= factor * temp._elements[i][j];
+				temp[k][j] -= factor * temp[i][j];
 			}
 		}
 	}
+
+	return det;
 }
+
+matrix matrix::transpose() const
+{
+	matrix result(_size, 0);
+
+	for (auto i = 0; i < _size; i++)
+	{
+		for (auto j = 0; j < _size; j++)
+		{
+			result[i][j] = _elements[j][i];
+		}
+	}
+
+	return result;
+}
+
+matrix matrix::inverse() const
+{
+	matrix temp(*this);
+	matrix single(_size, 0);
+
+	for (auto i = 0; i < _size; i++)
+	{
+		single[i][i] = 1.0;
+	}	
+
+	for (auto i = 0; i < _size; i++)
+	{
+		int max_row = i;
+
+		// ƒелаем так, чтобы на горизонтали вместо нул€ было число
+		for (auto j = i + 1; j < _size; j++)
+		{
+			if (fabs(temp[j][i]) > fabs(temp[max_row][i]))
+			{
+				max_row = j;
+			}
+		}
+
+		if (max_row != i)
+		{
+			std::swap(temp._elements[i], temp._elements[max_row]);
+			std::swap(single._elements[i], single._elements[max_row]);
+		}
+
+		double pivot = temp[i][i];
+
+		if (pivot == 0)
+		{
+			std::cout << "Matrix is singular" << std::endl;
+
+			matrix empty(_size, 0);
+
+			return empty;
+		}
+
+		// ѕриводим строку к виду с единицей в pivot
+		for (auto j = 0; j < _size; j++)
+		{
+			temp[i][j] /= pivot;
+			single[i][j] /= pivot;
+		}
+
+		// ¬ычитаем из каждой строки не равной текущей еЄ же, помноженнную на некоторый множитель, чтобы привести к нулю
+		for (auto k = 0; k < _size; k++)
+		{
+			if (k != i)
+			{
+				auto factor = temp[k][i];
+				for (auto j = 0; j < _size; j++)
+				{
+					temp[k][j] -= factor * temp[i][j];
+					single[k][j] -= factor * single[i][j];
+				}
+			}
+		}
+	}
+
+	return single;
+}
+
+std::ostream& operator << (std::ostream& stream, const matrix& other)
+{
+	stream << other.to_string();
+	return stream;
+}
+
+std::string matrix::to_string() const
+{
+	std::string string_matrix;
+
+	for (auto i = 0; i < _size; i++)
+	{
+		for (auto j = 0; j < _size; j++)
+		{
+			string_matrix += std::to_string(_elements[i][j]) + '\t';
+		}
+		string_matrix += '\n';
+	}
+
+	return string_matrix;
+}
+

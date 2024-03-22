@@ -71,7 +71,7 @@ void logical_values_array::to_string(char* binary_string, int string_size) const
 {
 	int mask = 1 << (sizeof(unsigned char) * 8 - 1);
 
-	for (int i = 0; i < string_size; i++)
+	for (auto i = 0; i < string_size; i++)
 	{
 		binary_string[i] = (_value & mask) ? '1' : '0';
 		mask >>= 1;

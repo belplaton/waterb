@@ -22,14 +22,14 @@ std::vector<unsigned char> encoder::ksa(std::vector<unsigned char> key)
 {
 	std::vector<unsigned char> state(_stateSize);
 
-	for (int n = 0; n < _stateSize; n++)
+	for (auto n = 0; n < _stateSize; n++)
 	{
 		state[n] = n;
 	}
 
 	int j = 0;
 
-	for (int i = 0; i < _stateSize; i++)
+	for (auto i = 0; i < _stateSize; i++)
 	{
 		j = (j + state[i] + key[i % key.size()]) % _stateSize;
 		std::swap(state[i], state[j]);

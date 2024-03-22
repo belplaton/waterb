@@ -1,18 +1,21 @@
 #include "rc4.h"
 #include "logval.h"
 #include "comval.h"
+#include "matrix.h"
 
 using namespace std;
 
 void rc4_check();
 void logval();
 void comval();
+void matrixtest();
 
 int main()
 {
     rc4_check();
     logval();
     comval();
+    matrixtest();
 
     return 0;
 }
@@ -86,3 +89,38 @@ void comval()
     cout << "\n[-- Third exercise]" << endl;
 }
 
+void matrixtest()
+{
+    cout << "[Fourth exercise --]\n" << endl;
+
+    matrix matrix1(3, 3,
+        vector<double> { 3, 2, 1 },
+        vector<double> { -2, 3, 1 },
+        vector<double> { 4, 4, 3 });
+
+    cout << "Original Matrix (first):\n" << matrix1 << endl;
+
+    matrix matrix2(matrix1);
+
+    cout << "Copied Matrix (second):\n" << matrix2 << endl;
+
+    matrix matrix3 = matrix1 + (matrix2 * 0.5);
+
+    cout << "first * (second * 0.5) = third:\n" << matrix3 << '\n' << endl;
+
+    matrix matrix4 = matrix3 * matrix1;
+
+    cout << "third * first = fourth:\n" << matrix4 << '\n' << endl;
+
+    matrix matrix5 = matrix1.transpose();
+
+    cout << "Transposed first matrix:\n" << matrix5 << '\n' << endl;
+
+    matrix matrix6 = matrix1.inverse();
+
+    cout << "Inversed first matrix:\n" << matrix6 << '\n' << endl;
+
+    cout << "Determinant of first matrix: " << matrix1.determinant() << endl;
+
+    cout << "\n[-- Fourth exercise]" << endl;
+}

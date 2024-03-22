@@ -1,8 +1,11 @@
 #pragma once
 
 #include <cstdarg>
+#include <string>
 #include <vector>
 #include <stdexcept>
+#include <algorithm>
+#include <iostream>
 
 class matrix
 {
@@ -14,7 +17,7 @@ private:
 
 public:
 
-	matrix(size_t size, ...);
+	matrix(size_t size, int count, ...);
 
 	matrix(const matrix& other);
 
@@ -37,4 +40,10 @@ public:
 	matrix transpose() const;
 
 	matrix inverse() const;
+
+	// Строковая визуализация
+	std::string to_string() const;
+
+	// Потоковый вывод строковой визуализации
+	friend std::ostream& operator << (std::ostream& stream, const matrix& other);
 };
