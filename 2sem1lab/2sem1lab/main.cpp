@@ -2,20 +2,23 @@
 #include "logval.h"
 #include "comval.h"
 #include "matrix.h"
+#include "priorqueue.h"
 
 using namespace std;
 
 void rc4_check();
 void logval();
 void comval();
-void matrixtest();
+void matrix_test();
+void queue_test();
 
 int main()
 {
     rc4_check();
     logval();
     comval();
-    matrixtest();
+    matrix_test();
+    queue_test();
 
     return 0;
 }
@@ -89,7 +92,7 @@ void comval()
     cout << "\n[-- Third exercise]" << endl;
 }
 
-void matrixtest()
+void matrix_test()
 {
     cout << "[Fourth exercise --]\n" << endl;
 
@@ -123,4 +126,28 @@ void matrixtest()
     cout << "Determinant of first matrix: " << matrix1.determinant() << endl;
 
     cout << "\n[-- Fourth exercise]" << endl;
+}
+
+void queue_test()
+{
+    cout << "[Fifth exercise --]\n" << endl;
+
+    binary_priority_queue queue1;
+    queue1.enqueue("Hewwo", 6);
+    queue1.enqueue("UwU", 3);
+
+    binary_priority_queue queue2;
+    queue2.enqueue("Meow", 3);
+    queue2.enqueue("Rawr~", 4);
+
+    queue1.merge(queue2);
+
+    cout << "Dequeued Queue1: " << queue1.dequeue_min() << endl;
+    cout << "Dequeued Queue1: " << queue1.dequeue_min() << endl;
+    cout << "Dequeued Queue1: " << queue1.dequeue_min() << endl;
+    cout << "Dequeued Queue1: " << queue1.dequeue_min() << endl;
+    cout << "Dequeued Queue2: " << queue2.dequeue_min() << endl;
+    cout << "Dequeued Queue2: " << queue2.dequeue_min() << endl;
+
+    cout << "\n[-- Fifth exercise]" << endl;
 }

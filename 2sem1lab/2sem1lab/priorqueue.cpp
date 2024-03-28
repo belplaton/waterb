@@ -5,7 +5,6 @@ using namespace std;
 void binary_priority_queue::resize(size_t new_physical_size)
 {
 	auto new_elements = new node[new_physical_size];
-	auto new_virtual_size = 0;
 	auto new_virtual_size = min(_virtual_size, new_physical_size);
 
 	for (auto i = 0; i < new_virtual_size; i++)
@@ -123,7 +122,7 @@ void binary_priority_queue::enqueue(const char* value, size_t priority)
 		resize(_physical_size * 2);
 	}
 
-	_elements[_virtual_size].value = strdup(value);
+	_elements[_virtual_size].value = _strdup(value);
 	_elements[_virtual_size].priority = priority;
 	heapify_up(_virtual_size);
 	_virtual_size++;
@@ -136,12 +135,12 @@ char* binary_priority_queue::dequeue_min()
 		return nullptr;
 	}
 
-	char* minValue = strdup(_elements[0].value);
+	char* min_value = _strdup(_elements[0].value);
 	delete[] _elements[0].value;
 	_virtual_size--;
 	_elements[0] = _elements[_virtual_size];
 	heapify_down(0);
-	return minValue;
+	return min_value;
 }
 
 char* binary_priority_queue::peek_min() const
@@ -164,7 +163,8 @@ void binary_priority_queue::merge(const binary_priority_queue& other)
 
 	for (auto i = 0; i < other._virtual_size; i++)
 	{
-		_elements[_virtual_size + i] = other._elements[i];
+		_elements[_virtual_size + i].value = _strdup(other._elements[i].value);
+		_elements[_virtual_size + i].priority = other._elements[i].priority;
 	}
 
 	_virtual_size = new_size;	
