@@ -17,6 +17,10 @@ public:
 
 	complex_value(double real = 0, double imaginary = 0);
 
+	complex_value(const complex_value& other);
+
+	~complex_value();
+
 	// Сложение комплексных чисел
 	complex_value operator + (const complex_value& other) const;
 

@@ -6,8 +6,21 @@ complex_value::complex_value(double real, double imaginary)
 	_imaginary = imaginary;
 }
 
+complex_value::complex_value(const complex_value& other)
+{
+	_real = other._real;
+	_imaginary = other._imaginary;
+}
+
+complex_value::~complex_value()
+{
+
+}
+
 complex_value complex_value::operator + (const complex_value& other) const
 {
+	complex_value a(5, 6);
+
 	return complex_value(_real + other._real, _imaginary + other._imaginary);
 }
 
@@ -33,30 +46,25 @@ complex_value complex_value::operator / (const complex_value& other) const
 
 complex_value& complex_value::operator += (const complex_value& other)
 {
-	_real += other._real;
-	_imaginary += other._imaginary;
+	*this = (*this + other);
 	return *this;
 }
 
 complex_value& complex_value::operator -= (const complex_value& other)
 {
-	_real -= other._real;
-	_imaginary -= other._imaginary;
+	*this = (*this - other);
 	return *this;
 }
 
 complex_value& complex_value::operator *= (const complex_value& other)
 {
-	_real = _real * other._real - _imaginary * other._imaginary;
-	_imaginary = _real * other._imaginary + _imaginary * other._real;
+	*this = (*this * other);
 	return *this;
 }
 
 complex_value& complex_value::operator /= (const complex_value& other)
 {
-	double div = other._real * other._real + other._imaginary * other._imaginary;
-	_real = (_real * other._imaginary + _imaginary * other._real) / div;
-	_imaginary = (_imaginary * other._real - _real * other._imaginary) / div;
+	*this = (*this / other);
 	return *this;
 }
 

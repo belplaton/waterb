@@ -2,6 +2,16 @@
 
 void encoder::rc4(std::ifstream *inputFile, std::ofstream *outputFile)
 {
+	if (inputFile == nullptr)
+	{
+		throw std::invalid_argument("Input file is null.");
+	}
+
+	if (outputFile == nullptr)
+	{
+		throw std::invalid_argument("Output file is null.");
+	}
+
 	int i = 0;
 	int j = 0;
 	char ch;
@@ -18,7 +28,7 @@ void encoder::rc4(std::ifstream *inputFile, std::ofstream *outputFile)
 	}
 }
 
-std::vector<unsigned char> encoder::ksa(std::vector<unsigned char> key)
+std::vector<unsigned char> encoder::ksa(const std::vector<unsigned char>& key)
 {
 	std::vector<unsigned char> state(_stateSize);
 
@@ -60,14 +70,27 @@ encoder::~encoder()
 	_key.clear();
 }
 
-encoder::encoder(const encoder& other)
+encoder::encoder(const encoder& other) : encoder(other._key.data(), other._key.size())
 {
-	_key = other._key;
+
 }
+
+encoder& encoder::operator = (const encoder& other)
+{
+	if (this == &other)
+	{
+		return *this;
+	}
+
+	_key = other._key;
+
+	return *this;
+}
+
 
 void encoder::encode(const std::string& inputFilePath, const std::string& outputFilePath, bool encrypt)
 {
-	if (inputFilePath == outputFilePath)
+	if (inputFilePath._Equal(outputFilePath))
 	{
 		std::cerr << "Error. You should use different files." << std::endl;
 		return;

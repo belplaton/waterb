@@ -1,44 +1,73 @@
 #include "matrix.h"
 
+column::column(size_t size, std::vector<double> elements) : _size(size)
+{
+	_elements = *new std::vector<double>(_size);
+
+	int elements_count = elements.size();
+
+	for (auto i = 0; (i < elements_count) && (i < _size); i++)
+	{
+		_elements[i] = elements[i];
+	}
+}
+
+column::column(const column& other) : _size(other._size)
+{
+	_elements = *new std::vector<double>(_size);
+
+	for (auto i = 0; i < _size; i++)
+	{
+		_elements[i] = other._elements[i];
+	}
+}
+
+column::~column()
+{
+
+}
+
+double column::operator [] (size_t index) const
+{
+	if (index >= _size)
+	{
+		throw std::invalid_argument("Index out of range.");
+	}
+
+	return _elements[index];
+}
+
+column& column::operator = (const column& other)
+{
+	if (this == &other)
+	{
+		return *this;
+	}
+
+	_size = other._size;
+	_elements = *new std::vector<double>(_size);
+	for (auto i = 0; i < other._size; i++)
+	{
+		_elements[i] = other._elements[i];
+	}
+
+	return *this;
+}
+
 matrix::matrix(size_t size, int count, ...) : _size(size)
 {
-	_elements = new double* [_size];
+	_elements = new column[_size];
 
 	va_list args;
 	va_start(args, count);
 
 	int k = 0;
-	for (auto i = 0; i < _size; i++)
+
+	for (auto i = 0; (i < _size) && (i < count); i++)
 	{
-		_elements[i] = new double[_size];
+		auto col = va_arg(args, std::vector<double>);
 
-		if (k < count)
-		{
-			std::vector<double> row = va_arg(args, std::vector<double>);
-
-			auto row_size = row.size();
-
-			for (auto j = 0; j < _size; j++)
-			{
-				if (j < row_size)
-				{
-					_elements[i][j] = row[j];
-				}
-				else
-				{
-					_elements[i][j] = 0.0;
-				}
-			}
-
-			k++;
-		}
-		else
-		{
-			for (auto j = 0; j < _size; j++)
-			{
-				_elements[i][j] = 0.0;
-			}
-		}
+		_elements[i] = *(new column(_size, col));
 	}
 
 	va_end(args);
@@ -46,16 +75,11 @@ matrix::matrix(size_t size, int count, ...) : _size(size)
 
 matrix::matrix(const matrix& other) : _size(other._size)
 {
-	_elements = new double* [_size];
+	_elements = new column[_size];
 	
 	for (auto i = 0; i < _size; i++)
 	{
-		_elements[i] = new double[_size];
-
-		for (auto j = 0; j < _size; j++)
-		{
-			_elements[i][j] = other[i][j];
-		}
+		_elements[i] = *(new column(other._elements[i]));
 	}
 }
 
@@ -63,7 +87,7 @@ matrix::~matrix()
 {
 	for (auto i = 0; i < _size; i++)
 	{
-		delete[] _elements[i];
+		delete[] &_elements[i];
 	}
 
 	delete[] _elements;
@@ -78,22 +102,16 @@ matrix& matrix::operator = (const matrix& other)
 
 	for (auto i = 0; i < _size; i++)
 	{
-		delete[] _elements[i];
+		delete[] &_elements[i];
 	}
 
 	delete[] _elements;
 
 	_size = other._size;
-	_elements = new double* [_size];
-
+	_elements = new column[_size];
 	for (auto i = 0; i < _size; i++)
 	{
-		_elements[i] = new double[_size];
-
-		for (auto j = 0; j < _size; j++)
-		{
-			_elements[i][j] = other[i][j];
-		}
+		_elements[i] = *(new column(other._elements[i]));
 	}
 
 	return *this;
@@ -112,7 +130,7 @@ matrix matrix::operator + (const matrix& other) const
 	{
 		for (auto j = 0; j < _size; j++)
 		{
-			result[i][j] = _elements[i][j] + other[i][j];
+			result[i]._elements[j] = _elements[i][j] + other._elements[i][j];
 		}
 	}
 
@@ -133,7 +151,7 @@ matrix matrix::operator - (const matrix& other) const
 	{
 		for (auto j = 0; j < _size; j++)
 		{
-			result[i][j] = _elements[i][j] - other[i][j];
+			result[i]._elements[j] = _elements[i][j] - other[i][j];
 		}
 	}
 
@@ -155,7 +173,7 @@ matrix matrix::operator * (const matrix& other) const
 		{
 			for (auto k = 0; k < _size; k++)
 			{
-				result[i][j] += _elements[i][k] * other[k][j];
+				result[i]._elements[j] += _elements[i][k] * other[k][j];
 			}
 		}
 	}
@@ -171,14 +189,14 @@ matrix matrix::operator * (double value) const
 	{
 		for (auto j = 0; j < _size; j++)
 		{
-			result[i][j] = _elements[i][j] * value;
+			result[i]._elements[j] = _elements[i][j] * value;
 		}
 	}
 
 	return result;
 }
 
-double* matrix::operator [] (size_t index) const
+column matrix::operator [] (size_t index) const
 {
 	if (index >= _size)
 	{
@@ -234,7 +252,7 @@ double matrix::determinant() const
 		// Ќормализируем, преобразуем элемент по главной диагонали в единицу
 		for (auto j = i; j < _size; j++)
 		{
-			temp[i][j] /= pivot;
+			temp[i]._elements[j] /= pivot;
 		}
 
 		// ¬ычитаем из каждой строки ниже элемента по главной диагонали значени€, эту строку,
@@ -244,7 +262,7 @@ double matrix::determinant() const
 			double factor = temp[k][i];
 			for (auto j = i; j < _size; j++)
 			{
-				temp[k][j] -= factor * temp[i][j];
+				temp[k]._elements[j] -= factor * temp[i][j];
 			}
 		}
 	}
@@ -260,7 +278,7 @@ matrix matrix::transpose() const
 	{
 		for (auto j = 0; j < _size; j++)
 		{
-			result[i][j] = _elements[j][i];
+			result[i]._elements[j] = _elements[j][i];
 		}
 	}
 
@@ -274,7 +292,7 @@ matrix matrix::inverse() const
 
 	for (auto i = 0; i < _size; i++)
 	{
-		single[i][i] = 1.0;
+		single[i]._elements[i] = 1.0;
 	}	
 
 	for (auto i = 0; i < _size; i++)
@@ -310,8 +328,8 @@ matrix matrix::inverse() const
 		// ѕриводим строку к виду с единицей в pivot
 		for (auto j = 0; j < _size; j++)
 		{
-			temp[i][j] /= pivot;
-			single[i][j] /= pivot;
+			temp[i]._elements[j] /= pivot;
+			single[i]._elements[j] /= pivot;
 		}
 
 		// ¬ычитаем из каждой строки не равной текущей еЄ же, помноженнную на некоторый множитель, чтобы привести к нулю
@@ -322,8 +340,8 @@ matrix matrix::inverse() const
 				auto factor = temp[k][i];
 				for (auto j = 0; j < _size; j++)
 				{
-					temp[k][j] -= factor * temp[i][j];
-					single[k][j] -= factor * single[i][j];
+					temp[k]._elements[j] -= factor * temp[i][j];
+					single[k]._elements[j] -= factor * single[i][j];
 				}
 			}
 		}

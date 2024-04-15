@@ -7,7 +7,7 @@
 #include <string>
 
 // Encoder which based on RC4 alghoritm
-class encoder
+class encoder final
 {
 
 private:
@@ -20,7 +20,7 @@ private:
 	void rc4(std::ifstream* inputFile, std::ofstream* outputFile);
 
 	// Key-Scheduling Algorithm
-	std::vector<unsigned char> ksa(std::vector<unsigned char> key);
+	std::vector<unsigned char> ksa(const std::vector<unsigned char>& key);
 
 	// Pseudo-Random Generator Alghoritm
 	unsigned char prga(std::vector<unsigned char>* state, int* i, int* j);
@@ -35,6 +35,9 @@ public:
 
 	// Конструктор клонирования
 	encoder(const encoder& other);
+
+	// Оператор присваивания
+	encoder& operator = (const encoder& other);
 
 	// Кодирование или декодирование ключем
 	void encode(const std::string& inputFilePath, const std::string& outputFilePath, bool encrypt);

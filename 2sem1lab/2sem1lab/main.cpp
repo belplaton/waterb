@@ -109,7 +109,7 @@ void matrix_test()
 
     matrix matrix3 = matrix1 + (matrix2 * 0.5);
 
-    cout << "first * (second * 0.5) = third:\n" << matrix3 << '\n' << endl;
+    cout << "first + (second * 0.5) = third:\n" << matrix3 << '\n' << endl;
 
     matrix matrix4 = matrix3 * matrix1;
 

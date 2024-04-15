@@ -7,12 +7,36 @@
 #include <algorithm>
 #include <iostream>
 
+class column
+{
+
+	friend class matrix;
+
+private:
+
+	std::vector<double> _elements;
+	size_t _size;
+
+public:
+
+	double operator [] (size_t index) const;
+
+	column(size_t size = 0, std::vector<double> elements = std::vector<double>());
+
+	column(const column& other);
+
+	~column();
+
+	column& operator = (const column& other);
+
+};
+
 class matrix
 {
 
 private:
 
-	double** _elements;
+	column* _elements;
 	size_t _size;
 
 public:
@@ -33,7 +57,7 @@ public:
 
 	matrix operator * (double value) const;
 
-	double* operator [] (size_t index) const;
+	column operator [] (size_t index) const;
 
 	double determinant() const;
 
