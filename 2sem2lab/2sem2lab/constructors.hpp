@@ -1,9 +1,5 @@
 #include "big_int.hpp"
-
-big_int::big_int() : _size(0)
-{
-	_digits = new unsigned int[1];
-}
+/*
 
 big_int::big_int(bool sign, const unsigned int* digits, size_t size) : _size(size)
 {
@@ -19,9 +15,14 @@ big_int::big_int(bool sign, const unsigned int* digits, size_t size) : _size(siz
 }
 
 
-
-/*
-
-
-
 */
+
+big_int::big_int()
+{
+	_digits = std::vector<unsigned int>();
+}
+
+big_int::big_int(const std::vector<unsigned int>& digits)
+{
+	_digits = std::vector<unsigned int>(digits);
+}

@@ -27,10 +27,22 @@
     <ClInclude Include="arithmetic_operators.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
+    <ClInclude Include="utility.hpp">
+      <Filter>Файлы заголовков\big_int</Filter>
+    </ClInclude>
+    <ClInclude Include="io_operators.hpp">
+      <Filter>Файлы заголовков\big_int</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="constructors.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="big_int.cpp">
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

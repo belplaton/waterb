@@ -16,7 +16,7 @@ complex_value::~complex_value()
 {
 
 }
-
+	
 complex_value complex_value::operator + (const complex_value& other) const
 {
 	complex_value a(5, 6);

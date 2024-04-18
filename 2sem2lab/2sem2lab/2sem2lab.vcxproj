@@ -127,12 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="big_int.cpp" />
     <ClCompile Include="constructors.hpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arithmetic_operators.hpp" />
     <ClInclude Include="big_int.hpp" />
+    <ClInclude Include="io_operators.hpp" />
     <ClInclude Include="relational_operators.hpp" />
+    <ClInclude Include="utility.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -34,7 +34,7 @@ public:
 	complex_value operator / (const complex_value& other) const;
 
 	// Сложение с комплексным числом
-	 complex_value& operator += (const complex_value& other);
+	complex_value& operator += (const complex_value& other);
 
 	// Вычитание комплексного числа
 	complex_value& operator -= (const complex_value& other);
