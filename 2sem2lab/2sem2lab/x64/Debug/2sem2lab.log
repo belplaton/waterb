@@ -1,5 +1,9 @@
 ﻿  big_int.cpp
   constructors.hpp
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int.hpp(87,46): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
   main.cpp
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int.hpp(87,46): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\arithmetic_operators.hpp(48,68): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\arithmetic_operators.hpp(49,75): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
   Создание кода...
   2sem2lab.vcxproj -> D:\_Platon\_Files\GitHub\waterb\2sem2lab\x64\Debug\2sem2lab.exe

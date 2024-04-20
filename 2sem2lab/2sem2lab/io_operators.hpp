@@ -5,9 +5,17 @@
 
 std::ostream& operator << (std::ostream& stream, const big_int& other)
 {
-    for (auto digit : other._digits)
+    if (other.is_negate())
     {
-        stream << '{' << digit << '}';
+        stream << '-';
     }
+
+    stream << '{' << (other._digits[0] & ~other.sign_bit_mask) << '}';
+
+    for (auto i = 1; i < other._digits.size(); i++)
+    {
+        stream << '{' << other._digits[i] << '}';
+    }
+
     return stream;
 }
