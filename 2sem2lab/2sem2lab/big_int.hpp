@@ -86,4 +86,6 @@ public:
     {
         return get_bit(_digits[0], uint_size - 1);
     }
+
+    std::string to_string(unsigned int base) const;
 };

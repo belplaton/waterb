@@ -127,7 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="big_int.cpp" />
     <ClCompile Include="constructors.hpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

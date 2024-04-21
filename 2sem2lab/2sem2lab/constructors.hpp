@@ -1,4 +1,7 @@
+#pragma once
+
 #include "big_int.hpp"
+
 /*
 
 big_int::big_int(bool sign, const unsigned int* digits, size_t size) : _size(size)

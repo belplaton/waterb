@@ -1,3 +1,4 @@
+#pragma once
 
 #include "big_int.hpp"
 
