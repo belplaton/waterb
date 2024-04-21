@@ -3,7 +3,7 @@ D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int.hpp(87,46): warning C4
   main.cpp
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int.hpp(87,46): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\utility.hpp(37,51): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\utility.hpp(60,41): warning C4267: -=: преобразование из "size_t" в "char"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\utility.hpp(77,70): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\arithmetic_operators.hpp(79,81): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\arithmetic_operators.hpp(80,89): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
   Создание кода...

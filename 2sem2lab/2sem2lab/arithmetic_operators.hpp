@@ -107,13 +107,10 @@ big_int big_int::operator + (const big_int& other)
 		auto op2 = (i < second_size) ? other._digits[second_size + second_diff - i - 1] : 0;
 		if (i == second_size - 1) op2 &= ~sign_bit_mask;
 
-		std::cout << "OPERANDS: " << op1 << " " << op2 << " " << carry << std::endl;
 		auto result = add_with_carry(op1, op2, carry);
 
 		carry = result.carry;
 		result_digits[max_size - i - 1] = result.sum;
-
-		std::cout << "SUM: " << result.sum << ", CARRY: " << carry << '\n' << std::endl;
 	}
 	
 	result_digits[0] |= sign_bit_mask * is_negate();

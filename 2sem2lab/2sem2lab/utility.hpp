@@ -37,6 +37,24 @@ unsigned int char_to_int(char ch, size_t base)
     return std::stoi(std::string(1, ch), nullptr, base);
 }
 
+char int_to_char(unsigned int num)
+{
+    auto first_diff = ('9' - '0') + 1;
+    auto second_diff = ('Z' - 'A') + 1;
+
+    if ((num + '0' >= '0') && (num + '0' <= '9'))
+    {
+        return num + '0';
+    }
+    else if ((num + 'A' - first_diff >= 'A') && (num + 'A' - first_diff <= 'Z'))
+    {
+        return num + 'A' - first_diff;
+    }
+    else
+    {
+        throw std::invalid_argument("Base is out of range (1, " + std::to_string(first_diff + second_diff) + ")");
+    }
+}
 
 std::string add_string_nums(std::string& a, std::string& b, size_t base)
 {
@@ -54,14 +72,14 @@ std::string add_string_nums(std::string& a, std::string& b, size_t base)
         op1 = i < a.size() ? char_to_int(a[a.size() - i - 1], base) : 0;
         op2 = i < b.size() ? char_to_int(b[b.size() - i - 1], base) : 0;
 
-        result[max_size - i - 1] += op1 + op2 + carry;
-        if (result[max_size - i - 1] > '9')
+        if (op1 + op2 + carry > base - 1)
         {
-            result[max_size - i - 1] -= base;
+            result[max_size - i - 1] = int_to_char(op1 + op2 + carry - base);
             carry = 1;
         }
         else
         {
+            result[max_size - i - 1] = int_to_char(op1 + op2 + carry);
             carry = 0;
         }
     }
@@ -98,5 +116,5 @@ std::string big_int::to_string(unsigned int base) const
         }
     }
 
-    return (is_negate() ? "-" : "") + result;
+    return (is_negate() && base > 2 ? "-" : "") + result;
 }
