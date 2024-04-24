@@ -1,10 +1,9 @@
 ﻿  constructors.hpp
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int.hpp(87,46): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
   main.cpp
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int.hpp(87,46): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\utility.hpp(37,51): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\utility.hpp(77,70): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\arithmetic_operators.hpp(79,81): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\arithmetic_operators.hpp(80,89): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\utility.hpp(90,12): warning C4267: return: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\utility.hpp(95,51): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\utility.hpp(135,70): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\arithmetic_operators.hpp(39,21): warning C4018: <: несоответствие типов со знаком и без знака
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\arithmetic_operators.hpp(80,21): warning C4018: <: несоответствие типов со знаком и без знака
   Создание кода...
   2sem2lab.vcxproj -> D:\_Platon\_Files\GitHub\waterb\2sem2lab\x64\Debug\2sem2lab.exe

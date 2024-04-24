@@ -9,6 +9,12 @@ struct sum_with_carry
     unsigned int carry;
 };
 
+struct diff_with_borrow
+{
+    unsigned int diff;
+    unsigned int borrow;
+};
+
 sum_with_carry add_with_carry(unsigned int a, unsigned int b, unsigned int carry)
 {
     auto result = sum_with_carry();
@@ -30,6 +36,58 @@ sum_with_carry add_with_carry(unsigned int a, unsigned int b, unsigned int carry
     }
 
     return result;
+}
+
+diff_with_borrow substract_with_borrow(unsigned int a, unsigned int b, unsigned int borrow)
+{
+    auto result = diff_with_borrow();
+    result.diff = a - b - borrow;
+
+    if (result.diff > a)
+    {
+        result.borrow = 1;
+    }
+
+    return result;
+}
+
+unsigned int check_for_size_change( std::vector<unsigned int> first, std::vector<unsigned int> second, bool isSum, unsigned int first_offset = 0, unsigned int second_offset = 0)
+{
+    auto max_size = std::max(first.size(), second.size());
+
+    for (auto i = 0; i < max_size; i++)
+    {
+        auto is_finish = false;
+        for (auto j = 1; j < big_int::uint_size; j++)
+        {
+            auto op1 = (i < first.size()) ? big_int::get_bit(first[i + first_offset], big_int::uint_size - j - (i == 0)) : 0;
+            auto op2 = (i < second.size()) ? big_int::get_bit(second[i + second_offset], big_int::uint_size - j - (i == 0)) : 0;
+
+            if (op1 && !op2)
+            {
+                is_finish = true;
+                break;
+            }
+            else if (op1 && op2)
+            {
+                if (isSum)
+                {
+                    max_size++;
+                }
+                else
+                {
+                    max_size--;
+                }
+
+                is_finish = true;
+                break;
+            }
+        }
+
+        if (is_finish) break;
+    }
+
+    return max_size;
 }
 
 unsigned int char_to_int(char ch, size_t base)
@@ -116,5 +174,5 @@ std::string big_int::to_string(unsigned int base) const
         }
     }
 
-    return (is_negate() && base > 2 ? "-" : "") + result;
+    return (is_negate(_digits) && base > 2 ? "-" : "") + result;
 }

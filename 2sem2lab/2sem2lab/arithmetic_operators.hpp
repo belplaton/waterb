@@ -2,6 +2,7 @@
 
 #include "big_int.hpp"
 #include "utility.hpp"
+#include "relational_operators.hpp"
 #include <bitset>
 
 big_int big_int::operator + () const
@@ -19,93 +20,29 @@ big_int big_int::operator - () const
 
 big_int big_int::operator + (const big_int& other)
 {
-	/*
+	auto left = *this;
+	auto right = other;
 
-	if (is_negate() && !other.is_negate())
+	// Оптимизирование
+	if (is_negate(_digits) && !is_negate(other._digits))
 	{
-		return *this - other;
+		return left - right;
 	}
-	else if (!is_negate() && other.is_negate())
+	else if (!is_negate(_digits) && is_negate(other._digits))
 	{
-		return other& - *this;
-	}
-
-	*/
-
-	size_t first_size = 1;
-	size_t first_diff = 0;
-	size_t second_size = 1;
-	size_t second_diff = 0;
-
-	for (auto i = 0; i < _digits.size(); i++)
-	{
-		if (i == 0 && (_digits[i] & ~sign_bit_mask) == 0)
-		{
-			continue;
-		}
-
-		if (_digits[i] != 0)
-		{
-			first_size = _digits.size() - i;
-			first_diff = i;
-			break;
-		}
+		return right - left;
 	}
 
-	for (auto i = 0; i < other._digits.size(); i++)
-	{
-		if (i == 0 && (other._digits[i] & ~sign_bit_mask) == 0)
-		{
-			continue;
-		}
-
-		if (other._digits[i] != 0)
-		{
-			second_size = other._digits.size() - i;
-			second_diff = i;
-			break;
-		}
-	}
-
-	auto max_size = std::max(first_size, second_size);
-
-	// Проверка на необходимость дополнительного разряда для суммирования
-	for (auto i = 0; i < max_size; i++)
-	{
-		auto is_expanded = false;
-		auto is_continue = true;
-		for (auto j = 1; j < uint_size; j++)
-		{
-			auto op1 = (i < first_size) ? get_bit(_digits[first_diff + i], uint_size - j - (i == 0)) : 0;
-			auto op2 = (i < second_size) ? get_bit(other._digits[second_diff + i], uint_size - j - (i == 0)) : 0;
-
-			if (!op1 && !op2)
-			{
-				is_continue = false;
-				break;
-			}
-			else if (op1 && op2)
-			{
-				max_size++;
-				is_expanded = true;
-				break;
-			}
-		}
-
-		if (is_expanded || !is_continue) break;
-	}
-
-
-	// Операция суммирования
+	auto max_size = check_for_size_change(_digits, other._digits, true);
 	auto result_digits = std::vector<unsigned int>(max_size);
 	unsigned int carry = 0;
 	for (auto i = 0; i < max_size; i++)
 	{
-		auto op1 = (i < first_size) ? _digits[first_size + first_diff - i - 1] : 0;
-		if (i == first_size - 1) op1 &= ~sign_bit_mask;
+		auto op1 = (i < _digits.size()) ? _digits[_digits.size() - i - 1] : 0;
+		if (i == _digits.size() - 1) op1 &= ~sign_bit_mask;
 
-		auto op2 = (i < second_size) ? other._digits[second_size + second_diff - i - 1] : 0;
-		if (i == second_size - 1) op2 &= ~sign_bit_mask;
+		auto op2 = (i < other._digits.size()) ? other._digits[other._digits.size() - i - 1] : 0;
+		if (i == other._digits.size() - 1) op2 &= ~sign_bit_mask;
 
 		auto result = add_with_carry(op1, op2, carry);
 
@@ -113,62 +50,48 @@ big_int big_int::operator + (const big_int& other)
 		result_digits[max_size - i - 1] = result.sum;
 	}
 	
-	result_digits[0] |= sign_bit_mask * is_negate();
+	result_digits[0] |= sign_bit_mask * is_negate(_digits);
 
 	return big_int(result_digits);
 }
-
-/*
 
 big_int big_int::operator - (const big_int& other)
 {
+	auto left = *this;
+	auto right = other;
 
-	if ((_digits[0] & sign_bit_mask) && !(other._digits[0] & sign_bit_mask))
+	// Оптимизирование
+	if (is_negate(_digits) && !is_negate(other._digits))
 	{
-		return *this + other;
+		return left + -right;
 	}
-	else if (!(_digits[0] & sign_bit_mask) && (other._digits[0] & sign_bit_mask))
+	else if (!is_negate(_digits) && is_negate(other._digits))
 	{
-		return -(other& + *this);
+		return -left + right;
+	}
+	else if (left < right)
+	{
+		return -(right - left);
 	}
 
-	auto sign = _digits[0] & sign_bit_mask;
-
-	auto first_size = _digits.size();
-	auto second_size = other._digits.size();
-
-	auto first_extra = (_digits[0] & sign_bit_mask) != 0;
-	auto second_extra = (other._digits[0] & sign_bit_mask) != 0;
-
-	auto max_size = std::max(first_size + first_extra, second_size + second_extra);
+	auto max_size = check_for_size_change(_digits, other._digits, false);
 	auto result_digits = std::vector<unsigned int>(max_size);
-
-	unsigned int carry = 0;
+	unsigned int borrow = 0;
 	for (auto i = 0; i < max_size; i++)
 	{
-		auto op1 = (i < first_size) ? _digits[first_size - i - 1] : 0;
-		if (i == first_size - 1) op1 &= sign_bit_mask;
+		auto op1 = (i < _digits.size()) ? _digits[_digits.size() - i - 1] : 0;
+		if (i == _digits.size() - 1) op1 &= sign_bit_mask;
 
-		auto op2 = (i < second_size) ? other._digits[second_size - i - 1] : 0;
-		if (i == second_size - 1) op2 &= sign_bit_mask;
+		auto op2 = (i < other._digits.size()) ? other._digits[other._digits.size() - i - 1] : 0;
+		if (i == other._digits.size() - 1) op2 &= sign_bit_mask;
 
-		// std::cout << "OPERANDS: " << op1 << " " << op2 << " " << carry << std::endl;
-		auto diff = op1 - op2;
-		if (diff > op1)
-		{
-			for (auto j = i + 1; j < max_size; j++)
-			{
-			}
-		}
+		auto result = substract_with_borrow(op1, op2, borrow);
 
-		result_digits[max_size - i - 1] = 0;
-
-		std::cout << "SUM: " << 0 << ", CARRY: " << carry << '\n' << std::endl;
+		borrow = result.borrow;
+		result_digits[max_size - i - 1] = result.diff;
 	}
 
-	result_digits[0] |= sign_bit_mask * sign;
+	result_digits[0] |= sign_bit_mask * is_negate(_digits);
 
 	return big_int(result_digits);
 }
-
-*/

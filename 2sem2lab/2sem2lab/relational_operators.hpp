@@ -23,7 +23,7 @@ bool big_int::operator < (const big_int& other) const
 {
 	auto shift_amount = uint_size - 1;
 	if (_digits[0] >> shift_amount > other._digits[0] >> shift_amount) return true;
-	else if (_digits[0] >> shift_amount < other._digits[0] >> shift_amount) return;
+	else if (_digits[0] >> shift_amount < other._digits[0] >> shift_amount) return false;
 	
 	if (_digits.size() < other._digits.size()) return true;
 	else if (_digits.size() > other._digits.size()) return false;

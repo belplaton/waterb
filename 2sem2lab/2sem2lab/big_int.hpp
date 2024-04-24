@@ -10,12 +10,12 @@ class big_int
 
 private:
 
-    const size_t uint_size = (sizeof(unsigned int) * 8);
-    const unsigned int sign_bit_mask = 1 << (uint_size - 1);
-
     std::vector<unsigned int> _digits;
 
 public:
+
+    const size_t static uint_size = (sizeof(unsigned int) * 8);
+    const unsigned int static sign_bit_mask = 1 << (uint_size - 1);
 
     // Constructors
 
@@ -82,9 +82,14 @@ public:
         return (num >> position) & 1;
     }
 
-    inline unsigned int is_negate() const
+    inline static unsigned int is_negate(const std::vector<unsigned int>& digits)
     {
-        return get_bit(_digits[0], uint_size - 1);
+        return get_bit(digits[0], big_int::sign_bit_mask - 1);
+    }
+
+    inline static unsigned int is_negate(const unsigned int* digits)
+    {
+        return get_bit(digits[0], big_int::sign_bit_mask - 1);
     }
 
     std::string to_string(unsigned int base) const;

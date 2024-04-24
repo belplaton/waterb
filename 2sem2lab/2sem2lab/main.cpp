@@ -8,7 +8,7 @@ using namespace std;
 int main()
 {
 
-    auto digits1 = vector<unsigned int>({ (unsigned int)(1 << 31) });
+    auto digits1 = vector<unsigned int>({ 11115 });
     auto value1 = big_int(digits1);
 
     auto digits2 = vector<unsigned int>({ 11111 });
