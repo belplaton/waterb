@@ -46,12 +46,13 @@ big_int::big_int(const std::vector<unsigned int>& digits)
 	}
 
 	_digits = std::vector<unsigned int>(real_size);
-	for (auto i = real_size; i < digits.size(); i++)
+	for (auto i = 0; i < real_size; i++)
 	{
-		_digits[i - real_size] = digits[i];
+		_digits[i] = digits[i + diff];
 	}
 
 	_digits[0] |= sign_bit_mask * is_negate(_digits);
+
 }
 
 big_int::big_int(const unsigned int* digits, size_t size)
@@ -75,9 +76,9 @@ big_int::big_int(const unsigned int* digits, size_t size)
 	}
 
 	_digits = std::vector<unsigned int>(real_size);
-	for (auto i = real_size; i < size; i++)
+	for (auto i = 0; i < real_size; i++)
 	{
-		_digits[i - real_size] = digits[i];
+		_digits[i] = digits[i + diff];
 	}
 
 	_digits[0] |= sign_bit_mask * is_negate(_digits);

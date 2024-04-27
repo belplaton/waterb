@@ -80,10 +80,10 @@ big_int big_int::operator - (const big_int& other)
 	for (auto i = 0; i < max_size; i++)
 	{
 		auto op1 = (i < _digits.size()) ? _digits[_digits.size() - i - 1] : 0;
-		if (i == _digits.size() - 1) op1 &= sign_bit_mask;
+		if (i == _digits.size() - 1) op1 &= ~sign_bit_mask;
 
 		auto op2 = (i < other._digits.size()) ? other._digits[other._digits.size() - i - 1] : 0;
-		if (i == other._digits.size() - 1) op2 &= sign_bit_mask;
+		if (i == other._digits.size() - 1) op2 &= ~sign_bit_mask;
 
 		auto result = substract_with_borrow(op1, op2, borrow);
 

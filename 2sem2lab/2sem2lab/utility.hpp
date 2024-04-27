@@ -53,7 +53,7 @@ diff_with_borrow substract_with_borrow(unsigned int a, unsigned int b, unsigned 
 
 unsigned int check_for_size_change( std::vector<unsigned int> first, std::vector<unsigned int> second, bool isSum, unsigned int first_offset = 0, unsigned int second_offset = 0)
 {
-    auto max_size = std::max(first.size(), second.size());
+    int max_size = std::max(first.size(), second.size());
 
     for (auto i = 0; i < max_size; i++)
     {
@@ -63,31 +63,45 @@ unsigned int check_for_size_change( std::vector<unsigned int> first, std::vector
             auto op1 = (i < first.size()) ? big_int::get_bit(first[i + first_offset], big_int::uint_size - j - (i == 0)) : 0;
             auto op2 = (i < second.size()) ? big_int::get_bit(second[i + second_offset], big_int::uint_size - j - (i == 0)) : 0;
 
-            if (op1 && !op2)
+            if (isSum)
             {
-                is_finish = true;
-                break;
-            }
-            else if (op1 && op2)
-            {
-                if (isSum)
+                if (!op1 && !op2)
+                {
+                    is_finish = true;
+                    break;
+                }
+                else if (op1 && op2)
                 {
                     max_size++;
+                    is_finish = true;
+                    break;
                 }
-                else
+            }
+            else
+            {
+                if (op1 && !op2)
+                {
+                    is_finish = true;
+                    break;
+                }
+                else if (!op1 && op2)
+                {
+                    is_finish = true;
+                    break;
+                }
+                else if (op1 && op2)
                 {
                     max_size--;
+                    is_finish = true;
+                    break;
                 }
-
-                is_finish = true;
-                break;
             }
         }
 
         if (is_finish) break;
     }
 
-    return max_size;
+    return std::max(1, max_size);
 }
 
 unsigned int char_to_int(char ch, size_t base)

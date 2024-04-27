@@ -14,6 +14,9 @@ int main()
     auto digits2 = vector<unsigned int>({ 11111 });
     auto value2 = big_int(digits2);
 
-    std::cout << (value1 + value2) << std::endl;
+    auto digits3 = vector<unsigned int>({ 155511 });
+    auto value3 = big_int(digits3);
+
+    std::cout << (-value2 + -value1)<< std::endl;
     return 0;
 }

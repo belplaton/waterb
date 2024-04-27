@@ -4,6 +4,8 @@
 #include <string>
 #include <stdexcept>
 #include <cmath>
+#include <iostream>
+
 
 class big_int
 {
