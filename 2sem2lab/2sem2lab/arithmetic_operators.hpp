@@ -1,7 +1,6 @@
 #pragma once
 
 #include "big_int.hpp"
-#include "utility.hpp"
 #include "relational_operators.hpp"
 #include <bitset>
 

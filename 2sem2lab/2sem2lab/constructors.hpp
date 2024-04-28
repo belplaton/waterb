@@ -1,24 +1,5 @@
 #pragma once
-
 #include "big_int.hpp"
-
-/*
-
-big_int::big_int(bool sign, const unsigned int* digits, size_t size) : _size(size)
-{
-	_digits = new unsigned int[_size + 1];
-	_digits[_size] = sign ? 0 : 1;
-
-	if (digits == nullptr)
-	{
-		throw std::invalid_argument("Argument digits is null.");
-	}
-
-	std::copy(digits, digits + size, _digits + 1);
-}
-
-
-*/
 
 big_int::big_int()
 {
@@ -86,29 +67,36 @@ big_int::big_int(const unsigned int* digits, size_t size)
 
 big_int::big_int(const std::string& number, size_t base)
 {
-	if (base < 2 || base > 10)
+	if (base < 2 || base > 36)
 	{
 		throw std::invalid_argument("Invalid base.");
 	}
 
-	bool is_negative = number[0] == '-';
-	size_t start_index = number[0] == '-';
+	bool is_negative = (number[0] == '-');
 
-	for (auto i = start_index; i < number.size(); i++)
+	for (auto i = is_negative; i < number.size(); i++)
 	{
-		if (!isdigit(number[i]))
+		if (!isdigit(number[i]) && !isalpha(number[i]))
 		{
 			throw std::invalid_argument("Invalid character in number");
 		}
 	}
 
-	for (size_t i = start_index; i < number.size(); ++i) {
-		unsigned int digit = number[i] - '0';
+	auto bin_string = convert_string_num(number, base, 2);
+	auto temp1 = (bin_string.size() % big_int::uint_size) != 0;
+	auto temp2 = (bin_string.size() - (bin_string.size() % big_int::uint_size)) / big_int::uint_size;
+	auto size = temp1 + temp2;
+	_digits = std::vector<unsigned int>(size);
 
-		/* TO DO: через операторы с uint сделать добавление чисел
-		*this *= base;
-		*this += digit;
-		*/
+	auto k = 0;
+	for (auto i = 0; i < size; i++)
+	{
+		for (auto j = 0; j < big_int::uint_size; j++)
+		{
+			auto bit = char_to_int(bin_string[bin_string.size() - k - 1], 2);
+			_digits[size - i - 1] |= bit << j;
+			k++;
+		}
 	}
 }
 

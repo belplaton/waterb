@@ -132,9 +132,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arithmetic_operators.hpp" />
+    <ClInclude Include="assigment_operators.hpp" />
     <ClInclude Include="big_int.hpp" />
+    <ClInclude Include="binary_operators.hpp" />
     <ClInclude Include="io_operators.hpp" />
     <ClInclude Include="relational_operators.hpp" />
+    <ClInclude Include="external_utility.hpp" />
     <ClInclude Include="utility.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

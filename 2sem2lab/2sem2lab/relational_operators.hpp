@@ -1,5 +1,4 @@
 #pragma once
-
 #include "big_int.hpp"
 
 bool big_int::operator == (const big_int& other) const

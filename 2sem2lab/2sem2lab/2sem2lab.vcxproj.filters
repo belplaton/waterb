@@ -27,10 +27,19 @@
     <ClInclude Include="arithmetic_operators.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
-    <ClInclude Include="utility.hpp">
+    <ClInclude Include="external_utility.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
     <ClInclude Include="io_operators.hpp">
+      <Filter>Файлы заголовков\big_int</Filter>
+    </ClInclude>
+    <ClInclude Include="assigment_operators.hpp">
+      <Filter>Файлы заголовков\big_int</Filter>
+    </ClInclude>
+    <ClInclude Include="binary_operators.hpp">
+      <Filter>Файлы заголовков\big_int</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
   </ItemGroup>

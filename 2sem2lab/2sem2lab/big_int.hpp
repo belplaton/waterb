@@ -1,11 +1,13 @@
 #pragma once
+#ifndef _BIGINT_
+#define _BIGINT_
 
 #include <vector>
 #include <string>
 #include <stdexcept>
 #include <cmath>
 #include <iostream>
-
+#include "external_utility.hpp"
 
 class big_int
 {
@@ -50,6 +52,15 @@ public:
     big_int operator / (const big_int& other);
     big_int operator % (const big_int& other);
 
+    // Binary arithemetic operators
+
+    big_int operator ~ () const;
+    big_int operator & (const big_int& other) const;
+    big_int operator | (const big_int& other) const;
+    big_int operator ^ (const big_int& other) const;
+    big_int operator << (int shift) const;
+    big_int operator >> (int shift) const;
+
     // Assigment operators
 
     big_int& operator += (const big_int& other);
@@ -62,15 +73,6 @@ public:
 
     big_int operator + () const;
     big_int operator - () const;
-
-    // Binary arithemetic operators
-
-    big_int operator ~ () const;
-    big_int operator & (const big_int& other) const;
-    big_int operator | (const big_int& other) const;
-    big_int operator ^ (const big_int& other) const;
-    big_int operator << (int shift) const;
-    big_int operator >> (int shift) const;
 
     // IO stream operators
     
@@ -95,4 +97,8 @@ public:
     }
 
     std::string to_string(unsigned int base) const;
+
+    unsigned int check_for_size_change(std::vector<unsigned int> first, std::vector<unsigned int> second, bool isSum, unsigned int first_offset, unsigned int second_offset) const;
 };
+
+#endif // ! _BIGINT_
