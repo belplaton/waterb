@@ -137,8 +137,6 @@ static std::string mult_string_nums(std::string& a, std::string& b, size_t base)
         result[a.size() - i - 1] = int_to_char(carry);
     }
 
-    std::cout << "T: " << a << " T: " << b << " T: " << result << std::endl;
-
     std::string temp(result);
     for (auto i = 0; i < max_size; i++)
     {
@@ -190,19 +188,13 @@ static std::string convert_string_num(const std::string& num, unsigned int from_
     for (auto i = 0; i < num.size() - is_negative; i++)
     {
         auto current = int_to_string(char_to_int(num[num.size() - i - 1], from_base), to_base);
-        std::cout << "TEMP: " << result << " " << current << " " << temp << std::endl;
-
         auto a = mult_string_nums(current, temp, to_base);
         auto b = int_to_string(to_base - 1, to_base);
         auto c = add_string_nums(b, one_str, to_base);
 
         result = add_string_nums(result, a, to_base);
         temp = mult_string_nums(temp, c, to_base);
-
-        std::cout << "PMET: " << temp << " " << c << std::endl;
     }
-
-    std::cout << result << std::endl;
 
     return (is_negative ? "-" : "") + result;
 }

@@ -83,22 +83,25 @@ big_int::big_int(const std::string& number, size_t base)
 	}
 
 	auto bin_string = convert_string_num(number, base, 2);
+	auto str_size = bin_string.size() - is_negative;
 
-	auto temp1 = (bin_string.size() % big_int::uint_size) != 0;
-	auto temp2 = (bin_string.size() - (bin_string.size() % big_int::uint_size)) / big_int::uint_size;
+	auto temp1 = (str_size - is_negative % big_int::uint_size) != 0;
+	auto temp2 = (str_size - (str_size % big_int::uint_size)) / big_int::uint_size;
 	auto size = temp1 + temp2;
 	_digits = std::vector<unsigned int>(size);
 
 	auto k = 0;
 	for (auto i = 0; i < size; i++)
 	{
-		for (auto j = 0; j < big_int::uint_size && j < bin_string.size(); j++)
+		for (auto j = 0; j < big_int::uint_size && j < str_size; j++)
 		{
 			auto bit = char_to_int(bin_string[bin_string.size() - k - 1], 2);
 			_digits[size - i - 1] |= bit << j;
 			k++;
 		}
 	}
+
+	_digits[0] |= sign_bit_mask * is_negative;
 }
 
 big_int::big_int(const big_int& other)

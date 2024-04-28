@@ -17,8 +17,9 @@ int main()
 
     value2 += value1;
 
-    auto value3 = big_int("1100", 2);
+    auto value3 = big_int("-1100", 2);
 
-    std::cout << value3 << std::endl;
+
+    std::cout << -value3 - value1 << std::endl;
     return 0;
 }
