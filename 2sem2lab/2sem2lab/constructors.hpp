@@ -72,7 +72,7 @@ big_int::big_int(const std::string& number, size_t base)
 		throw std::invalid_argument("Invalid base.");
 	}
 
-	bool is_negative = (number[0] == '-');
+	int is_negative = (number[0] == '-');
 
 	for (auto i = is_negative; i < number.size(); i++)
 	{
@@ -83,6 +83,7 @@ big_int::big_int(const std::string& number, size_t base)
 	}
 
 	auto bin_string = convert_string_num(number, base, 2);
+
 	auto temp1 = (bin_string.size() % big_int::uint_size) != 0;
 	auto temp2 = (bin_string.size() - (bin_string.size() % big_int::uint_size)) / big_int::uint_size;
 	auto size = temp1 + temp2;
@@ -91,7 +92,7 @@ big_int::big_int(const std::string& number, size_t base)
 	auto k = 0;
 	for (auto i = 0; i < size; i++)
 	{
-		for (auto j = 0; j < big_int::uint_size; j++)
+		for (auto j = 0; j < big_int::uint_size && j < bin_string.size(); j++)
 		{
 			auto bit = char_to_int(bin_string[bin_string.size() - k - 1], 2);
 			_digits[size - i - 1] |= bit << j;

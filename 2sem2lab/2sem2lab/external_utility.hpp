@@ -113,7 +113,44 @@ static std::string add_string_nums(std::string& a, std::string& b, size_t base)
         result.erase(0, 1);
     }
 
-    return result;
+    return result != "" ? result : "0";
+}
+
+static std::string mult_string_nums(std::string& a, std::string& b, size_t base)
+{
+    auto max_size = a.size() + b.size();
+    std::string result(max_size, '0');
+
+    for (auto i = 0; i < a.size(); i++)
+    {
+        auto carry = 0u;
+        for (auto j = 0; j < b.size(); j++)
+        {
+            auto op1 = char_to_int(a[a.size() - i - 1], base);
+            auto op2 = char_to_int(b[b.size() - j - 1], base);
+            auto k = (a.size() - i - 1) + (b.size() - j - 1) + 1;
+            auto product = op1 * op2 + char_to_int(result[k], base) + carry;
+            result[k] = int_to_char(product % base);
+            carry = product / base;
+        }
+
+        result[a.size() - i - 1] = int_to_char(carry);
+    }
+
+    std::cout << "T: " << a << " T: " << b << " T: " << result << std::endl;
+
+    std::string temp(result);
+    for (auto i = 0; i < max_size; i++)
+    {
+        if (temp[i] != '0')
+        {
+            break;
+        }
+
+        result.erase(0, 1);
+    }
+
+    return result != "" ? result : "0";
 }
 
 static std::string int_to_string(unsigned int num, unsigned int base)
@@ -127,7 +164,7 @@ static std::string int_to_string(unsigned int num, unsigned int base)
 
     do
     {
-        result += int_to_char(num % base);
+        result = int_to_char(num % base) + result;
         num /= base;
     } while (num != 0);
 
@@ -146,13 +183,26 @@ static std::string convert_string_num(const std::string& num, unsigned int from_
         throw std::invalid_argument("Invalid to_base.");
     }
 
-    bool is_negative = (num[0] == '-');
+    int is_negative = (num[0] == '-');
     std::string result = "0";
+    std::string temp = "1";
+    std::string one_str = "1";
     for (auto i = is_negative; i < num.size(); i++)
     {
-        auto temp = int_to_string(char_to_int(num[i], from_base), to_base);
-        result = add_string_nums(result, temp, to_base);
+        auto current = int_to_string(char_to_int(num[i], from_base), to_base);
+        std::cout << "TEMP: " << result << " " << current << " " << temp << std::endl;
+
+        auto a = mult_string_nums(current, temp, to_base);
+        auto b = int_to_string(to_base - 1, to_base);
+        auto c = add_string_nums(b, one_str, to_base);
+
+        result = add_string_nums(result, a, to_base);
+        temp = mult_string_nums(temp, c, to_base);
+
+        std::cout << "PMET: " << temp << " " << c << std::endl;
     }
+
+    std::cout << result << std::endl;
 
     return (is_negative ? "-" : "") + result;
 }
