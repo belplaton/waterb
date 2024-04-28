@@ -187,9 +187,9 @@ static std::string convert_string_num(const std::string& num, unsigned int from_
     std::string result = "0";
     std::string temp = "1";
     std::string one_str = "1";
-    for (auto i = is_negative; i < num.size(); i++)
+    for (auto i = 0; i < num.size() - is_negative; i++)
     {
-        auto current = int_to_string(char_to_int(num[i], from_base), to_base);
+        auto current = int_to_string(char_to_int(num[num.size() - i - 1], from_base), to_base);
         std::cout << "TEMP: " << result << " " << current << " " << temp << std::endl;
 
         auto a = mult_string_nums(current, temp, to_base);
