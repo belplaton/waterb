@@ -46,11 +46,11 @@ public:
 
     // Arithmetic operators
 
-    big_int operator + (const big_int& other);
-    big_int operator - (const big_int& other);
-    big_int operator * (const big_int& other);
-    big_int operator / (const big_int& other);
-    big_int operator % (const big_int& other);
+    big_int operator + (const big_int& other) const;
+    big_int operator - (const big_int& other) const;
+    big_int operator * (const big_int& other) const;
+    big_int operator / (const big_int& other) const;
+    big_int operator % (const big_int& other) const;
 
     // Binary arithemetic operators
 
@@ -58,8 +58,8 @@ public:
     big_int operator & (const big_int& other) const;
     big_int operator | (const big_int& other) const;
     big_int operator ^ (const big_int& other) const;
-    big_int operator << (int shift) const;
-    big_int operator >> (int shift) const;
+    big_int operator << (unsigned int shift) const;
+    big_int operator >> (unsigned int shift) const;
 
     // Assigment operators
 

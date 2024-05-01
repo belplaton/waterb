@@ -56,20 +56,59 @@ big_int big_int::operator ^ (const big_int& other) const
 	return big_int(digits);
 }
 
-big_int big_int::operator << (int shift) const
+big_int big_int::operator << (unsigned int shift) const
 {
-	if (shift == 0) return *this;
-
-	auto num = to_string(2);
-	for (auto i = 0; i < shift; i++)
+	auto empty = 0;
+	auto micro_diff = 0;
+	auto macro_diff = 0;
+	for (auto i = 0; i < _digits.size(); i++)
 	{
-		num += "0";
+		auto finished = false;
+		for (auto j = 0; j < big_int::uint_size; j++)
+		{
+			auto bit = get_bit(_digits[i], big_int::uint_size - j - 1);
+			empty += bit > 0 ? 1 : 0;
+			if (bit)
+			{
+				micro_diff = empty % big_int::uint_size;
+				macro_diff = empty / big_int::uint_size + (empty % big_int::uint_size > 1 ? 1 : 0);
+				finished = true;
+				break;
+			}
+		}
+
+		if (finished) break;
 	}
 
-	return big_int(num, 2);
+	unsigned int size = _digits.size() + macro_diff;
+
+	auto result_digits = std::vector<unsigned int>(size);
+	for (auto i = 0; i < _digits.size(); i++)
+	{
+		for (auto j = 0; j < big_int::uint_size; j++)
+		{
+			auto k = j + (shift % big_int::uint_size);
+
+			auto a1 = k % big_int::uint_size;
+			auto a2 = (k - k % big_int::uint_size - micro_diff) / big_int::uint_size;
+
+			if (k < big_int::uint_size)
+			{
+				result_digits[i] |= get_bit(_digits[i], (big_int::uint_size - k - 1)) << (big_int::uint_size - j - 1);
+				std::cout << (big_int::uint_size - j - 1) << " " << (big_int::uint_size - k - 1) << std::endl;
+			}
+			else
+			{
+				result_digits[i] |= get_bit(_digits[i + a2], (big_int::uint_size - j - shift - 1)) << (big_int::uint_size - j - 1);
+				std::cout << i + a2 << " " << (big_int::uint_size - j - a1 - 1) << " " << (big_int::uint_size - j - 1) << std::endl;
+			}
+		}
+	}
+
+	return big_int(result_digits);
 }
 
-big_int big_int::operator >> (int shift) const
+big_int big_int::operator >> (unsigned int shift) const
 {
 	if (shift == 0) return *this;
 
