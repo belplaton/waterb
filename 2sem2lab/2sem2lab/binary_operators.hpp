@@ -67,11 +67,13 @@ big_int big_int::operator << (unsigned int shift) const
 		for (auto j = 0; j < big_int::uint_size; j++)
 		{
 			auto bit = get_bit(_digits[i], big_int::uint_size - j - 1);
-			empty += bit > 0 ? 1 : 0;
+			empty += bit > 0 ? 0 : 1;
 			if (bit)
 			{
 				micro_diff = empty % big_int::uint_size;
-				macro_diff = empty / big_int::uint_size + (empty % big_int::uint_size > 1 ? 1 : 0);
+				int temp1 = (shift - shift % big_int::uint_size) / big_int::uint_size;
+				int temp2 = (shift % big_int::uint_size) - empty;
+				macro_diff = temp1 + (temp2 > 0 ? 1 : 0);
 				finished = true;
 				break;
 			}
@@ -104,6 +106,13 @@ big_int big_int::operator << (unsigned int shift) const
 			}
 		}
 	}
+
+	std::cout << "result_digits[i]" << macro_diff << std::endl;
+	for (auto i = 0; i < size; i++)
+	{
+		std::cout << result_digits[i] << std::endl;
+	}
+	std::cout << "result_digits[i]" << std::endl;
 
 	return big_int(result_digits);
 }

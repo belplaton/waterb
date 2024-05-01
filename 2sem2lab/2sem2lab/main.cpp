@@ -16,7 +16,7 @@ int main()
     auto digits2 = vector<unsigned int>({ (1) });
     auto value2 = big_int(digits2);
 
-    value2 = value2 << 33;
+    value2 = value2 << 256;
 
     //auto value3 = big_int("1255555666777", 10);
 
