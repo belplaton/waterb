@@ -86,6 +86,11 @@ public:
         return (num >> position) & 1;
     }
 
+    inline static unsigned int is_negate(const big_int& number)
+    {
+        return get_bit(number._digits[0], big_int::sign_bit_mask - 1);
+    }
+
     inline static unsigned int is_negate(const std::vector<unsigned int>& digits)
     {
         return get_bit(digits[0], big_int::sign_bit_mask - 1);
