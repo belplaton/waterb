@@ -13,12 +13,12 @@ int main()
     auto digits1 = vector<unsigned int>({ 11 });
     auto value1 = big_int(digits1);
 
-    auto digits2 = vector<unsigned int>({ 1u << 31u, 1u, 1u });
+    auto digits2 = vector<unsigned int>({ 1u << 31u, 1u });
     auto value2 = big_int(digits2);
 
     std::cout << value2 << std::endl;
 
-    value2 = value2 << 3;
+    value2 = value2 << 55;
 
     //auto value3 = big_int("1255555666777", 10);
 
