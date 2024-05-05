@@ -69,6 +69,12 @@ public:
     big_int& operator /= (const big_int& other);
     big_int& operator %= (const big_int& other);
 
+    big_int& operator &= (const big_int& other);
+    big_int& operator |= (const big_int& other);
+    big_int& operator ^= (const big_int& other);
+    big_int& operator <<= (unsigned int shift);
+    big_int& operator >>= (unsigned int shift);
+
     // Unary arithmetic operators
 
     big_int operator + () const;

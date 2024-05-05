@@ -132,7 +132,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arithmetic_operators.hpp" />
-    <ClInclude Include="assigment_operators.hpp" />
+    <ClInclude Include="assigment_arithmetic_operators.hpp" />
+    <ClInclude Include="assigment_binary_operators.hpp" />
     <ClInclude Include="big_int.hpp" />
     <ClInclude Include="binary_operators.hpp" />
     <ClInclude Include="io_operators.hpp" />
