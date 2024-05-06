@@ -82,6 +82,9 @@ big_int::big_int(const std::string& number, size_t base)
 	}
 
 	auto dec_string = from_base_to_dec(number, base);
+
+	std::cout << dec_string << std::endl;
+
 	auto bin_string = from_dec_to_base(dec_string, 2);
 	std::cout << bin_string << std::endl;
 

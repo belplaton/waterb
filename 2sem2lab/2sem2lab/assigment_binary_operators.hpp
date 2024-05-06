@@ -133,11 +133,11 @@ big_int& big_int::operator >>= (unsigned int shift)
 	auto result_digits = std::vector<unsigned int>(size);
 	for (unsigned int k = 0; k < (_digits.size() * big_int::uint_size); k++)
 	{
-		auto i1 = (k - k % big_int::uint_size) / big_int::uint_size;
-		auto i2 = ((k + shift) - (k + shift) % big_int::uint_size) / big_int::uint_size;
+		auto i2 = (k - k % big_int::uint_size) / big_int::uint_size;
+		auto i1 = ((k + shift) - (k + shift) % big_int::uint_size) / big_int::uint_size;
 
-		auto j1 = k % big_int::uint_size;
-		auto j2 = (k + shift) % big_int::uint_size;
+		auto j2 = k % big_int::uint_size;
+		auto j1 = (k + shift) % big_int::uint_size;
 
 		auto num = i1 < _digits.size() ? _digits[_digits.size() - i1 - 1] : 0;
 		if (_digits.size() - i1 - 1 == 0) num &= ~sign_bit_mask;

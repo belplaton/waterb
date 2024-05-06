@@ -34,24 +34,11 @@ big_int big_int::operator - (const big_int& other) const
 	return temp;
 }
 
-/*
+
 big_int big_int::operator * (const big_int& other) const
 {
-	auto result = big_int();
-	auto temp = big_int(other);
+	auto temp = big_int(*this);
+	temp *= other;
 
-	for (int i = _digits.size() - 1; i >= 0; --i) {
-		for (int j = 0; j < sizeof(unsigned int) * 8; ++j) {
-			if ((_digits[i] & (1 << j)) != 0) {
-				result = result + temp;
-			}
-
-			temp <<= 1;
-		}
-		temp = temp >> (sizeof(unsigned int) * 8);
-		result <<= 1;
-	}
-
-	return result;
+	return temp;
 }
-*/

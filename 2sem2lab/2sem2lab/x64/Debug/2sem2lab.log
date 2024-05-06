@@ -18,6 +18,7 @@ D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\assigment_arithmetic_operators
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\assigment_arithmetic_operators.hpp(65,21): warning C4018: <: несоответствие типов со знаком и без знака
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\assigment_binary_operators.hpp(81,11): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\assigment_binary_operators.hpp(94,27): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\binary_operators.hpp(55,27): warning C4804: <: небезопасное использование типа "bool" в операции
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\assigment_binary_operators.hpp(132,11): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\assigment_binary_operators.hpp(145,27): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
   Создание кода...
   2sem2lab.vcxproj -> D:\_Platon\_Files\GitHub\waterb\2sem2lab\x64\Debug\2sem2lab.exe

@@ -46,25 +46,8 @@ big_int big_int::operator << (unsigned int shift) const
 
 big_int big_int::operator >> (unsigned int shift) const
 {
-	if (shift == 0) return *this;
+	auto temp = big_int(*this);
+	temp >>= shift;
 
-	auto num = to_string(2);
-	auto is_negate = (num[0] == '-');
-	auto final_num = "";
-
-	for (auto i = is_negate; i < num.size() - is_negate - shift; i++)
-	{
-		final_num += num[i];
-	}
-
-	if (final_num == "")
-	{
-		final_num = "0";
-	}
-	else if (is_negate)
-	{
-		final_num = '-' + final_num;
-	}
-
-	return big_int(final_num, 2);
+	return temp;
 }

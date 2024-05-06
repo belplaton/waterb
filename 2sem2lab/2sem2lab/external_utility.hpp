@@ -198,45 +198,6 @@ static std::string mult_string_nums(std::string& a, std::string& b, size_t base)
     return result != "" ? result : "0";
 }
 
-static int compare_string_nums(const std::string& a, const std::string& b)
- {
-    if (a.size() < b.size()) 
-    {
-        return -1;
-    }
-    else if (a.size() > b.size()) 
-    {
-        return 1;
-    }
-
-    for (size_t i = 0; i < a.size(); ++i) {
-        if (a[i] < b[i]) {
-            return -1;
-        }
-        else if (a[i] > b[i]) {
-            return 1;
-        }
-    }
-
-    return 0;  // Строки равны
-}
-
-static std::string mod_string_nums(std::string& a, std::string& b, size_t base)
-{
-    std::string result = "0";
-    std::cout << a << " " << b << " " << base << std::endl;
-    for (auto i = 0; i < a.size(); i++)
-    {
-        result += a[i];
-        while (compare_string_nums(result, b) != -1)
-        {
-            result = subtract_string_nums(result, b, base);
-        }
-    }
-
-    return result != "" ? result : "0";
-}
-
 static std::string div_string_nums(const std::string& a, const std::string& b, size_t base)
 {
     std::string result = "0";
@@ -321,13 +282,14 @@ static std::string from_dec_to_base(const std::string& num, unsigned int base)
     int is_negative = (num[0] == '-');
 
     std::string one_str = "1";
-    std::string result = "0";
-    std::string temp_num = num.substr(1, num.size() - 1);
+    std::string result = "";
+    std::string temp_num = num.substr(is_negative, num.size());
+    auto temp_num_free = false;
 
     auto b = int_to_string(base - 1, 10);
     auto to_base_str = add_string_nums(b, one_str, 10);
 
-    while (temp_num != "0")
+    while (!temp_num_free)
     {
         auto remainder = 0;
         std::string dec = "";
@@ -335,7 +297,7 @@ static std::string from_dec_to_base(const std::string& num, unsigned int base)
         {
             auto digit = char_to_int(temp_num[i], 10);
             auto temp = digit + remainder * 10;
-            dec.push_back(char_to_int(temp / base, base));
+            dec.push_back(int_to_char(temp / base));
             remainder = temp % base;
         }
 
@@ -349,6 +311,16 @@ static std::string from_dec_to_base(const std::string& num, unsigned int base)
         }
 
         temp_num = dec;
+        for (auto i = 0; i < temp_num.length(); i++)
+        {
+            if (temp_num[i] != '0')
+            {
+                temp_num_free = false;
+                break;
+            }
+
+            temp_num_free = true;
+        }
     }
     
     return (is_negative ? "-" : "") + result;
