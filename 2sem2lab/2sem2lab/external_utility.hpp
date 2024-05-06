@@ -316,6 +316,49 @@ static std::string div_string_nums(const std::string& a, const std::string& b, s
     return (result_negative ? "-" : "") + result;
 }
 
+static std::string mod_string_nums(const std::string& a, const std::string& b, size_t base)
+{
+    auto first = std::string(a);
+    auto second = std::string(b);
+    auto module_second = b.substr(b[0] == '-', b.size());
+
+    if (second == "0")
+    {
+        throw std::invalid_argument("Error: Division by zero");
+    }
+
+    auto str_one = std::string("1");
+    auto current = std::string(second);
+
+    while (compare_string_nums(first, module_second) != -1)
+    {
+        first = subtract_string_nums(first, module_second, base);
+    }
+
+    if (first != "0" && compare_string_nums(first, second) != -1)
+    {
+        first = subtract_string_nums(first, module_second, base);
+    }
+
+    auto temp(first);
+    for (auto i = 0; i < temp.size(); i++)
+    {
+        if (temp[i] != '0')
+        {
+            break;
+        }
+
+        first.erase(0, 1);
+    }
+
+    if (first == "")
+    {
+        return "0";
+    }
+
+    return first;
+}
+
 static std::string int_to_string(unsigned int num, unsigned int base)
 {
     if (base < 2 || base > 36)

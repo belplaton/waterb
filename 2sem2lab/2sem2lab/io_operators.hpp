@@ -16,11 +16,12 @@ std::istream& operator >> (std::istream& stream, big_int& number)
     auto input = std::string();
     stream >> input;
 
-    // Проверяем, является ли введенная строка числом
-    bool valid_input = true;
-    for (char ch : input)
+    auto is_negative = input.size() > 0 && (input[0] == '-');
+    auto valid_input = true;
+
+    for (int i = is_negative; i < input.size(); i++)
     {
-        if (!std::isdigit(ch))
+        if (!std::isdigit(input[i]))
         {
             valid_input = false;
             break;

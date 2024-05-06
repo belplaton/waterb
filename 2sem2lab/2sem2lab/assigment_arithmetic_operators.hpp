@@ -104,12 +104,13 @@ big_int& big_int::operator /= (const big_int& other)
 	return *this;
 }
 
-/*
+
 big_int& big_int::operator %= (const big_int& other)
 {
-	auto temp = *this % other;
-	*this = temp;
+	auto first = to_string(2);
+	auto second = other.to_string(2);
+	auto result = mod_string_nums(first, second, 2);
+	*this = big_int(result, 2);
 
 	return *this;
 }
-*/
