@@ -74,6 +74,44 @@ static char int_to_char(unsigned int num)
     }
 }
 
+static int compare_string_nums(const std::string& a, const std::string& b)
+{
+    auto first_negative = a[0] == '-';
+    auto second_negative = b[0] == '-';
+
+    auto first = a.substr(first_negative, a.size());
+    auto second = b.substr(second_negative, b.size());
+
+    if (first_negative && !second_negative)
+    {
+        return -1;
+    }
+    else if (!first_negative && second_negative)
+    {
+        return 1;
+    }
+
+    if (first.size() < second.size())
+    {
+        return -1;
+    }
+    else if (first.size() > second.size())
+    {
+        return 1;
+    }
+
+    for (size_t i = 0; i < first.size(); ++i) {
+        if (first[i] < second[i]) {
+            return -1;
+        }
+        else if (first[i] > second[i]) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 static std::string add_string_nums(std::string& a, std::string& b, size_t base)
 {
     std::string left = a.size() < b.size() ? a : b;
@@ -118,10 +156,19 @@ static std::string add_string_nums(std::string& a, std::string& b, size_t base)
 
 static std::string subtract_string_nums(std::string& a, std::string& b, size_t base)
 {
-    std::string left = a.size() >= b.size() ? a : b;
-    std::string right = a.size() >= b.size() ? b : a;
+    auto first_negative = a[0] == '-';
+    auto second_negative = b[0] == '-';
+    auto result_negative = first_negative ^ second_negative;
 
-    auto max_size = left.size();
+    auto first = a.substr(first_negative, a.size());
+    auto second = b.substr(second_negative, b.size());
+
+    if (compare_string_nums(first, second) == -1)
+    {
+        return "-" + subtract_string_nums(second, first, base);
+    }
+
+    auto max_size = first.size();
     std::string result = std::string(max_size, '0');
 
     auto op1 = 0u;
@@ -130,8 +177,8 @@ static std::string subtract_string_nums(std::string& a, std::string& b, size_t b
 
     for (size_t i = 0; i < max_size; ++i)
     {
-        op1 = i < left.size() ? char_to_int(left[left.size() - i - 1], base) : 0;
-        op2 = i < right.size() ? char_to_int(right[right.size() - i - 1], base) : 0;
+        op1 = i < first.size() ? char_to_int(first[first.size() - i - 1], base) : 0;
+        op2 = i < second.size() ? char_to_int(second[second.size() - i - 1], base) : 0;
 
         int difference = op1 - op2 - borrow;
 
@@ -149,7 +196,7 @@ static std::string subtract_string_nums(std::string& a, std::string& b, size_t b
     }
 
     std::string temp(result);
-    for (auto i = 0; i < max_size; i++)
+    for (auto i = 0; i < temp.size(); i++)
     {
         if (temp[i] != '0')
         {
@@ -159,9 +206,13 @@ static std::string subtract_string_nums(std::string& a, std::string& b, size_t b
         result.erase(0, 1);
     }
 
-    return result != "" ? result : "0";
-}
+    if (result == "")
+    {
+        return "0";
+    }
 
+    return (first_negative ? "-" : "") + result;
+}
 
 static std::string mult_string_nums(std::string& a, std::string& b, size_t base)
 {
@@ -208,30 +259,66 @@ static std::string mult_string_nums(std::string& a, std::string& b, size_t base)
     }
 
     return (result_negative ? "-" : "") + result;
-
 }
 
 static std::string div_string_nums(const std::string& a, const std::string& b, size_t base)
 {
-    std::string result = "0";
-    std::string temp_a = a;
+    auto first_negative = a[0] == '-';
+    auto second_negative = b[0] == '-';
+    auto result_negative = first_negative ^ second_negative;
 
-    while (temp_a >= b)
+    auto first = a.substr(first_negative, a.size());
+    auto second = b.substr(second_negative, b.size());
+
+    std::cout << subtract_string_nums(first, second, base) << std::endl;
+
+    auto result = std::string();
+
+    if (second == "0")
     {
-        std::string temp_b = b;
-        std::string current_quotient = "1";
-
-        while (temp_b + temp_b <= temp_a)
-        {
-            temp_b += temp_b;
-        }
-
-        result = add_string_nums(result, current_quotient, base);
-
-        temp_a = subtract_string_nums(temp_a, temp_b, base);
+        throw std::invalid_argument("Error: Division by zero");
     }
 
-    return result;
+    if (compare_string_nums(first, second) == -1)
+    {
+        return "0";
+    }
+
+    auto str_one = std::string("1");
+    auto current = std::string();
+    for (auto i = 0; i < first.size(); i++)
+    {
+        auto quotient = std::string("0");
+        current += first[i];
+
+        while (compare_string_nums(current, str_one) != -1)
+        {
+            std::cout << current + " " + second << std::endl;
+            current = subtract_string_nums(current, second, base);
+            quotient = add_string_nums(quotient, str_one, base);
+
+        }
+
+        result = add_string_nums(result, quotient, base);
+    }
+
+    std::string temp(result);
+    for (auto i = 0; i < temp.size(); i++)
+    {
+        if (temp[i] != '0')
+        {
+            break;
+        }
+
+        result.erase(0, 1);
+    }
+
+    if (result == "")
+    {
+        return "0";
+    }
+
+    return (result_negative ? "-" : "") + result;
 }
 
 static std::string int_to_string(unsigned int num, unsigned int base)

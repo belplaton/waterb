@@ -42,3 +42,12 @@ big_int big_int::operator * (const big_int& other) const
 
 	return temp;
 }
+
+
+big_int big_int::operator / (const big_int& other) const
+{
+	auto temp = big_int(*this);
+	temp /= other;
+
+	return temp;
+}
