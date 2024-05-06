@@ -269,10 +269,7 @@ static std::string div_string_nums(const std::string& a, const std::string& b, s
 
     auto first = a.substr(first_negative, a.size());
     auto second = b.substr(second_negative, b.size());
-
-    std::cout << subtract_string_nums(first, second, base) << std::endl;
-
-    auto result = std::string();
+    auto result = std::string("0");
 
     if (second == "0")
     {
@@ -285,21 +282,19 @@ static std::string div_string_nums(const std::string& a, const std::string& b, s
     }
 
     auto str_one = std::string("1");
-    auto current = std::string();
-    for (auto i = 0; i < first.size(); i++)
+    auto current = std::string(second);
+
+    while (true)
     {
-        auto quotient = std::string("0");
-        current += first[i];
-
-        while (compare_string_nums(current, str_one) != -1)
+        first = subtract_string_nums(first, second, base);
+        if (compare_string_nums(first, "0") != -1)
         {
-            std::cout << current + " " + second << std::endl;
-            current = subtract_string_nums(current, second, base);
-            quotient = add_string_nums(quotient, str_one, base);
-
+            result = add_string_nums(result, str_one, base);
         }
-
-        result = add_string_nums(result, quotient, base);
+        else if (compare_string_nums(first, "0") != 1)
+        {
+            break;
+        }
     }
 
     std::string temp(result);
