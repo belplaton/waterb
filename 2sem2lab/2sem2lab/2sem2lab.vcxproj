@@ -127,19 +127,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="constructors.hpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="arithmetic_operators.hpp" />
-    <ClInclude Include="assigment_arithmetic_operators.hpp" />
-    <ClInclude Include="assigment_binary_operators.hpp" />
-    <ClInclude Include="big_int.hpp" />
-    <ClInclude Include="binary_operators.hpp" />
-    <ClInclude Include="io_operators.hpp" />
-    <ClInclude Include="relational_operators.hpp" />
-    <ClInclude Include="external_utility.hpp" />
-    <ClInclude Include="utility.hpp" />
+    <ClInclude Include="big_float\big_float.hpp" />
+    <ClInclude Include="big_int\arithmetic_operators.hpp" />
+    <ClInclude Include="big_int\assigment_arithmetic_operators.hpp" />
+    <ClInclude Include="big_int\assigment_binary_operators.hpp" />
+    <ClInclude Include="big_int\big_int.hpp" />
+    <ClInclude Include="big_int\binary_operators.hpp" />
+    <ClInclude Include="big_int\constructors.hpp" />
+    <ClInclude Include="big_int\external_utility.hpp" />
+    <ClInclude Include="big_int\io_operators.hpp" />
+    <ClInclude Include="big_int\relational_operators.hpp" />
+    <ClInclude Include="big_int\utility.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

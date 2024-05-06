@@ -16,40 +16,46 @@
     <Filter Include="Файлы заголовков\big_int">
       <UniqueIdentifier>{678ca214-1542-446b-9327-ec1b3a15e59d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\big_float">
+      <UniqueIdentifier>{dba0b382-9042-4e4b-97d0-84c329f42067}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="big_int.hpp">
+    <ClInclude Include="big_int\arithmetic_operators.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
-    <ClInclude Include="relational_operators.hpp">
+    <ClInclude Include="big_int\assigment_arithmetic_operators.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
-    <ClInclude Include="arithmetic_operators.hpp">
+    <ClInclude Include="big_int\assigment_binary_operators.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
-    <ClInclude Include="external_utility.hpp">
+    <ClInclude Include="big_int\big_int.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
-    <ClInclude Include="io_operators.hpp">
+    <ClInclude Include="big_int\binary_operators.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
-    <ClInclude Include="assigment_arithmetic_operators.hpp">
+    <ClInclude Include="big_int\constructors.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
-    <ClInclude Include="binary_operators.hpp">
+    <ClInclude Include="big_int\external_utility.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
-    <ClInclude Include="utility.hpp">
+    <ClInclude Include="big_int\io_operators.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
     </ClInclude>
-    <ClInclude Include="assigment_binary_operators.hpp">
+    <ClInclude Include="big_int\relational_operators.hpp">
       <Filter>Файлы заголовков\big_int</Filter>
+    </ClInclude>
+    <ClInclude Include="big_int\utility.hpp">
+      <Filter>Файлы заголовков\big_int</Filter>
+    </ClInclude>
+    <ClInclude Include="big_float\big_float.hpp">
+      <Filter>Файлы заголовков\big_float</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="constructors.hpp">
-      <Filter>Файлы заголовков\big_int</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>

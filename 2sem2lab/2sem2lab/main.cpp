@@ -1,7 +1,7 @@
-#include "big_int.hpp"
-#include "io_operators.hpp"
-#include "arithmetic_operators.hpp"
-#include "binary_operators.hpp"
+#include "big_int/big_int.hpp"
+#include "big_int/io_operators.hpp"
+#include "big_int/arithmetic_operators.hpp"
+#include "big_int/binary_operators.hpp"
 #include <iostream>
 
 using namespace std;
