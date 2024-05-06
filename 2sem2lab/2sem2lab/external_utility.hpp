@@ -165,23 +165,30 @@ static std::string subtract_string_nums(std::string& a, std::string& b, size_t b
 
 static std::string mult_string_nums(std::string& a, std::string& b, size_t base)
 {
-    auto max_size = a.size() + b.size();
+    auto first_negative = a[0] == '-';
+    auto second_negative = b[0] == '-';
+    auto result_negative = first_negative ^ second_negative;
+
+    auto first = a.substr(first_negative, a.size());
+    auto second = b.substr(second_negative, b.size());
+
+    auto max_size = first.size() + second.size();
     std::string result(max_size, '0');
 
-    for (auto i = 0; i < a.size(); i++)
+    for (auto i = 0; i < first.size(); i++)
     {
         auto carry = 0u;
-        for (auto j = 0; j < b.size(); j++)
+        for (auto j = 0; j < second.size(); j++)
         {
-            auto op1 = char_to_int(a[a.size() - i - 1], base);
-            auto op2 = char_to_int(b[b.size() - j - 1], base);
-            auto k = (a.size() - i - 1) + (b.size() - j - 1) + 1;
+            auto op1 = char_to_int(first[first.size() - i - 1], base);
+            auto op2 = char_to_int(second[second.size() - j - 1], base);
+            auto k = (first.size() - i - 1) + (second.size() - j - 1) + 1;
             auto product = op1 * op2 + char_to_int(result[k], base) + carry;
             result[k] = int_to_char(product % base);
             carry = product / base;
         }
 
-        result[a.size() - i - 1] = int_to_char(carry);
+        result[first.size() - i - 1] = int_to_char(carry);
     }
 
     std::string temp(result);
@@ -195,7 +202,13 @@ static std::string mult_string_nums(std::string& a, std::string& b, size_t base)
         result.erase(0, 1);
     }
 
-    return result != "" ? result : "0";
+    if (result == "")
+    {
+        return "0";
+    }
+
+    return (result_negative ? "-" : "") + result;
+
 }
 
 static std::string div_string_nums(const std::string& a, const std::string& b, size_t base)

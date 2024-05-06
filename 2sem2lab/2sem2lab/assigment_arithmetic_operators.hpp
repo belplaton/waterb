@@ -86,22 +86,10 @@ big_int& big_int::operator -= (const big_int& other)
 
 big_int& big_int::operator *= (const big_int& other)
 {
-	auto result_digits = std::vector<unsigned int>(_digits.size() + other._digits.size(), 0);
-
-	for (int i = 0; i < _digits.size(); i++)
-	{
-		unsigned int carry = 0;
-		for (int j = 0; j < other._digits.size(); j++)
-		{
-			unsigned long long int product = static_cast<unsigned long long int>(_digits[i]) * other._digits[j] + result_digits[i + j] + carry;
-			result_digits[i + j] = static_cast<unsigned int>(product & 0xFFFFFFFF);
-			carry = static_cast<unsigned int>(product >> 32);
-		}
-
-		result_digits[i + other._digits.size()] += carry;
-	}
-
-	_digits = result_digits;
+	auto first = to_string(2);
+	auto second = other.to_string(2);
+	auto result = mult_string_nums(first, second, 2);
+	*this = big_int(result, 2);
 
 	return *this;
 }

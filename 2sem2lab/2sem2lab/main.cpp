@@ -15,9 +15,10 @@ int main()
     auto digits2 = vector<unsigned int>({ 1u, 16u + 8u + 4u + 2u });
     auto value2 = big_int(digits2);
 
-    auto value3 = big_int("1255555666777", 10);
+    auto value3 = big_int("-11", 10);
+    auto value4 = big_int("11", 10);
 
 
-    std::cout << value3 << std::endl;
+    std::cout << value3 * value4 << std::endl;
     return 0;
 }
