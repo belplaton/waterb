@@ -8,17 +8,12 @@ using namespace std;
 
 int main()
 {
+    big_int value1;
+    std::cin >> value1;
 
-    auto digits1 = vector<unsigned int>({ 11 });
-    auto value1 = big_int(digits1);
+    big_int value2;
+    std::cin >> value2;
 
-    auto digits2 = vector<unsigned int>({ 1u, 16u + 8u + 4u + 2u });
-    auto value2 = big_int(digits2);
-
-    auto value3 = big_int("555", 10);
-    auto value4 = big_int("5", 10);
-
-
-    std::cout << value4 / value3 << std::endl;
+    std::cout << value1 / value2 << std::endl;
     return 0;
 }
