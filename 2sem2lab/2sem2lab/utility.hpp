@@ -26,6 +26,11 @@ std::string big_int::to_string(unsigned int base) const
         }
     }
 
+    if (result == "")
+    {
+        return "0";
+    }
+
     return (is_negate(_digits) ? "-" : "") + result;
 }
 

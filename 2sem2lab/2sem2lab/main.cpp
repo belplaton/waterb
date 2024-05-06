@@ -19,6 +19,6 @@ int main()
     auto value4 = big_int("5", 10);
 
 
-    std::cout << value3 / value4 << std::endl;
+    std::cout << value4 / value3 << std::endl;
     return 0;
 }
