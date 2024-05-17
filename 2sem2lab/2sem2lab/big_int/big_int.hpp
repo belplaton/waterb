@@ -25,6 +25,8 @@ public:
 
     big_int();
 
+    big_int(unsigned int digit);
+
     big_int(const unsigned int* digits, size_t size);
 
     big_int(const std::vector<unsigned int>& digits);
@@ -43,6 +45,14 @@ public:
     bool operator <= (const big_int& other) const;
     bool operator > (const big_int& other) const;
     bool operator >= (const big_int& other) const;
+
+    bool operator == (int other) const;
+    bool operator != (int other) const;
+    bool operator < (int other) const;
+    bool operator <= (int other) const;
+    bool operator > (int other) const;
+    bool operator >= (int other) const;
+
 
     // Arithmetic operators
 
@@ -105,6 +115,11 @@ public:
     inline static unsigned int is_negate(const unsigned int* digits)
     {
         return get_bit(digits[0], big_int::sign_bit_mask - 1);
+    }
+
+    inline static unsigned int is_negate(unsigned int digit)
+    {
+        return get_bit(digit, big_int::sign_bit_mask - 1);
     }
 
     std::string to_string(unsigned int base) const;

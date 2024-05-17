@@ -1,7 +1,7 @@
 #pragma once
 #include "big_int.hpp"
+#include "constructors.hpp"
 
-// TODO: переставить += и +
 big_int& big_int::operator += (const big_int& other)
 {
 	auto left = *this;
@@ -46,17 +46,20 @@ big_int& big_int::operator -= (const big_int& other)
 	auto right = other;
 
 	// Оптимизирование
-	if (is_negate(_digits) && !is_negate(other._digits))
+	if (is_negate(left) && !is_negate(right))
 	{
+		std::cout << "A: " << _digits << " " << other._digits << std::endl;
 		return *this = (left += -right);
 	}
-	else if (!is_negate(_digits) && is_negate(other._digits))
+	else if (!is_negate(left) && is_negate(right))
 	{
+		std::cout << "B: " << _digits << " " << other._digits << std::endl;
 		return *this = (-left += right);
 	}
-	else if (*this < other)
+	else if (left < right)
 	{
-		return *this = (left -= right);
+		std::cout << "C: " << _digits << " " << other._digits << std::endl;
+		return *this = -(right - left);	
 	}
 
 	auto max_size = check_for_size_change(_digits, other._digits, false);
@@ -82,35 +85,115 @@ big_int& big_int::operator -= (const big_int& other)
 	return *this;
 }
 
-
-
 big_int& big_int::operator *= (const big_int& other)
 {
-	auto first = to_string(2);
-	auto second = other.to_string(2);
-	auto result = mult_string_nums(first, second, 2);
-	*this = big_int(result, 2);
+	if (*this == 0 || other == 0)
+	{
+		*this = 0;
+		return *this;
+	}
+
+	auto max_size = _digits.size() + other._digits.size();
+	auto result_digits = std::vector<unsigned int>(max_size);
+	auto k = 0ull;
+	auto base = (1ull << big_int::uint_size);
+
+	for (unsigned int i = 0; i < other._digits.size(); i++)
+	{
+		auto carry = 0ull;
+
+		for (unsigned int j = 0; j < _digits.size(); j++)
+		{
+			k = static_cast<unsigned long long>(i) + static_cast<unsigned long long>(j);
+
+			auto op1 = other._digits[other._digits.size() - i - 1];
+			if (i == other._digits.size() - 1) op1 &= ~sign_bit_mask;
+
+			auto op2 = _digits[_digits.size() - j - 1];
+			if (j == _digits.size() - 1) op2 &= ~sign_bit_mask;
+
+			auto temp = (static_cast<unsigned long long>(op1) * static_cast<unsigned long long>(op2)) + carry;
+
+			if (temp >= base)
+			{
+				carry = temp / base;
+			}
+			else
+			{
+				carry = 0ull;
+			}
+
+			result_digits[max_size - k - 1] += temp - base * carry;
+		}
+
+		if (carry)
+		{
+			result_digits[max_size - k - 2] += carry;
+		}
+	}
+
+	_digits = result_digits;
 
 	return *this;
 }
 
 big_int& big_int::operator /= (const big_int& other)
 {
-	auto first = to_string(2);
-	auto second = other.to_string(2);
-	auto result = div_string_nums(first, second, 2);
-	*this = big_int(result, 2);
+	auto start_range = big_int();
+	auto end_range = *this;
+	auto potential_result = big_int();
+	auto result = big_int();
+	auto carry = big_int();
 
-	return *this;
+	do {
+		potential_result = ((start_range + end_range) >> 1);
+		result = potential_result * other;
+		carry = *this - result;
+
+		std::cout << potential_result << " " << result << " " << carry << std::endl;
+
+		if (carry >= 0 && carry < other) {
+			*this = potential_result;
+			return *this;
+		}
+		if (result > *this) {
+			end_range = potential_result;
+		}
+		else {
+			start_range = potential_result;
+		}
+
+	} while (potential_result != 0);
+
+	throw std::logic_error("Error in divide function!");;
 }
 
 
 big_int& big_int::operator %= (const big_int& other)
 {
-	auto first = to_string(2);
-	auto second = other.to_string(2);
-	auto result = mod_string_nums(first, second, 2);
-	*this = big_int(result, 2);
+	auto start_range = big_int();
+	auto end_range = *this;
+	auto potential_result = big_int();
+	auto result = big_int();
+	auto carry = big_int();
 
-	return *this;
+	do {
+		potential_result = ((start_range + end_range) >> 1);
+		result = potential_result * other;
+		carry = *this - result;
+
+		if (carry >= 0 && carry < other) {
+			*this = carry;
+			return *this;
+		}
+		if (result > *this) {
+			end_range = potential_result;
+		}
+		else {
+			start_range = potential_result;
+		}
+
+	} while (potential_result != 0);
+
+	throw std::logic_error("Error in mod2 function!");;
 }

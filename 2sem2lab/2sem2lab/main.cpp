@@ -14,6 +14,9 @@ int main()
     big_int value2;
     std::cin >> value2;
 
-    std::cout << value1 % value2 << std::endl;
+    auto res = (value1 * value2);
+
+
+    std::cout << res << " " << std::endl;
     return 0;
 }

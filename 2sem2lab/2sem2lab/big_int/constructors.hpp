@@ -6,6 +6,12 @@ big_int::big_int()
 	_digits = std::vector<unsigned int>(1);
 }
 
+big_int::big_int(unsigned int digit)
+{
+	_digits = std::vector<unsigned int>(1);
+	_digits[0] = digit;
+}
+
 big_int::big_int(const std::vector<unsigned int>& digits)
 {
 	size_t real_size = 1;
