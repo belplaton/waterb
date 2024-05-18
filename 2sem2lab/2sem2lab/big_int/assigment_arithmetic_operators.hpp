@@ -20,7 +20,7 @@ big_int& big_int::operator += (const big_int& other)
 	auto max_size = check_for_size_change(_digits, other._digits, true);
 	auto result_digits = std::vector<unsigned int>(max_size);
 	unsigned int carry = 0;
-	for (auto i = 0; i < max_size; i++)
+	for (unsigned int i = 0; i < max_size; i++)
 	{
 		auto op1 = (i < _digits.size()) ? _digits[_digits.size() - i - 1] : 0;
 		if (i == _digits.size() - 1) op1 &= ~sign_bit_mask;
@@ -65,7 +65,7 @@ big_int& big_int::operator -= (const big_int& other)
 	auto max_size = check_for_size_change(_digits, other._digits, false);
 	auto result_digits = std::vector<unsigned int>(max_size);
 	unsigned int borrow = 0;
-	for (auto i = 0; i < max_size; i++)
+	for (unsigned int i = 0; i < max_size; i++)
 	{
 		auto op1 = (i < _digits.size()) ? _digits[_digits.size() - i - 1] : 0;
 		if (i == _digits.size() - 1) op1 &= ~sign_bit_mask;
@@ -93,43 +93,38 @@ big_int& big_int::operator *= (const big_int& other)
 		return *this;
 	}
 
-	auto max_size = _digits.size() + other._digits.size();
+	auto first_size = _digits.size() - ((_digits[0] & ~sign_bit_mask) == 0);
+	auto second_size = other._digits.size() - ((other._digits[0] & ~sign_bit_mask) == 0);
+	auto max_size = first_size + second_size;
 	auto result_digits = std::vector<unsigned int>(max_size);
 	auto k = 0ull;
 	auto base = (1ull << big_int::uint_size);
 
-	for (unsigned int i = 0; i < other._digits.size(); i++)
+	auto negate = big_int::is_negate(*this) | big_int::is_negate(other);
+
+	for (unsigned int i = 0; i < second_size; i++)
 	{
 		auto carry = 0ull;
+		k = max_size - i - 1;
 
-		for (unsigned int j = 0; j < _digits.size(); j++)
+		for (unsigned int j = 0; j < first_size; j++)
 		{
-			k = static_cast<unsigned long long>(i) + static_cast<unsigned long long>(j);
+			k = max_size - i - j - 1;
 
 			auto op1 = other._digits[other._digits.size() - i - 1];
-			if (i == other._digits.size() - 1) op1 &= ~sign_bit_mask;
+			//if (i == other._digits.size() - 1) op1 &= ~sign_bit_mask;
 
 			auto op2 = _digits[_digits.size() - j - 1];
-			if (j == _digits.size() - 1) op2 &= ~sign_bit_mask;
+			//if (j == _digits.size() - 1) op2 &= ~sign_bit_mask;
 
-			auto temp = (static_cast<unsigned long long>(op1) * static_cast<unsigned long long>(op2)) + carry;
+			auto temp = (static_cast<unsigned long long>(op1) * static_cast<unsigned long long>(op2)) + carry + result_digits[k];
 
-			if (temp >= base)
-			{
-				carry = temp / base;
-			}
-			else
-			{
-				carry = 0ull;
-			}
-
-			result_digits[max_size - k - 1] += temp - base * carry;
+			carry = temp / base;
+			std::cout << "A " << temp << " " << carry << " " << base << std::endl;
+			result_digits[k] = temp % base;
 		}
 
-		if (carry)
-		{
-			result_digits[max_size - k - 2] += carry;
-		}
+		result_digits[k - 1] += carry;
 	}
 
 	_digits = result_digits;

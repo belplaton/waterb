@@ -27,11 +27,11 @@ public:
 
     big_int(unsigned int digit);
 
-    big_int(const unsigned int* digits, size_t size);
+    big_int(const unsigned int* digits, unsigned int  size);
 
     big_int(const std::vector<unsigned int>& digits);
 
-    big_int(const std::string& number, size_t base);
+    big_int(const std::string& number, unsigned int base);
 
     big_int(const big_int& other);
 

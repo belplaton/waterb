@@ -41,12 +41,12 @@ big_int::big_int(const std::vector<unsigned int>& digits)
 	_digits[0] |= sign_bit_mask * is_negate(digits);
 }
 
-big_int::big_int(const unsigned int* digits, size_t size)
+big_int::big_int(const unsigned int* digits, unsigned int  size)
 {
-	size_t real_size = 1;
-	size_t diff = 0;
+	unsigned int real_size = 1;
+	unsigned int diff = 0;
 
-	for (auto i = 0; i < size; i++)
+	for (unsigned int i = 0; i < size; i++)
 	{
 		if (i == 0 && ((digits[i] & ~sign_bit_mask) == 0))
 		{
@@ -62,7 +62,7 @@ big_int::big_int(const unsigned int* digits, size_t size)
 	}
 
 	_digits = std::vector<unsigned int>(real_size);
-	for (auto i = 0; i < real_size; i++)
+	for (unsigned int  i = 0; i < real_size; i++)
 	{
 		_digits[i] = digits[i + diff];
 	}
@@ -70,7 +70,7 @@ big_int::big_int(const unsigned int* digits, size_t size)
 	_digits[0] |= sign_bit_mask * is_negate(digits);
 }
 
-big_int::big_int(const std::string& number, size_t base)
+big_int::big_int(const std::string& number, unsigned int base)
 {
 	if (base < 2 || base > 36)
 	{
