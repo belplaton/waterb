@@ -97,7 +97,7 @@ big_int& big_int::operator <<= (unsigned int shift)
 
 
 	result_digits[0] |= big_int::sign_bit_mask * is_negate(*this);
-	_digits = result_digits;
+	*this = big_int(result_digits); // cuz constructor can fix representation
 
 	return *this;
 }
@@ -148,7 +148,7 @@ big_int& big_int::operator >>= (unsigned int shift)
 
 
 	result_digits[0] |= big_int::sign_bit_mask * is_negate(*this);
-	_digits = result_digits;
+	*this = big_int(result_digits); // cuz constructor can fix representation
 
 	return *this;
 }

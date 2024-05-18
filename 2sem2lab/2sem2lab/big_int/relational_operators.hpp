@@ -66,48 +66,32 @@ bool big_int::operator >= (const big_int& other) const
 
 bool big_int::operator == (int other) const
 {
-	if (_digits.size() > 1) return false;
-
-	for (auto i = 0; i < big_int::uint_size; i++)
-	{
-		if (big_int::get_bit(_digits[0], i) != big_int::get_bit(other, i))
-		{
-			return false;
-		}
-	}
-
-	return true;
+	return *this == big_int(other);
 }
 
 bool big_int::operator != (int other) const
 {
-	return !(*this == other);
+	return *this != big_int(other);
 }
 
 bool big_int::operator < (int other) const
 {
-	if (_digits.size() > 1)
-	{
-		if (big_int::is_negate(_digits) && !big_int::is_negate(other)) return true;
-		else if (!big_int::is_negate(_digits) && big_int::is_negate(other)) return false;
-	}
-
-	return _digits[0] < other;
+	return *this < big_int(other);
 }
 
 bool big_int::operator <= (int other) const
 {
-	return *this < other || *this == other;
+	return *this <= big_int(other);
 }
 
 bool big_int::operator > (int other) const
 {
-	return !(*this < other) && *this != other;
+	return *this > big_int(other);
 }
 
 bool big_int::operator >= (int other) const
 {
-	return *this > other || *this == other;
+	return *this >= big_int(other);
 }
 
 #pragma endregion

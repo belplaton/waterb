@@ -6,12 +6,13 @@ D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\external_utility.hpp(1
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\external_utility.hpp(187,27): warning C4267: +=: преобразование из "size_t" в "int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\external_utility.hpp(239,29): warning C4267: =: преобразование из "size_t" в "unsigned int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\utility.hpp(39,18): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_arithmetic_operators.hpp(123,28): warning C4244: =: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\constructors.hpp(52,21): warning C4018: <: несоответствие типов со знаком и без знака
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_arithmetic_operators.hpp(120,28): warning C4244: =: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
           with
           [
               _Ty=unsigned int
           ]
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_arithmetic_operators.hpp(126,27): warning C4244: +=: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_arithmetic_operators.hpp(123,27): warning C4244: +=: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
           with
           [
               _Ty=unsigned int
@@ -20,5 +21,4 @@ D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_binary_opera
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_binary_operators.hpp(94,27): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_binary_operators.hpp(132,11): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_binary_operators.hpp(145,27): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\relational_operators.hpp(95,20): warning C4018: <: несоответствие типов со знаком и без знака
   2sem2lab.vcxproj -> D:\_Platon\_Files\GitHub\waterb\2sem2lab\x64\Debug\2sem2lab.exe

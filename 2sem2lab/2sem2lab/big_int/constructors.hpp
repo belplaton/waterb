@@ -26,8 +26,9 @@ big_int::big_int(const std::vector<unsigned int>& digits)
 
 		if (digits[i] != 0)
 		{
-			real_size = digits.size() - i;
-			diff = i;
+			auto bit = get_bit(digits[i], big_int::uint_size - 1);
+			real_size = digits.size() - i + bit;
+			diff = i - bit;
 			break;
 		}
 	}
@@ -35,18 +36,20 @@ big_int::big_int(const std::vector<unsigned int>& digits)
 	_digits = std::vector<unsigned int>(real_size);
 	for (auto i = 0; i < real_size; i++)
 	{
-		_digits[i] = digits[i + diff];
+		auto op = digits[i + diff];
+		if (i + diff == 0) op &= ~sign_bit_mask;
+		_digits[i] = op;
 	}
 
 	_digits[0] |= sign_bit_mask * is_negate(digits);
 }
 
-big_int::big_int(const unsigned int* digits, unsigned int  size)
+big_int::big_int(const unsigned int* digits, unsigned int size)
 {
-	unsigned int real_size = 1;
-	unsigned int diff = 0;
+	size_t real_size = 1;
+	size_t diff = 0;
 
-	for (unsigned int i = 0; i < size; i++)
+	for (auto i = 0; i < size; i++)
 	{
 		if (i == 0 && ((digits[i] & ~sign_bit_mask) == 0))
 		{
@@ -55,16 +58,19 @@ big_int::big_int(const unsigned int* digits, unsigned int  size)
 
 		if (digits[i] != 0)
 		{
-			real_size = size - i;
-			diff = i;
+			auto bit = get_bit(digits[i], big_int::uint_size - 1);
+			real_size = size - i + bit;
+			diff = i - bit;
 			break;
 		}
 	}
 
 	_digits = std::vector<unsigned int>(real_size);
-	for (unsigned int  i = 0; i < real_size; i++)
+	for (auto i = 0; i < real_size; i++)
 	{
-		_digits[i] = digits[i + diff];
+		auto op = digits[i + diff];
+		if (i + diff == 0) op &= ~sign_bit_mask;
+		_digits[i] = op;
 	}
 
 	_digits[0] |= sign_bit_mask * is_negate(digits);

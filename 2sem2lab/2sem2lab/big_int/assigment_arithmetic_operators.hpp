@@ -10,14 +10,14 @@ big_int& big_int::operator += (const big_int& other)
 	// Оптимизирование
 	if (is_negate(_digits) && !is_negate(other._digits))
 	{
-		return *this = (left -= right);
+		return *this = (right - (- left));
 	}
 	else if (!is_negate(_digits) && is_negate(other._digits))
 	{
 		return *this = -(left -= (-right));
 	}
 
-	auto max_size = check_for_size_change(_digits, other._digits, true);
+	auto max_size = std::max(_digits.size(), other._digits.size());
 	auto result_digits = std::vector<unsigned int>(max_size);
 	unsigned int carry = 0;
 	for (unsigned int i = 0; i < max_size; i++)
@@ -35,7 +35,7 @@ big_int& big_int::operator += (const big_int& other)
 	}
 
 	result_digits[0] |= sign_bit_mask * is_negate(_digits);
-	_digits = result_digits;
+	*this = big_int(result_digits); // cuz constructor can fix representation
 
 	return *this;
 }
@@ -48,21 +48,18 @@ big_int& big_int::operator -= (const big_int& other)
 	// Оптимизирование
 	if (is_negate(left) && !is_negate(right))
 	{
-		std::cout << "A: " << _digits << " " << other._digits << std::endl;
 		return *this = (left += -right);
 	}
 	else if (!is_negate(left) && is_negate(right))
 	{
-		std::cout << "B: " << _digits << " " << other._digits << std::endl;
 		return *this = (-left += right);
 	}
 	else if (left < right)
 	{
-		std::cout << "C: " << _digits << " " << other._digits << std::endl;
 		return *this = -(right - left);	
 	}
 
-	auto max_size = check_for_size_change(_digits, other._digits, false);
+	auto max_size = std::max(_digits.size(), other._digits.size()) + 1;
 	auto result_digits = std::vector<unsigned int>(max_size);
 	unsigned int borrow = 0;
 	for (unsigned int i = 0; i < max_size; i++)
@@ -80,7 +77,7 @@ big_int& big_int::operator -= (const big_int& other)
 	}
 
 	result_digits[0] |= sign_bit_mask * is_negate(_digits);
-	_digits = result_digits;
+	*this = big_int(result_digits); // cuz constructor can fix representation
 
 	return *this;
 }
@@ -100,7 +97,7 @@ big_int& big_int::operator *= (const big_int& other)
 	auto k = 0ull;
 	auto base = (1ull << big_int::uint_size);
 
-	auto negate = big_int::is_negate(*this) | big_int::is_negate(other);
+	auto is_negative = big_int::is_negate(*this) | big_int::is_negate(other);
 
 	for (unsigned int i = 0; i < second_size; i++)
 	{
@@ -126,7 +123,8 @@ big_int& big_int::operator *= (const big_int& other)
 		result_digits[k - 1] += carry;
 	}
 
-	_digits = result_digits;
+	result_digits[0] |= sign_bit_mask * is_negative;
+	*this = big_int(result_digits); // cuz constructor can fix representation
 
 	return *this;
 }
@@ -134,30 +132,36 @@ big_int& big_int::operator *= (const big_int& other)
 big_int& big_int::operator /= (const big_int& other)
 {
 	auto start_range = big_int();
-	auto end_range = *this;
+	auto end_range = big_int(*this);
 	auto potential_result = big_int();
 	auto result = big_int();
 	auto carry = big_int();
 
-	do {
+	do
+	{
 		potential_result = ((start_range + end_range) >> 1);
 		result = potential_result * other;
+		std::cout << "AOA " << result << std::endl;
 		carry = *this - result;
+		std::cout << "AOA" << std::endl;
+		std::cout << *this << " " << potential_result << " " << result << " " << carry << " " << (carry >= 0) << " " << (carry < other) << std::endl;
 
-		std::cout << potential_result << " " << result << " " << carry << std::endl;
-
-		if (carry >= 0 && carry < other) {
+		if (carry >= 0 && carry < other)
+		{
 			*this = potential_result;
 			return *this;
 		}
-		if (result > *this) {
+
+		if (result > *this)
+		{
 			end_range = potential_result;
 		}
-		else {
+		else
+		{
 			start_range = potential_result;
 		}
 
-	} while (potential_result != 0);
+	} while (potential_result != 0 );
 
 	throw std::logic_error("Error in divide function!");;
 }
@@ -171,19 +175,23 @@ big_int& big_int::operator %= (const big_int& other)
 	auto result = big_int();
 	auto carry = big_int();
 
-	do {
+	do
+	{
 		potential_result = ((start_range + end_range) >> 1);
 		result = potential_result * other;
 		carry = *this - result;
 
-		if (carry >= 0 && carry < other) {
+		if (carry >= 0 && carry < other)
+		{
 			*this = carry;
 			return *this;
 		}
-		if (result > *this) {
+		if (result > *this)
+		{
 			end_range = potential_result;
 		}
-		else {
+		else
+		{
 			start_range = potential_result;
 		}
 
