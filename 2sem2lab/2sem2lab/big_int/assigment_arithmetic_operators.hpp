@@ -97,7 +97,7 @@ big_int& big_int::operator *= (const big_int& other)
 	auto k = 0ull;
 	auto base = (1ull << big_int::uint_size);
 
-	auto is_negative = big_int::is_negate(*this) | big_int::is_negate(other);
+	auto is_negative = big_int::is_negate(*this) ^ big_int::is_negate(other);
 
 	for (unsigned int i = 0; i < second_size; i++)
 	{
@@ -131,6 +131,20 @@ big_int& big_int::operator *= (const big_int& other)
 
 big_int& big_int::operator /= (const big_int& other)
 {
+	if (other == 0)
+	{
+		throw std::logic_error("Cant divide by zero");
+	}
+
+	if (other == 1)
+	{
+		return *this;
+	}
+
+	auto left = is_negate(*this) ? -*this : *this;
+	auto right = is_negate(other) ? -other : other;
+	auto is_negative = is_negate(*this) ^ is_negate(other);
+
 	auto start_range = big_int();
 	auto end_range = big_int(*this);
 	auto potential_result = big_int();
@@ -140,19 +154,17 @@ big_int& big_int::operator /= (const big_int& other)
 	do
 	{
 		potential_result = ((start_range + end_range) >> 1);
-		result = potential_result * other;
-		std::cout << "AOA " << result << std::endl;
-		carry = *this - result;
-		std::cout << "AOA" << std::endl;
-		std::cout << *this << " " << potential_result << " " << result << " " << carry << " " << (carry >= 0) << " " << (carry < other) << std::endl;
+		result = potential_result * right;
+		carry = left - result;
 
-		if (carry >= 0 && carry < other)
+		if (carry >= 0 && carry < right)
 		{
+			potential_result._digits[0] |= sign_bit_mask * is_negative;
 			*this = potential_result;
 			return *this;
 		}
 
-		if (result > *this)
+		if (result > left)
 		{
 			end_range = potential_result;
 		}
@@ -169,8 +181,22 @@ big_int& big_int::operator /= (const big_int& other)
 
 big_int& big_int::operator %= (const big_int& other)
 {
+	if (other == 0)
+	{
+		throw std::logic_error("Cant divide by zero");
+	}
+
+	if (other == 1)
+	{
+		return *this;
+	}
+
+	auto left = is_negate(*this) ? -*this : *this;
+	auto right = is_negate(other) ? -other : other;
+	auto is_negative = is_negate(*this) ^ is_negate(other);
+
 	auto start_range = big_int();
-	auto end_range = *this;
+	auto end_range = big_int(*this);
 	auto potential_result = big_int();
 	auto result = big_int();
 	auto carry = big_int();
@@ -178,15 +204,17 @@ big_int& big_int::operator %= (const big_int& other)
 	do
 	{
 		potential_result = ((start_range + end_range) >> 1);
-		result = potential_result * other;
-		carry = *this - result;
+		result = potential_result * right;
+		carry = left - result;
 
-		if (carry >= 0 && carry < other)
+		if (carry >= 0 && carry < right)
 		{
+			carry._digits[0] |= sign_bit_mask * is_negative;
 			*this = carry;
 			return *this;
 		}
-		if (result > *this)
+
+		if (result > left)
 		{
 			end_range = potential_result;
 		}
@@ -197,5 +225,5 @@ big_int& big_int::operator %= (const big_int& other)
 
 	} while (potential_result != 0);
 
-	throw std::logic_error("Error in mod2 function!");;
+	throw std::logic_error("Error in divide function!");;
 }
