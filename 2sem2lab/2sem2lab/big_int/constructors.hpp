@@ -90,11 +90,9 @@ big_int::big_int(const std::string& number, unsigned int base)
 	auto dec_string = from_base_to_dec(number, base);
 	auto bin_string = from_dec_to_base(dec_string, 2);
 
-	auto temp1 = (bin_string.size() % big_int::uint_size) != 0;
-	auto temp2 = (bin_string.size() - (bin_string.size() % big_int::uint_size)) / big_int::uint_size;
-	auto size = temp1 + temp2;
+	auto temp = (bin_string.size() - (bin_string.size() % big_int::uint_size)) / big_int::uint_size;
+	auto size = temp + 1;
 	_digits = std::vector<unsigned int>(size);
-
 
 	auto k = 0;
 	for (auto i = 0; i < size; i++)

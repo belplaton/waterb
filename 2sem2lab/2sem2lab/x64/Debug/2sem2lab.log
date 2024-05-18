@@ -6,12 +6,12 @@ D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\external_utility.hpp(1
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\external_utility.hpp(187,27): warning C4267: +=: преобразование из "size_t" в "int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\external_utility.hpp(239,29): warning C4267: =: преобразование из "size_t" в "unsigned int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\utility.hpp(39,18): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_arithmetic_operators.hpp(124,28): warning C4244: =: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_arithmetic_operators.hpp(123,28): warning C4244: =: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
           with
           [
               _Ty=unsigned int
           ]
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_arithmetic_operators.hpp(127,27): warning C4244: +=: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\assigment_arithmetic_operators.hpp(126,27): warning C4244: +=: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
           with
           [
               _Ty=unsigned int

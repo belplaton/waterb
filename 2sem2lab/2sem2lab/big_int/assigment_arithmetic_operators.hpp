@@ -112,15 +112,14 @@ big_int& big_int::operator *= (const big_int& other)
 			k = max_size - i - j - 1;
 
 			auto op1 = other._digits[other._digits.size() - i - 1];
-			//if (i == other._digits.size() - 1) op1 &= ~sign_bit_mask;
+			if (i == other._digits.size() - 1) op1 &= ~sign_bit_mask;
 
 			auto op2 = _digits[_digits.size() - j - 1];
-			//if (j == _digits.size() - 1) op2 &= ~sign_bit_mask;
+			if (j == _digits.size() - 1) op2 &= ~sign_bit_mask;
 
 			auto temp = (static_cast<unsigned long long>(op1) * static_cast<unsigned long long>(op2)) + carry + result_digits[k];
 
 			carry = temp / base;
-			std::cout << "A " << temp << " " << carry << " " << base << std::endl;
 			result_digits[k] = temp % base;
 		}
 
