@@ -131,16 +131,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="big_float\big_float.hpp" />
-    <ClInclude Include="big_int\arithmetic_operators.hpp" />
-    <ClInclude Include="big_int\assigment_arithmetic_operators.hpp" />
-    <ClInclude Include="big_int\assigment_binary_operators.hpp" />
     <ClInclude Include="big_int\big_int.hpp" />
-    <ClInclude Include="big_int\binary_operators.hpp" />
-    <ClInclude Include="big_int\constructors.hpp" />
     <ClInclude Include="big_int\external_utility.hpp" />
-    <ClInclude Include="big_int\io_operators.hpp" />
-    <ClInclude Include="big_int\relational_operators.hpp" />
-    <ClInclude Include="big_int\utility.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
