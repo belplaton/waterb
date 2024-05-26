@@ -477,21 +477,19 @@ public:
             return *this;
         }
 
-        auto first_size = _digits.size() - ((_digits[0] & ~sign_bit_mask) == 0);
-        auto second_size = other._digits.size() - ((other._digits[0] & ~sign_bit_mask) == 0);
-        auto max_size = first_size + second_size;
+        auto max_size = _digits.size() + other._digits.size();
         auto result_digits = std::vector<unsigned int>(max_size);
         auto k = 0ull;
         auto base = (1ull << big_int::uint_size);
 
         auto is_negative = big_int::is_negate(*this) ^ big_int::is_negate(other);
 
-        for (unsigned int i = 0; i < second_size; i++)
+        for (unsigned int i = 0; i < other._digits.size(); i++)
         {
             auto carry = 0ull;
             k = max_size - i - 1;
 
-            for (unsigned int j = 0; j < first_size; j++)
+            for (unsigned int j = 0; j < _digits.size(); j++)
             {
                 k = max_size - i - j - 1;
 
@@ -565,7 +563,6 @@ public:
         throw std::logic_error("Error in divide function!");;
     }
 
-
     big_int& operator %= (const big_int& other)
     {
         if (other == 0)
@@ -580,7 +577,6 @@ public:
 
         auto left = is_negate(*this) ? -*this : *this;
         auto right = is_negate(other) ? -other : other;
-        auto is_negative = is_negate(*this) ^ is_negate(other);
 
         auto start_range = big_int();
         auto end_range = big_int(left);
@@ -590,20 +586,19 @@ public:
 
         do
         {
-            //std::cout << "A" << std::endl;
             potential_result = ((start_range + end_range) >> 1);
-            //std::cout << "B" << potential_result << " " << right << std::endl;
             result = potential_result * right;
-            //std::cout << "C" << std::endl;
             carry = left - result;
-
-            //std::cout << "D" << std::endl;
-            std::cout << end_range << " " << start_range << " " << potential_result << " " << result << " " << carry << std::endl;
-            //std::cout << std::endl;
 
             if (carry >= 0 && carry < right)
             {
-                carry._digits[0] |= sign_bit_mask * is_negative;
+                if (is_negate(*this) ^ is_negate(other))
+                {
+                    carry -= right;
+                    if (carry < 0) carry = -carry;
+                }
+
+                carry._digits[0] |= sign_bit_mask * is_negate(other);
                 *this = carry;
                 return *this;
             }

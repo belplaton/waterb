@@ -519,9 +519,9 @@ public:
 			auto k = pow(prev_x, exponent - 1);
 			auto denominator = k * exponent;
 			x = numerator / denominator;
-			std::cout << x << "\t " << prev_x << "\t " << epsilon;
-			std::cout << "\t " << (x - prev_x) << std::endl;
-			std::cout << (big_float::abs(x - prev_x) >= epsilon) << std::endl;
+			//std::cout << x << "\t " << prev_x << "\t " << epsilon;
+			//std::cout << "\t " << (x - prev_x) << std::endl;
+			//std::cout << (big_float::abs(x - prev_x) >= epsilon) << std::endl;
 
 		} while (big_float::abs(x - prev_x) >= epsilon); // Проверяем на достижение точности
 
