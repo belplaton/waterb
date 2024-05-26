@@ -28,6 +28,13 @@ public:
         _digits = std::vector<unsigned int>(1);
     }
 
+    big_int(int digit)
+    {
+        _digits = std::vector<unsigned int>(1);
+        _digits[0] = digit < 0 ? -digit : digit;
+        if (digit < 0) _digits[0] |= sign_bit_mask;
+    }
+
     big_int(unsigned int digit)
     {
         _digits = std::vector<unsigned int>(1);
@@ -36,8 +43,9 @@ public:
 
     big_int(const unsigned int* digits, unsigned int size)
     {
-        size_t real_size = 1;
-        size_t diff = 0;
+        unsigned int real_size = 1;
+        unsigned int diff = 0;
+        auto is_negative = is_negate(digits);
 
         for (auto i = 0; i < size; i++)
         {
@@ -49,8 +57,8 @@ public:
             if (digits[i] != 0)
             {
                 auto bit = get_bit(digits[i], big_int::uint_size - 1);
-                real_size = size - i + bit;
-                diff = i - bit;
+                real_size = size - i + (!is_negative & bit);
+                diff = i - (!is_negative & bit);
                 break;
             }
         }
@@ -63,13 +71,14 @@ public:
             _digits[i] = op;
         }
 
-        _digits[0] |= sign_bit_mask * is_negate(digits);
+        _digits[0] |= sign_bit_mask * is_negative;
     }
 
     big_int(const std::vector<unsigned int>& digits)
     {
-        size_t real_size = 1;
-        size_t diff = 0;
+        unsigned int real_size = 1;
+        unsigned int diff = 0;
+        auto is_negative = is_negate(digits);
 
         for (auto i = 0; i < digits.size(); i++)
         {
@@ -81,8 +90,8 @@ public:
             if (digits[i] != 0)
             {
                 auto bit = get_bit(digits[i], big_int::uint_size - 1);
-                real_size = digits.size() - i + bit;
-                diff = i - bit;
+                real_size = digits.size() - i + (!is_negative & bit);
+                diff = i - (!is_negative & bit);
                 break;
             }
         }
@@ -95,7 +104,7 @@ public:
             _digits[i] = op;
         }
 
-        _digits[0] |= sign_bit_mask * is_negate(digits);
+        _digits[0] |= sign_bit_mask * is_negative;
     }
 
     big_int(const std::string& number, unsigned int base)
@@ -380,7 +389,7 @@ public:
         }
         else if (!is_negate(_digits) && is_negate(other._digits))
         {
-            return *this = -(left -= (-right));
+            return *this = (left -= (-right));
         }
 
         auto max_size = std::max(_digits.size(), other._digits.size());
@@ -411,6 +420,7 @@ public:
         auto left = *this;
         auto right = other;
 
+
         // Оптимизирование
         if (is_negate(left) && !is_negate(right))
         {
@@ -418,7 +428,18 @@ public:
         }
         else if (!is_negate(left) && is_negate(right))
         {
-            return *this = (-left += right);
+            return *this = left += -right;
+        }
+        else if (is_negate(left))
+        {
+            if (left < right)
+            {
+                return *this = -(-left - -right);
+            }
+            else
+            {
+                return *this = -right - -left;
+            }
         }
         else if (left < right)
         {
@@ -512,7 +533,7 @@ public:
         auto is_negative = is_negate(*this) ^ is_negate(other);
 
         auto start_range = big_int();
-        auto end_range = big_int(*this);
+        auto end_range = big_int(left);
         auto potential_result = big_int();
         auto result = big_int();
         auto carry = big_int();
@@ -562,16 +583,23 @@ public:
         auto is_negative = is_negate(*this) ^ is_negate(other);
 
         auto start_range = big_int();
-        auto end_range = big_int(*this);
+        auto end_range = big_int(left);
         auto potential_result = big_int();
         auto result = big_int();
         auto carry = big_int();
 
         do
         {
+            //std::cout << "A" << std::endl;
             potential_result = ((start_range + end_range) >> 1);
+            //std::cout << "B" << potential_result << " " << right << std::endl;
             result = potential_result * right;
+            //std::cout << "C" << std::endl;
             carry = left - result;
+
+            //std::cout << "D" << std::endl;
+            std::cout << end_range << " " << start_range << " " << potential_result << " " << result << " " << carry << std::endl;
+            //std::cout << std::endl;
 
             if (carry >= 0 && carry < right)
             {
@@ -798,22 +826,22 @@ public:
         return (num >> position) & 1;
     }
 
-    inline static unsigned int is_negate(const big_int& number)
+    inline static bool is_negate(const big_int& number)
     {
         return get_bit(number._digits[0], sign_bit_mask - 1);
     }
 
-    inline static unsigned int is_negate(const std::vector<unsigned int>& digits)
+    inline static bool is_negate(const std::vector<unsigned int>& digits)
     {
         return get_bit(digits[0], sign_bit_mask - 1);
     }
 
-    inline static unsigned int is_negate(const unsigned int* digits)
+    inline static bool is_negate(const unsigned int* digits)
     {
         return get_bit(digits[0], sign_bit_mask - 1);
     }
 
-    inline static unsigned int is_negate(unsigned int digit)
+    inline static bool is_negate(unsigned int digit)
     {
         return get_bit(digit, sign_bit_mask - 1);
     }
@@ -863,7 +891,7 @@ public:
         if (x == 0 || y == 1) return y;
         if (y == 0 || x == 1) return x;
 
-        while (y != 0)
+        while (y != 0 && x != 1)
         {
             auto temp = x % y;
             x = y;

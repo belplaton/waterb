@@ -100,15 +100,33 @@ public:
 				valid_number = false;
 				break;
 			}
+
+			if (is_slash && slash_index == other.size() - 1)
+			{
+				valid_number = false;
+				break;
+			}
 		}
 
-		if (!valid_number || !is_slash)
+		if (!valid_number)
 		{
 			throw std::invalid_argument("Invalid number format! Use <sign><numerator>/<denominator> with decimal format.");
 		}
 
-		_numerator = big_int(other.substr(is_negative, slash_index - is_negative), 10);
-		_denominator = big_int(other.substr(slash_index + 1, other.size() - slash_index), 10);
+		if (!is_slash)
+		{
+			_numerator = big_int(other.substr(is_negative, other.size()));
+			_denominator = big_int(1);
+		}
+		else
+		{
+			_numerator = big_int(other.substr(is_negative, slash_index - is_negative), 10);
+			_denominator = big_int(other.substr(slash_index + 1, other.size() - slash_index), 10);
+		}
+
+		if (is_negative) _denominator = -_denominator;
+
+		optimize(this);
 	}
 
 	big_float(const big_float& other)
@@ -200,15 +218,6 @@ public:
 		return temp;
 	}
 
-	big_float operator * (const big_float& other) const
-	{
-		auto temp = big_float(*this);
-		temp *= other;
-
-		big_float::optimize(&temp);
-		return temp;
-	}
-
 	big_float operator / (const big_float& other) const
 	{
 		auto temp = big_float(*this);
@@ -218,29 +227,7 @@ public:
 		return temp;
 	}
 
-#pragma endregion
-
-#pragma region Big Int
-
-	big_float& operator + (const big_int& other) const
-	{
-		auto temp = big_float(*this);
-		temp += other;
-
-		big_float::optimize(&temp);
-		return temp;
-	}
-
-	big_float& operator - (const big_int& other) const
-	{
-		auto temp = big_float(*this);
-		temp -= other;
-
-		big_float::optimize(&temp);
-		return temp;
-	}
-
-	big_float& operator * (const big_int& other) const
+	big_float operator * (const big_float& other) const
 	{
 		auto temp = big_float(*this);
 		temp *= other;
@@ -249,10 +236,53 @@ public:
 		return temp;
 	}
 
-	big_float& operator / (const big_int& other) const
+	big_int operator / (const big_int& right)
+	{
+		auto temp = _denominator * right;
+		return _numerator / temp;
+	}
+
+	big_int operator % (const big_int& right)
+	{
+		auto temp = _denominator * right;
+		return _numerator % temp;
+	}
+
+#pragma endregion
+
+#pragma region Big Int
+
+	big_float operator + (const big_int& other) const
+	{
+		auto temp = big_float(*this);
+		temp += other;
+
+		big_float::optimize(&temp);
+		return temp;
+	}
+
+	big_float operator - (const big_int& other) const
+	{
+		auto temp = big_float(*this);
+		temp -= other;
+
+		big_float::optimize(&temp);
+		return temp;
+	}
+
+	big_float operator / (const big_int& other) const
 	{
 		auto temp = big_float(*this);
 		temp /= other;
+
+		big_float::optimize(&temp);
+		return temp;
+	}
+
+	big_float operator * (const big_int& other) const
+	{
+		auto temp = big_float(*this);
+		temp *= other;
 
 		big_float::optimize(&temp);
 		return temp;
@@ -296,7 +326,9 @@ public:
 
 	big_float& operator += (const big_float& other)
 	{
-		_numerator += other._numerator;
+		_numerator *= other._denominator;
+		_numerator += other._numerator * _denominator;
+		_denominator *= other._denominator;
 
 		big_float::optimize(this);
 		return *this;
@@ -304,7 +336,10 @@ public:
 
 	big_float& operator -= (const big_float& other)
 	{
-		_numerator -= other._numerator;
+		_numerator *= other._denominator;
+		auto temp = (other._numerator * _denominator);
+		_numerator -= temp;
+		_denominator *= other._denominator;
 
 		big_float::optimize(this);
 		return *this;
@@ -479,9 +514,14 @@ public:
 		do
 		{
 			prev_x = x;
-			auto numerator = pow(prev_x, exponent) - base;
-			auto denominator = pow(prev_x, exponent - 1) * exponent;
+			auto s = pow(prev_x, exponent);
+			auto numerator = s - base;
+			auto k = pow(prev_x, exponent - 1);
+			auto denominator = k * exponent;
 			x = numerator / denominator;
+			std::cout << x << "\t " << prev_x << "\t " << epsilon;
+			std::cout << "\t " << (x - prev_x) << std::endl;
+			std::cout << (big_float::abs(x - prev_x) >= epsilon) << std::endl;
 
 		} while (big_float::abs(x - prev_x) >= epsilon); // Проверяем на достижение точности
 
