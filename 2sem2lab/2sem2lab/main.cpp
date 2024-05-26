@@ -7,8 +7,12 @@ using namespace std;
 
 int main()
 {   
-    auto a = big_int("536", 10);
-    auto b = big_int("12", 10);
-    std::cout << pow(a, b);
+    auto a = big_float("256", "2");
+    auto b = big_int("2");
+    auto eps = big_float("1", "1000");
+
+    std::cout << a << " " << b << " " << eps << std::endl;
+
+    std::cout << root(a, b, eps) << std::endl;
     return 0;
 }

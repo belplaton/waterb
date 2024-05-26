@@ -14,11 +14,13 @@ private:
 
 public:
 
+	friend class big_int;
+
 #pragma region Constructors
 
 	big_float()
 	{
-		_numerator = big_int();
+		_numerator = big_int(0);
 		_denominator = big_int(1);
 	}
 
@@ -30,7 +32,7 @@ public:
 
 	big_float(const big_int& digit)
 	{
-		_numerator = digit;
+		_numerator = big_int(digit);
 		_denominator = big_int(1);
 	}
 
@@ -43,6 +45,40 @@ public:
 
 		_numerator = numerator;
 		_denominator = denominator;
+
+		optimize(this);
+	}
+
+	big_float(const std::string& numerator, const std::string& denominator, unsigned int base)
+	{
+		auto a = big_int(numerator, base);
+		auto b = big_int(denominator, base);
+
+		if (b == 0)
+		{
+			throw std::invalid_argument("Denominator cant be 0");
+		}
+
+		_numerator = a;
+		_denominator = b;
+
+		optimize(this);
+	}
+
+	big_float(const std::string& numerator, const std::string& denominator)
+	{
+		auto a = big_int(numerator, 10);
+		auto b = big_int(denominator, 10);
+
+		if (b == 0)
+		{
+			throw std::invalid_argument("Denominator cant be 0");
+		}
+
+		_numerator = a;
+		_denominator = b;
+
+		optimize(this);
 	}
 
 	big_float(const std::string& other)
@@ -146,39 +182,39 @@ public:
 		return temp;
 	}
 
-	big_float& operator + (const big_float& other) const
+	big_float operator + (const big_float& other) const
 	{
 		auto temp = big_float(*this);
 		temp += other;
 
-		big_float::optimize(temp);
+		big_float::optimize(&temp);
 		return temp;
 	}
 
-	big_float& operator - (const big_float& other) const
+	big_float operator - (const big_float& other) const
 	{
 		auto temp = big_float(*this);
 		temp -= other;
 
-		big_float::optimize(temp);
+		big_float::optimize(&temp);
 		return temp;
 	}
 
-	big_float& operator * (const big_float& other) const
+	big_float operator * (const big_float& other) const
 	{
 		auto temp = big_float(*this);
 		temp *= other;
 
-		big_float::optimize(temp);
+		big_float::optimize(&temp);
 		return temp;
 	}
 
-	big_float& operator / (const big_float& other) const
+	big_float operator / (const big_float& other) const
 	{
 		auto temp = big_float(*this);
 		temp /= other;
 
-		big_float::optimize(temp);
+		big_float::optimize(&temp);
 		return temp;
 	}
 
@@ -191,7 +227,7 @@ public:
 		auto temp = big_float(*this);
 		temp += other;
 
-		big_float::optimize(temp);
+		big_float::optimize(&temp);
 		return temp;
 	}
 
@@ -200,7 +236,7 @@ public:
 		auto temp = big_float(*this);
 		temp -= other;
 
-		big_float::optimize(temp);
+		big_float::optimize(&temp);
 		return temp;
 	}
 
@@ -209,7 +245,7 @@ public:
 		auto temp = big_float(*this);
 		temp *= other;
 
-		big_float::optimize(temp);
+		big_float::optimize(&temp);
 		return temp;
 	}
 
@@ -218,8 +254,36 @@ public:
 		auto temp = big_float(*this);
 		temp /= other;
 
-		big_float::optimize(temp);
+		big_float::optimize(&temp);
 		return temp;
+	}
+
+	friend big_float operator + (const big_int left, const big_float& right)
+	{
+		auto result = big_float(left);
+		result += right;
+		return result;
+	}
+
+	friend big_float operator - (const big_int left, const big_float& right)
+	{
+		auto result = big_float(left);
+		result -= right;
+		return result;
+	}
+
+	friend big_float operator * (const big_int left, const big_float& right)
+	{
+		auto result = big_float(left);
+		result *= right;
+		return result;
+	}
+
+	friend big_float operator / (const big_int left, const big_float& right)
+	{
+		auto result = big_float(left);
+		result /= right;
+		return result;
 	}
 
 #pragma endregion
@@ -234,7 +298,7 @@ public:
 	{
 		_numerator += other._numerator;
 
-		big_float::optimize(*this);
+		big_float::optimize(this);
 		return *this;
 	}
 
@@ -242,7 +306,7 @@ public:
 	{
 		_numerator -= other._numerator;
 
-		big_float::optimize(*this);
+		big_float::optimize(this);
 		return *this;
 	}
 
@@ -251,7 +315,7 @@ public:
 		_numerator *= other._numerator;
 		_denominator *= other._denominator;
 
-		big_float::optimize(*this);
+		big_float::optimize(this);
 		return *this;
 	}
 
@@ -260,7 +324,7 @@ public:
 		_numerator *= other._denominator;
 		_denominator *= other._numerator;
 
-		big_float::optimize(*this);
+		big_float::optimize(this);
 		return *this;
 	}
 
@@ -272,7 +336,7 @@ public:
 	{
 		_numerator += other * _denominator;
 
-		big_float::optimize(*this);
+		big_float::optimize(this);
 		return *this;
 	}
 
@@ -280,7 +344,7 @@ public:
 	{
 		_numerator -= other * _denominator;
 
-		big_float::optimize(*this);
+		big_float::optimize(this);
 		return *this;
 	}
 
@@ -288,7 +352,7 @@ public:
 	{
 		_numerator *= other;
 
-		big_float::optimize(*this);
+		big_float::optimize(this);
 		return *this;
 	}
 
@@ -296,7 +360,7 @@ public:
 	{
 		_denominator *= other;
 
-		big_float::optimize(*this);
+		big_float::optimize(this);
 		return *this;
 	}
 
@@ -308,9 +372,9 @@ public:
 
 	friend std::ostream& operator << (std::ostream& stream, const big_float& other)
 	{
-		stream << big_int::is_negate(other._denominator) ? "-" : "" +
-			other._numerator.to_string(10) +
-			"/" +
+		stream << (big_int::is_negate(other._denominator) ? "-" : "") <<
+			other._numerator.to_string(10) <<
+			"/" <<
 			big_int::abs(other._denominator).to_string(10);
 
 		return stream;
@@ -351,18 +415,18 @@ public:
 
 #pragma endregion
 
-	#pragma region Utility
+#pragma region Utility
 
-	inline static big_float& optimize(big_float other)
+	inline static void optimize(big_float* other)
 	{
-		auto min_divisor = gcd(other._numerator, other._denominator);
-		other._numerator /= min_divisor;
-		other._denominator /= min_divisor;
+		auto min_divisor = gcd((*other)._numerator, (*other)._denominator);
+		(*other)._numerator /= min_divisor;
+		(*other)._denominator /= min_divisor;
 
-		if (other._numerator < 0)
+		if ((*other)._numerator < 0)
 		{
-			other._numerator = -other._numerator;
-			other._denominator = -other._denominator;
+			(*other)._numerator = -(*other)._numerator;
+			(*other)._denominator = -(*other)._denominator;
 		}
 	}
 
@@ -389,6 +453,8 @@ public:
 			auto result = big_float(base);
 			result._numerator = pow(result._numerator, exponent);
 			result._denominator = pow(result._denominator, exponent);
+
+			return result;
 		}
 	}
 
@@ -400,13 +466,22 @@ public:
 
 	friend big_float root(const big_float& base, const big_int& exponent, const big_float& epsilon)
 	{
+		if (base == 0 || base == 1) return base;
+
+		if (exponent == 0)
+		{
+			throw std::invalid_argument("Cannot compute the 0th root.");
+		}
+
 		big_float x = 1;
 		big_float prev_x;
 
 		do
 		{
 			prev_x = x;
-			x = prev_x - (pow(prev_x, exponent) - base) / (exponent * pow(prev_x, exponent - big_float(1)));
+			auto numerator = pow(prev_x, exponent) - base;
+			auto denominator = pow(prev_x, exponent - 1) * exponent;
+			x = numerator / denominator;
 
 		} while (big_float::abs(x - prev_x) >= epsilon); // Проверяем на достижение точности
 

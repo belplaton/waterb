@@ -6,26 +6,20 @@ D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\external_utility.hpp(1
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\external_utility.hpp(187,27): warning C4267: +=: преобразование из "size_t" в "int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\external_utility.hpp(239,29): warning C4267: =: преобразование из "size_t" в "unsigned int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(42,28): warning C4018: <: несоответствие типов со знаком и без знака
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(444,41): warning C4244: =: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(486,41): warning C4244: =: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
           with
           [
               _Ty=unsigned int
           ]
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(447,37): warning C4244: +=: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(489,37): warning C4244: +=: преобразование "unsigned __int64" в "_Ty", возможна потеря данных
           with
           [
               _Ty=unsigned int
           ]
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(636,18): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(649,37): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(686,18): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(699,37): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_float\big_float.hpp(313,8): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_float\big_float.hpp(409,74): error C2679: бинарный "-": не найден оператор, принимающий правый операнд типа "big_float" (или приемлемое преобразование отсутствует)
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(238,13): message : может быть "big_int big_int::operator -(const big_int &) const"
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_float\big_float.hpp(409,74): message : при попытке сопоставить список аргументов "(const big_int, big_float)"
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_float\big_float.hpp(409,62): error C2661: pow: нет перегруженной функции, принимающей 1 аргументов
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\cmath(674,1): message : может быть "conditional<std::is_same_v<_Ty1,long double>||std::is_same_v<_Ty2,long double>,long double,conditional<std::is_same_v<_Ty1,float>&&std::is_same_v<_Ty2,float>,float,double>::type>::type pow(_Ty1,_Ty2) noexcept"
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_float\big_float.hpp(409,62): message : "conditional<std::is_same_v<_Ty1,long double>||std::is_same_v<_Ty2,long double>,long double,conditional<std::is_same_v<_Ty1,float>&&std::is_same_v<_Ty2,float>,float,double>::type>::type pow(_Ty1,_Ty2) noexcept": ожидаются аргументы 2 — 1 предоставлены
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_float\big_float.hpp(409,62): message : при попытке сопоставить список аргументов "(big_float)"
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_float\big_float.hpp(409,60): error C2088: *: недопустимо для class
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(678,18): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(691,37): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(728,18): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(741,37): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_float\big_float.hpp(459): warning C4715: pow: значение возвращается не при всех путях выполнения
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_float\big_float.hpp(249): warning C4172: возвращение адреса локальной или временной переменной : temp
+  2sem2lab.vcxproj -> D:\_Platon\_Files\GitHub\waterb\2sem2lab\x64\Debug\2sem2lab.exe

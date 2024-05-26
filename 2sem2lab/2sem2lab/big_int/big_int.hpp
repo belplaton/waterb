@@ -140,6 +140,42 @@ public:
         _digits[0] |= sign_bit_mask * is_negative;
     }
 
+    big_int(const std::string& number)
+    {
+        int is_negative = (number[0] == '-');
+
+        for (auto i = is_negative; i < number.size(); i++)
+        {
+            if (!isdigit(number[i]))
+            {
+                throw std::invalid_argument("Invalid character in number");
+            }
+        }
+
+        auto bin_string = from_dec_to_base(number, 2);
+
+        auto temp = (bin_string.size() - (bin_string.size() % big_int::uint_size)) / big_int::uint_size;
+        auto size = temp + 1;
+        _digits = std::vector<unsigned int>(size);
+
+        auto k = 0;
+        for (auto i = 0; i < size; i++)
+        {
+            for (auto j = 0; j < big_int::uint_size && j < bin_string.size(); j++)
+            {
+                auto bit = char_to_int(bin_string[bin_string.size() - k - 1], 2);
+                _digits[size - i - 1] |= (bit << j);
+                k++;
+
+                if (k == (bin_string.size() - is_negative)) break;
+            }
+
+            if (k == (bin_string.size() - is_negative)) break;
+        }
+
+        _digits[0] |= sign_bit_mask * is_negative;
+    }
+
     big_int(const big_int& other)
     {
         _digits = std::vector<unsigned int>(other._digits);
@@ -160,7 +196,13 @@ public:
 
         for (auto i = 0; i < _digits.size(); i++)
         {
-            if (_digits[i] != other._digits[i]) return false;
+            auto op1 = _digits[i];
+            if (i == 0) op1 &= ~big_int::sign_bit_mask;
+
+            auto op2 = other._digits[i];
+            if (i == 0) op2 &= ~big_int::sign_bit_mask;
+
+            if (op1 != op2) return false;
         }
 
         return true;
@@ -815,15 +857,15 @@ public:
 
     friend big_int gcd(const big_int& a, const big_int& b)
     {
-        if (a == 0) return b;
-        if (b == 0) return a;
+        big_int x = big_int(a);
+        big_int y = big_int(b);
 
-        big_int x = a;
-        big_int y = b;
+        if (x == 0 || y == 1) return y;
+        if (y == 0 || x == 1) return x;
 
         while (y != 0)
         {
-            big_int temp = x % y;
+            auto temp = x % y;
             x = y;
             y = temp;
         }
