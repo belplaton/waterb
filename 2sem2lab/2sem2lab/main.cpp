@@ -8,15 +8,13 @@ using namespace std;
 int main()
 {   
     
-    auto a = big_float("256", "2");
-    auto b = big_int("2");
+    auto a = big_float("16", "1");
+    auto b = big_float("-1/2");
     auto eps = big_float("1", "10");
 
-    auto c = big_float("64");
-    std::cout << c << std::endl;
-    std::cout << a << " " << b << " " << eps << " " << (a*c) << std::endl;
+    std::cout << a << " " << b << " " << eps << std::endl;
 
-    std::cout << root(a, b, eps) << std::endl;
+    std::cout << pow(a, b, eps) << std::endl;
     
     std::cout << "AA" << std::endl;
     

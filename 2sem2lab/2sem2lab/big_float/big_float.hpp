@@ -490,26 +490,37 @@ public:
 	{
 		auto result = big_float(1);
 		auto temp = big_float(base);
-		auto exp = big_int(exponent);
+		auto exp = big_int::abs(big_int(exponent));
 
 		while (exp > 0)
 		{
 			if (exp % 2 != 0)
 			{
-				result *= base;
+				result *= temp;
 			}
 
 			temp *= temp;
 			exp >>= 1;
 		}
 
+		if (exponent < 0)
+		{
+			auto numerator = result._numerator;
+			result._numerator = result._denominator;
+			result._denominator = numerator;
+		}
+
 		return result;
 	}
 
-	friend big_float pow(const big_float& base, const big_float& exponent)
+	friend big_float pow(const big_float& base, const big_float& exponent, const big_float& epsilon)
 	{
 		if (exponent == 0) return 1;
 
+		auto result = root(base, exponent._denominator, epsilon);
+		result = pow(result, exponent._numerator);
+
+		return result;
 	}
 
 	friend big_float root(const big_float& base, const big_int& exponent, const big_float& epsilon)
@@ -523,9 +534,10 @@ public:
 
 		big_float x = base;
 		big_float prev_x;
-		big_float float_exp = big_float(exponent);
+		big_int exp = big_int::abs(exponent);
+		big_float float_exp = big_float(exp);
 
-		if (exponent % 2 == 0)
+		if (exp % 2 == 0)
 		{
 			x = base / float_exp;
 		}
@@ -537,11 +549,18 @@ public:
 		do
 		{
 			prev_x = x;
-			auto x_pow = pow(x, exponent - 1);
-			auto numerator = (base / x_pow) + (x * (exponent - 1));
+			auto x_pow = pow(x, exp - 1);
+			auto numerator = (base / x_pow) + (x * (exp - 1));
 			x = numerator / float_exp;
 
 		} while (big_float::abs(x - prev_x) >= epsilon); // Проверяем на достижение точности
+
+		if (exponent < 0)
+		{
+			auto numerator = x._numerator;
+			x._numerator = x._denominator;
+			x._denominator = numerator;
+		}
 
 		return x;
 	}
