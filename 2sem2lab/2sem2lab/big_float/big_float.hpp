@@ -486,6 +486,26 @@ public:
 
 	}
 
+	friend big_float round(const big_float& base, const big_float& epsilon)
+	{
+		big_float result;
+		auto temp = big_float(base);
+		do
+		{
+			result = big_float(temp);
+			temp._numerator >>= 1;
+			temp._denominator >>= 1;
+			if (temp._numerator == 0 || temp._denominator == 0)
+			{
+				break;
+			}
+
+			optimize(&temp);
+		} while (abs(base - temp) > result);
+
+		return result;
+	}
+
 	friend big_float pow(const big_float& base, const big_int& exponent)
 	{
 		auto result = big_float(1);
@@ -537,6 +557,7 @@ public:
 		big_int exp = big_int::abs(exponent);
 		big_float float_exp = big_float(exp);
 
+		/*
 		if (exp % 2 == 0)
 		{
 			x = base / float_exp;
@@ -545,15 +566,20 @@ public:
 		{
 			x = base / (float_exp * float_exp);
 		}
+		*/
 
 		do
-		{
+		{	
 			prev_x = x;
 			auto x_pow = pow(x, exp - 1);
 			auto numerator = (base / x_pow) + (x * (exp - 1));
-			x = numerator / float_exp;
+			x = round(numerator / float_exp, epsilon);
+
+			std::cout << x << " " << prev_x << " " << epsilon << std::endl;
 
 		} while (big_float::abs(x - prev_x) >= epsilon); // Проверяем на достижение точности
+
+		std::cout << "aa" << std::endl;
 
 		if (exponent < 0)
 		{

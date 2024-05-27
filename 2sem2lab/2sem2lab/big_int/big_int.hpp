@@ -45,8 +45,6 @@ public:
     {
         unsigned int real_size = 1;
         unsigned int diff = 0;
-        auto is_negative = is_negate(digits);
-
         for (auto i = 0; i < size; i++)
         {
             if (i == 0 && ((digits[i] & ~sign_bit_mask) == 0))
@@ -57,8 +55,8 @@ public:
             if (digits[i] != 0)
             {
                 auto bit = get_bit(digits[i], big_int::uint_size - 1);
-                real_size = size - i + (!is_negative & bit);
-                diff = i - (!is_negative & bit);
+                real_size = size - i + ((i != 0) & bit);;
+                diff = i - ((i != 0) & bit);
                 break;
             }
         }
@@ -71,14 +69,13 @@ public:
             _digits[i] = op;
         }
 
-        _digits[0] |= sign_bit_mask * is_negative;
+        _digits[0] |= sign_bit_mask * is_negate(digits);
     }
     
     big_int(const std::vector<unsigned int>& digits)
     {
         unsigned int real_size = 1;
         unsigned int diff = 0;
-        auto is_negative = is_negate(digits);
 
         for (auto i = 0; i < digits.size(); i++)
         {
@@ -90,8 +87,8 @@ public:
             if (digits[i] != 0)
             {
                 auto bit = get_bit(digits[i], big_int::uint_size - 1);
-                real_size = digits.size() - i + (!is_negative & bit);
-                diff = i - (!is_negative & bit);
+                real_size = digits.size() - i + ((i != 0) & bit);
+                diff = i - ((i != 0) & bit);
                 break;
             }
         }
@@ -104,7 +101,7 @@ public:
             _digits[i] = op;
         }
 
-        _digits[0] |= sign_bit_mask * is_negative;
+        _digits[0] |= sign_bit_mask * is_negate(digits);
     }
 
     big_int(const std::string& number, unsigned int base)
@@ -393,7 +390,7 @@ public:
             return *this = (left -= (-right));
         }
 
-        auto max_size = std::max(_digits.size(), other._digits.size());
+        auto max_size = std::max(_digits.size(), other._digits.size()) + 1;
         auto result_digits = std::vector<unsigned int>(max_size);
         unsigned int carry = 0;
         for (unsigned int i = 0; i < max_size; i++)
@@ -536,7 +533,6 @@ public:
         auto potential_result = big_int();
         auto result = big_int();
         auto carry = big_int();
-
         do
         {
             potential_result = ((start_range + end_range) >> 1);
