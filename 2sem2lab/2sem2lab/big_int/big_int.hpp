@@ -73,7 +73,7 @@ public:
 
         _digits[0] |= sign_bit_mask * is_negative;
     }
-
+    
     big_int(const std::vector<unsigned int>& digits)
     {
         unsigned int real_size = 1;
@@ -184,6 +184,7 @@ public:
 
         _digits[0] |= sign_bit_mask * is_negative;
     }
+
 
     big_int(const big_int& other)
     {
@@ -912,7 +913,7 @@ public:
         {
             if (exp % 2 != 0)
             {
-                result = result * temp;
+                result *= temp;
             }
 
             temp *= temp;

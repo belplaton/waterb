@@ -24,6 +24,12 @@ public:
 		_denominator = big_int(1);
 	}
 
+	big_float(int digit)
+	{
+		_numerator = big_int(digit);
+		_denominator = big_int(1);
+	}
+
 	big_float(unsigned int digit)
 	{
 		_numerator = big_int(digit);
@@ -482,15 +488,22 @@ public:
 
 	friend big_float pow(const big_float& base, const big_int& exponent)
 	{
-		if (exponent == 0) return 1;
-		if (exponent > 0)
-		{
-			auto result = big_float(base);
-			result._numerator = pow(result._numerator, exponent);
-			result._denominator = pow(result._denominator, exponent);
+		auto result = big_float(1);
+		auto temp = big_float(base);
+		auto exp = big_int(exponent);
 
-			return result;
+		while (exp > 0)
+		{
+			if (exp % 2 != 0)
+			{
+				result *= base;
+			}
+
+			temp *= temp;
+			exp >>= 1;
 		}
+
+		return result;
 	}
 
 	friend big_float pow(const big_float& base, const big_float& exponent)
@@ -508,20 +521,25 @@ public:
 			throw std::invalid_argument("Cannot compute the 0th root.");
 		}
 
-		big_float x = 1;
+		big_float x = base;
 		big_float prev_x;
+		big_float float_exp = big_float(exponent);
+
+		if (exponent % 2 == 0)
+		{
+			x = base / float_exp;
+		}
+		else
+		{
+			x = base / (float_exp * float_exp);
+		}
 
 		do
 		{
 			prev_x = x;
-			auto s = pow(prev_x, exponent);
-			auto numerator = s - base;
-			auto k = pow(prev_x, exponent - 1);
-			auto denominator = k * exponent;
-			x = numerator / denominator;
-			//std::cout << x << "\t " << prev_x << "\t " << epsilon;
-			//std::cout << "\t " << (x - prev_x) << std::endl;
-			//std::cout << (big_float::abs(x - prev_x) >= epsilon) << std::endl;
+			auto x_pow = pow(x, exponent - 1);
+			auto numerator = (base / x_pow) + (x * (exponent - 1));
+			x = numerator / float_exp;
 
 		} while (big_float::abs(x - prev_x) >= epsilon); // Проверяем на достижение точности
 

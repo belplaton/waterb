@@ -10,7 +10,7 @@ int main()
     
     auto a = big_float("256", "2");
     auto b = big_int("2");
-    auto eps = big_float("1", "1000");
+    auto eps = big_float("1", "10");
 
     auto c = big_float("64");
     std::cout << c << std::endl;
