@@ -23,14 +23,10 @@ D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(723,18): w
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(736,37): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(773,18): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\big_int\big_int.hpp(786,37): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(328,27): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(324,7): message : во время компиляции функции-члена класс шаблон "void linked_list<big_int>::remove(const linked_list<big_int> &)"
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(237,9): message : см. первую ссылку на "linked_list<big_int>::remove" в "linked_list<big_int>::operator -="
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\main.cpp(37,7): message : см. первую ссылку на "linked_list<big_int>::operator -=" в "main"
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(289,29): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(285,7): message : во время компиляции функции-члена класс шаблон "void linked_list<big_int>::add_value(const linked_list<big_int> &)"
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(232,12): message : см. первую ссылку на "linked_list<big_int>::add_value" в "linked_list<big_int>::operator +="
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(245,8): message : см. первую ссылку на "linked_list<big_int>::operator +=" в "linked_list<big_int>::operator +"
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\main.cpp(30,12): message : см. первую ссылку на "linked_list<big_int>::operator +" в "main"
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\main.cpp(12,36): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "linked_list<big_int>"
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(288,29): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(284,7): message : во время компиляции функции-члена класс шаблон "void linked_list<big_int>::add_value(const linked_list<big_int> &)"
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(231,12): message : см. первую ссылку на "linked_list<big_int>::add_value" в "linked_list<big_int>::operator +="
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linked_list\linked_list.hpp(244,8): message : см. первую ссылку на "linked_list<big_int>::operator +=" в "linked_list<big_int>::operator +"
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\main.cpp(32,12): message : см. первую ссылку на "linked_list<big_int>::operator +" в "main"
   2sem2lab.vcxproj -> D:\_Platon\_Files\GitHub\waterb\2sem2lab\x64\Debug\2sem2lab.exe

@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <functional>
 #include <stdexcept>
 
 template<class T>
@@ -454,6 +455,67 @@ public:
 		return result.str();
 	}
 
+	node* split(node* head) {
+		node* fast = head;
+		node* slow = head;
+		node* prev = nullptr;
+
+		while (fast && fast->p_next) {
+			fast = fast->p_next->p_next;
+			prev = slow;
+			slow = slow->p_next;
+		}
+
+		if (prev) {
+			prev->p_next = nullptr;
+		}
+
+		return slow;
+	}
+
+	node* merge(node* left, node* right, std::function<bool(T, T)> compare)
+	{
+		if (!left) return right;
+		if (!right) return left;
+
+		if (compare(left->value, right->value)) {
+			left->p_next = merge(left->p_next, right, compare);
+			return left;
+		}
+		else {
+			right->p_next = merge(left, right->p_next, compare);
+			return right;
+		}
+	}
+
+	node* merge_sort(node* head, std::function<bool(T, T)> compare)
+	{
+		if (!head || !head->p_next) {
+			return head;
+		}
+
+		node* middle = split(head);
+		node* left = merge_sort(head, compare);
+		node* right = merge_sort(middle, compare);
+
+		return merge(left, right, compare);
+	}
+
+	void sort(std::function<bool(T, T)> compare)
+	{
+		_p_head = merge_sort(_p_head, compare);
+
+		// Update tail after sorting
+		_p_tail = _p_head;
+		if (_p_tail)
+		{
+			while (_p_tail->p_next)
+			{
+				_p_tail = _p_tail->p_next;
+			}
+		}
+	}
+		
 #pragma endregion
 
 };

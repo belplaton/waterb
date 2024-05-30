@@ -21,8 +21,6 @@ int main()
     std::cout << lst << " " << lst.get_length() << std::endl;
     lst.add_value(a2);
     std::cout << lst << " " << lst.get_length() << std::endl;
-    lst.remove_at(0);
-    std::cout << lst << " " << lst.get_length() << std::endl;
 
     ll.add_value(big_int("84572"));
     auto owo = big_int("1272");
@@ -34,7 +32,7 @@ int main()
 
     std::cout << g << std::endl;
 
-    g -= linked_list<big_int>(std::vector<big_int>({owo}));
+    g.sort([](big_int a, big_int b) { return a < b; });
 
     std::cout << g << std::endl;
     return 0;
