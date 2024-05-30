@@ -182,7 +182,6 @@ public:
         _digits[0] |= sign_bit_mask * is_negative;
     }
 
-
     big_int(const big_int& other)
     {
         _digits = std::vector<unsigned int>(other._digits);
@@ -374,6 +373,32 @@ public:
 #pragma endregion
 
 #pragma region Arithmetic Assigment Operators
+
+    big_int& operator ++ ()
+    {
+        *this += 1;
+        return *this;
+    }
+
+    big_int operator ++ (int)
+    {
+        auto temp = big_int(*this);
+        *this += 1;
+        return *this;
+    }
+
+    big_int& operator -- ()
+    {
+        *this -= 1;
+        return *this;
+    }
+
+    big_int operator -- (int)
+    {
+        auto temp = big_int(*this);
+        *this -= 1;
+        return *this;
+    }
 
     big_int& operator += (const big_int& other)
     {
@@ -914,6 +939,29 @@ public:
 
             temp *= temp;
             exp >>= 1;
+        }
+
+        return result;
+    }
+
+    friend big_int factorial(const big_int& n, const big_int& exponent)
+    {
+        if (n < 0 || exponent < 1)
+        {
+            throw std::invalid_argument("Cant take factorial from negative number.");
+        }
+
+        auto result = big_int(1);   
+        auto temp = big_int(n);
+        for (big_int i = 0; i < exponent; i++)
+        {
+            while (temp > 1)
+            {
+                result *= temp;
+                temp--;
+            }
+
+            temp = big_int(result);
         }
 
         return result;

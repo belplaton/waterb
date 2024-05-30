@@ -19,6 +19,12 @@
     <Filter Include="Файлы заголовков\big_float">
       <UniqueIdentifier>{dba0b382-9042-4e4b-97d0-84c329f42067}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\polynomial">
+      <UniqueIdentifier>{58863ca6-d5e5-4161-ab7c-c408acfc9561}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\linked_list">
+      <UniqueIdentifier>{bd4429ae-9c9a-4069-be14-82a566651bcd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="big_int\big_int.hpp">
@@ -29,6 +35,12 @@
     </ClInclude>
     <ClInclude Include="big_float\big_float.hpp">
       <Filter>Файлы заголовков\big_float</Filter>
+    </ClInclude>
+    <ClInclude Include="polynomial\polynomial.hpp">
+      <Filter>Файлы заголовков\polynomial</Filter>
+    </ClInclude>
+    <ClInclude Include="linked_list\linked_list.hpp">
+      <Filter>Файлы заголовков\linked_list</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

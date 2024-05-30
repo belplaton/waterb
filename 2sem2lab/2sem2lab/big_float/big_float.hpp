@@ -456,6 +456,144 @@ public:
 
 #pragma endregion
 
+#pragma region Trigonometry
+
+	static big_float pi(const big_float& epsilon)
+	{
+		big_float prev = 0;
+		big_float result = 0;
+		big_int n = 0;
+
+		do
+		{
+			prev = result;
+			auto temp = pow(-1, n) / (n * 2 + 1);
+			result = round(result + temp, epsilon);
+			n++;
+
+		} while (abs(prev - result) >= epsilon);
+
+		return result;
+	}
+
+	friend big_float sin(const big_float& x, const big_float& epsilon)
+	{
+		big_float prev = 0;
+		big_float result = 0;
+		big_int n = 0;
+
+		do
+		{
+			prev = result;
+			auto temp = (pow(x, n * 2 + 1) * pow(-1, n)) / big_float(factorial(n * 2 + 1, 1));
+			result = round(result + temp, epsilon);
+			n++;
+
+		} while (abs(prev - result) >= epsilon);
+
+		return result;
+	}
+
+	friend big_float cos(const big_float& x, const big_float& epsilon)
+	{
+		big_float prev = 0;
+		big_float result = 0;
+		big_int n = 0;
+
+		do
+		{
+			prev = result;
+			auto temp = (pow(x, n * 2) * pow(-1, n)) / big_float(factorial(n * 2, 1));
+			result = round(result + temp, epsilon);
+			n++;
+
+		} while (abs(prev - result) >= epsilon);
+
+		return result;
+	}
+
+	friend big_float tan(const big_float& x, const big_float& epsilon)
+	{
+		auto sinus = sin(x, epsilon);
+		auto cosinus = cos(x, epsilon);
+		auto result = sinus / cosinus;
+		return result;
+	}
+
+	friend big_float catan(const big_float& x, const big_float& epsilon)
+	{
+		return 1 / tan(x, epsilon);
+	}
+
+	friend big_float sec(const big_float& x, const big_float& epsilon)
+	{
+		return 1 / cos(x, epsilon);
+	}
+
+	friend big_float cosec(const big_float& x, const big_float& epsilon)
+	{
+		return 1 / sin(x, epsilon);
+	}
+
+	friend big_float arcsin(const big_float& x, const big_float& epsilon)
+	{
+		big_float prev = 0;
+		big_float result = 0;
+		big_int n = 0;
+
+		do
+		{
+			prev = result;
+			auto first = big_float(factorial(n * 2 + 1, 2)) / big_float(factorial(n * 2, 2));
+			auto second = pow(x, n * 2 + 1) / big_float(pow(n * 2 + 1, 2));
+			result = round(result + first * second, epsilon);
+			n++;
+
+		} while (abs(prev - result) >= epsilon);
+
+		return result;
+	}
+
+	friend big_float arccos(const big_float& x, const big_float& epsilon)
+	{
+		return pi(epsilon) - arcsin(x, epsilon);
+	}
+
+	friend big_float arctan(const big_float& x, const big_float& epsilon)
+	{
+		big_float prev = 0;
+		big_float result = 0;
+		big_int n = 0;
+
+		do
+		{
+			prev = result;
+			auto temp = big_float(pow(-1, n - 1)) * pow(x, n * 2 - 1) / big_float(n * 2 - 1);
+			result = round(result + temp, epsilon);
+			n++;
+
+		} while (abs(prev - result) >= epsilon);
+
+		return result;
+	}
+
+	friend big_float arccatan(const big_float& x, const big_float& epsilon)
+	{
+		return pi(epsilon) - arctan(x, epsilon);
+	}
+
+	friend big_float arcsec(const big_float& x, const big_float& epsilon)
+	{
+		return arccos(1 / x, epsilon);
+	}
+
+	friend big_float arccosec(const big_float& x, const big_float& epsilon)
+	{
+		return arcsin(1 / x, epsilon);
+	}
+
+#pragma endregion
+
 #pragma region Utility
 
 	inline static void optimize(big_float* other)
@@ -499,9 +637,9 @@ public:
 			{
 				break;
 			}
-
+			 
 			optimize(&temp);
-		} while (abs(base - temp) > result);
+		} while (abs(base - temp) < epsilon);
 
 		return result;
 	}
@@ -557,7 +695,6 @@ public:
 		big_int exp = big_int::abs(exponent);
 		big_float float_exp = big_float(exp);
 
-		/*
 		if (exp % 2 == 0)
 		{
 			x = base / float_exp;
@@ -566,7 +703,6 @@ public:
 		{
 			x = base / (float_exp * float_exp);
 		}
-		*/
 
 		do
 		{	
@@ -575,11 +711,8 @@ public:
 			auto numerator = (base / x_pow) + (x * (exp - 1));
 			x = round(numerator / float_exp, epsilon);
 
-			std::cout << x << " " << prev_x << " " << epsilon << std::endl;
-
 		} while (big_float::abs(x - prev_x) >= epsilon); // Проверяем на достижение точности
 
-		std::cout << "aa" << std::endl;
 
 		if (exponent < 0)
 		{
@@ -589,6 +722,57 @@ public:
 		}
 
 		return x;
+	}
+
+	friend big_float logn(const big_float& x, const big_float& epsilon)
+	{
+		big_float prev = 0;
+		big_float result = 0;
+		big_int n = 0;
+
+		if (x <= 0)
+		{
+			throw std::invalid_argument("Cant take log from zero or negative number.");
+		}
+
+		if (x > 0 && x < 2)
+		{
+			do
+			{
+				prev = result;
+				auto temp = big_float(pow(-1, n)) * pow(x, n + 1) / big_float(n + 1);
+				result = round(result + temp, epsilon);
+				n++;
+
+			} while (abs(prev - result) >= epsilon);
+		}
+		else
+		{
+			big_float y = (x - big_float(1)) / (x + big_float(1));
+
+			do
+			{
+				prev = result;
+				auto temp = big_float(pow(y, n * 2 + 1)) / big_float(n * 2 + 1);
+				result = round(result + temp, epsilon);
+				n++;
+
+			} while (abs(prev - result) >= epsilon);
+
+			result *= big_int(2);
+		}
+
+		return result;
+	}
+
+	friend big_float log10(const big_float& x, const big_float& epsilon)
+	{
+		return logn(x, epsilon) / logn(10, epsilon);
+	}
+
+	friend big_float log(const big_float& x, const big_float& exponent, const big_float& epsilon)
+	{
+		return logn(x, epsilon) / logn(exponent, epsilon);
 	}
 
 #pragma endregion

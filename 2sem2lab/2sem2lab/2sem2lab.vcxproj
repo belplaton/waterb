@@ -133,6 +133,8 @@
     <ClInclude Include="big_float\big_float.hpp" />
     <ClInclude Include="big_int\big_int.hpp" />
     <ClInclude Include="big_int\external_utility.hpp" />
+    <ClInclude Include="linked_list\linked_list.hpp" />
+    <ClInclude Include="polynomial\polynomial.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
