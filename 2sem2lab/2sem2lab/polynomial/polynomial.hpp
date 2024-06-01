@@ -131,7 +131,76 @@ public:
 
 #pragma endregion
 
-#pragma region Assigment Operators
+#pragma region Unary Operators
+
+	polynomial operator + () const
+	{
+		return *this;
+	}
+
+	polynomial operator - () const
+	{
+		auto temp(*this);
+		for (auto& element : temp._polynomial_list)
+		{
+			element.coefficient = -element.coefficient;
+		}
+
+		return temp;
+	}
+
+	static polynomial_data diff(const polynomial_data& other)
+	{
+		auto temp = polynomial_data();
+		temp.coefficient = other.coefficient * other.degree;
+		temp.degree = other.degree - 1;
+
+		return temp;
+	}
+
+	static polynomial diff(const polynomial& other)
+	{
+		auto result = polynomial();
+
+		for (auto& element : other._polynomial_list)
+		{
+			result += diff(element);
+		}
+	}
+
+	static polynomial_data diff(const polynomial_data& other)
+	{
+		auto temp = polynomial_data();
+		temp.coefficient = other.coefficient * other.degree;
+		temp.degree = other.degree - 1;
+
+		return temp;
+	}
+
+	static polynomial integr(const polynomial& other)
+	{
+		auto temp = polynomial();
+
+		for (auto& element : other._polynomial_list)
+		{
+			temp += integr(element);
+		}
+	}
+
+	static polynomial_data integr(const polynomial_data& other)
+	{
+		auto temp = polynomial_data();
+		temp.coefficient = other.coefficient / (other.degree + 1);
+		temp.degree = other.degree + 1;
+
+		return temp;
+	}
+
+#pragma endregion
+
+#pragma region Assigment Arithmetic Operators
+
+#pragma region Polynomial Data
 
 	polynomial& operator += (const polynomial_data& other)
 	{
@@ -141,7 +210,7 @@ public:
 		{
 			(*element).coefficient += other.coefficient;
 		}
-		else
+		else if (other.coefficient != 0)
 		{
 			_polynomial_list.add_value(other);
 		}
@@ -157,7 +226,7 @@ public:
 		{
 			(*element).coefficient -= other.coefficient;
 		}
-		else
+		else if (other.coefficient != 0)
 		{
 			auto temp = polynomial_data(other.degree, -other.coefficient);
 			_polynomial_list.add_value(temp);
@@ -194,6 +263,9 @@ public:
 		return *this;
 	}
 
+#pragma endregion
+
+#pragma region Polymonial
 
 	polynomial& operator += (const polynomial& other)
 	{
@@ -235,6 +307,9 @@ public:
 		return *this;
 	}
 
+#pragma endregion
+
+#pragma region Big Float
 
 	polynomial& operator += (const big_float& other)
 	{
@@ -267,6 +342,120 @@ public:
 
 		return *this;
 	}
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region Arithmetic Operators
+
+#pragma region Polynomial Data
+
+	polynomial operator + (const polynomial_data& other) const
+	{
+		auto temp = polynomial(this);
+		temp += other;
+
+		return *this;
+	}
+
+	polynomial operator - (const polynomial_data& other) const
+	{
+		auto temp = polynomial(this);
+		temp -= other;
+
+		return *this;
+	}
+
+	polynomial operator * (const polynomial_data& other) const
+	{
+		auto temp = polynomial(this);
+		temp += other;
+
+		return *this;
+	}
+
+	polynomial operator / (const polynomial_data& other) const
+	{
+		auto temp = polynomial(this);
+		temp /= other;
+
+		return *this;
+	}
+
+#pragma endregion
+
+#pragma region Polynomial
+
+	polynomial operator + (const polynomial& other) const
+	{
+		auto temp = polynomial(this);
+		temp += other;
+
+		return *this;
+	}
+
+	polynomial operator - (const polynomial& other) const
+	{
+		auto temp = polynomial(this);
+		temp -= other;
+
+		return *this;
+	}
+
+	polynomial operator * (const polynomial& other) const
+	{
+		auto temp = polynomial(this);
+		temp *= other;
+
+		return *this;
+	}
+
+	polynomial operator / (const polynomial& other) const
+	{
+		auto temp = polynomial(this);
+		temp /= other;
+
+		return *this;
+	}
+
+#pragma endregion
+
+#pragma region Big Float
+
+	polynomial operator + (const big_float& other) const
+	{
+		auto temp = polynomial(this);
+		temp += other;
+
+		return *this;
+	}
+
+	polynomial operator - (const big_float& other) const
+	{
+		auto temp = polynomial(this);
+		temp -= other;
+
+		return *this;
+	}
+
+	polynomial operator * (const big_float& other) const
+	{
+		auto temp = polynomial(this);
+		temp *= other;
+
+		return *this;
+	}
+
+	polynomial operator / (const big_float& other) const
+	{
+		auto temp = polynomial(this);
+		temp /= other;
+
+		return *this;
+	}
+
+#pragma endregion
 
 #pragma endregion
 
