@@ -967,6 +967,11 @@ public:
         return result;
     }
 
+    inline bool is_negate() const
+    {
+        return get_bit(_digits[0], sign_bit_mask - 1);
+    }
+
 #pragma endregion
 
 };

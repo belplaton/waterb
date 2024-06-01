@@ -413,10 +413,7 @@ public:
 
 	friend std::ostream& operator << (std::ostream& stream, const big_float& other)
 	{
-		stream << (big_int::is_negate(other._denominator) ? "-" : "") <<
-			other._numerator.to_string(10) <<
-			"/" <<
-			big_int::abs(other._denominator).to_string(10);
+		stream << other.to_string(10);
 
 		return stream;
 	}
@@ -622,6 +619,11 @@ public:
 			throw std::invalid_argument("Invalid base.");
 		}
 
+		auto result = std::string();
+		result += std::string((big_int::is_negate(_denominator) ? "-" : "")) +
+			_numerator.to_string(base) + "/" + big_int::abs(_denominator).to_string(10);
+
+		return result;
 	}
 
 	friend big_float round(const big_float& base, const big_float& epsilon)
@@ -773,6 +775,11 @@ public:
 	friend big_float log(const big_float& x, const big_float& exponent, const big_float& epsilon)
 	{
 		return logn(x, epsilon) / logn(exponent, epsilon);
+	}
+
+	inline bool is_negate() const
+	{
+		return big_int::is_negate(_denominator);
 	}
 
 #pragma endregion

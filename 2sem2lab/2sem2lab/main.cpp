@@ -1,6 +1,7 @@
 #include "big_int/big_int.hpp"
 #include "big_float/big_float.hpp"
-#include "linked_list/linked_list.hpp" 
+#include "linked_list/linked_list.hpp"
+#include "polynomial/polynomial.hpp"
 
 #include <iostream>
 
@@ -9,31 +10,54 @@ using namespace std;
 int main()
 {   
     
-    auto lst = linked_list<big_int>();
-    auto ll = linked_list<big_int>();
-    auto a1 = big_int("-142515");
-    auto a2 = big_int("124124");
+    std::shared_ptr<polynomial> pol = std::make_shared<polynomial>(polynomial());
+    std::shared_ptr<polynomial> pol2 = std::make_shared<polynomial>(polynomial());
+    std::cout << "A" << std::endl;
+    *pol += big_float(6, 7);
+    std::cout << "A" << std::endl;
+    *pol *= big_float(6, 7);
+    std::cout << "A" << std::endl;
+    *pol -= big_float(2, 4);
+    std::cout << "A" << std::endl;
 
-    std::cout << lst << " " << lst.get_length() << std::endl;
-    lst.add_value(a1);
-    std::cout << lst << " " << lst.get_length() << std::endl;
-    lst.remove(a2);
-    std::cout << lst << " " << lst.get_length() << std::endl;
-    lst.add_value(a2);
-    std::cout << lst << " " << lst.get_length() << std::endl;
+    auto kk = linked_list<big_float>();
 
-    ll.add_value(big_int("84572"));
-    auto owo = big_int("1272");
-    ll.add_value(owo);
-    ll.add_value(big_int("9125"));
+    kk.add_value(4125);
+    kk.add_value(big_float(7231, 255));
+    kk.add_value(big_float(1262782, 623));
+    kk.add_value(-1251);
 
-    auto g = ll + lst;
-    std::cout << ll << std::endl;
+    auto a = false;
+    for (auto& s : kk)
+    {
+        if (a) *pol *= s;
+        else *pol -= s;
+        a = !a;
+    };
 
-    std::cout << g << std::endl;
+    *pol2 += big_float(123, 61);
+    *pol2 *= big_float(15, 156);
+    *pol2 -= big_float(1251, 1723);
+    *pol2 /= big_float(123515, 123515123);
+    *pol2 *= big_float(15, 156);
 
-    g.sort([](big_int a, big_int b) { return a < b; });
+    std::cout << *pol << std::endl;
+    std::cout << "aaaa" << std::endl;
+    std::cout << *pol2 << std::endl;
+    std::cout << "aaaa" << std::endl;
 
-    std::cout << g << std::endl;
+    *pol -= *pol2;
+
+    std::cout << *pol << std::endl;
+    std::cout << "aaaa" << std::endl;
+
+    auto pol3 = polynomial();
+
+    std::cin >> pol3;
+
+    std::cout << "aaa444a" << std::endl;
+
+    std::cout << pol3 << std::endl;
+
     return 0;
 }

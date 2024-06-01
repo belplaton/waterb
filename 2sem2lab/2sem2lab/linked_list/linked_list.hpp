@@ -2,6 +2,7 @@
 #ifndef _LINKED_LIST_
 #define _LINKED_LIST_
 
+#include <memory>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -16,19 +17,19 @@ private:
 
 	struct node
 	{
-		node* p_next;
+		std::shared_ptr<node> p_next;
 		T value;
 
 		explicit node(T value) : value(value), p_next(nullptr) {}
 	};
 
-	node* _p_head = nullptr;
-	node* _p_tail = nullptr;
+	std::shared_ptr<node> _p_head = nullptr;
+	std::shared_ptr<node> _p_tail = nullptr;
 	unsigned int _length = 0;
 
 #pragma region Base
 
-	node* insert_node(T value, unsigned int index)
+	std::shared_ptr<node> insert_node(T value, unsigned int index)
 	{
 		if (index == _length)
 		{
@@ -40,7 +41,7 @@ private:
 			throw std::invalid_argument("Out of range. Position should be less than length");
 		}
 
-		node* p_new = new node(value);
+		std::shared_ptr<node> p_new = std::make_shared<node>(value);
 		if (index == 0)
 		{
 			p_new->p_next = _p_head;
@@ -48,7 +49,7 @@ private:
 		}
 		else
 		{
-			node* p_prev = get_node(index - 1);
+			std::shared_ptr<node> p_prev = get_node(index - 1);
 			p_new->p_next = p_prev->p_next;
 			p_prev->p_next = p_new;
 		}
@@ -61,7 +62,7 @@ private:
 		return p_new;
 	}
 
-	node* get_node(unsigned int index) const
+	std::shared_ptr<node> get_node(unsigned int index) const
 	{
 		if (index + 1 > _length)
 		{
@@ -77,20 +78,20 @@ private:
 		return current;
 	}
 
-	node* set_node(T value, unsigned int index)
+	std::shared_ptr<node> set_node(T value, unsigned int index)
 	{
 		if (index + 1 > _length)
 		{
 			throw std::invalid_argument("Out of range. Position should be less than length");
 		}
 
-		node* p_new = new node(value);
+		std::shared_ptr<node> p_new = std::make_shared<node>(value);
 		if (index == 0)
 		{
 			if (_p_head != nullptr)
 			{
 				p_new->p_next = _p_head->p_next;
-				delete _p_head;
+				_p_head.reset();
 				_p_head = p_new;
 			}
 			else
@@ -100,11 +101,11 @@ private:
 		}
 		else
 		{
-			node* p_prev = get_node(index - 1);
-			node* p_current = p_prev->p_next;
+			std::shared_ptr<node> p_prev = get_node(index - 1);
+			std::shared_ptr<node> p_current = p_prev->p_next;
 			p_new->p_next = p_current->p_next;
 			p_prev->p_next = p_new;
-			delete p_current;
+			p_current.reset();
 		}
 
 		if (index + 1 == _length)
@@ -115,9 +116,9 @@ private:
 		return p_new;
 	}
 
-	node* add_node(T value)
+	std::shared_ptr<node> add_node(T value)
 	{
-		node* p_new = new node(value);
+		std::shared_ptr<node> p_new = std::make_shared<node>(value);
 		if (_p_tail != nullptr)
 		{
 			_p_tail->p_next = p_new;
@@ -134,9 +135,9 @@ private:
 		return p_new;
 	}
 
-	node* find_node(T value) const
+	std::shared_ptr<node> find_node(T value) const
 	{
-		node* p_current = _p_head;
+		std::shared_ptr<node> p_current = _p_head;
 		while (p_current != nullptr)
 		{
 			if (p_current->value == value)
@@ -152,8 +153,107 @@ private:
 
 #pragma endregion
 
+#pragma region Utility
+
+	std::shared_ptr<node> split(std::shared_ptr<node> head) {
+		std::shared_ptr<node> fast = head;
+		std::shared_ptr<node> slow = head;
+		std::shared_ptr<node> prev = nullptr;
+
+		while (fast && fast->p_next)
+		{
+			fast = fast->p_next->p_next;
+			prev = slow;
+			slow = slow->p_next;
+		}
+
+		if (prev)
+		{
+			prev->p_next.reset();
+		}
+
+		return slow;
+	}
+
+	std::shared_ptr<node> merge(std::shared_ptr<node> left, std::shared_ptr<node> right, std::function<bool(T, T)> compare)
+	{
+		if (!left) return right;
+		if (!right) return left;
+
+		if (compare(left->value, right->value))
+		{
+			left->p_next = merge(left->p_next, right, compare);
+			return left;
+		}
+		else
+		{
+			right->p_next = merge(left, right->p_next, compare);
+			return right;
+		}
+	}
+
+	std::shared_ptr<node> merge_sort(std::shared_ptr<node> head, std::function<bool(T, T)> compare)
+	{
+		if (!head || !head->p_next)
+		{
+			return head;
+		}
+
+		std::shared_ptr<node> middle = split(head);
+		std::shared_ptr<node> left = merge_sort(head, compare);
+		std::shared_ptr<node> right = merge_sort(middle, compare);
+
+		return merge(left, right, compare);
+	}
+
+#pragma endregion
 
 public:
+
+#pragma region Iterator
+
+	class iterator
+	{
+
+	private:
+
+		std::shared_ptr<node> current;
+
+	public:
+
+		using iterator_category = std::forward_iterator_tag;
+		using difference_type = std::ptrdiff_t;
+		using value_type = T;
+		using pointer = T*;
+		using reference = T&;
+
+		iterator(std::shared_ptr<node> ptr) : current(ptr) {}
+
+		T& operator*() const { return current->value; }
+		T* operator->() { return &current->value; }
+
+		// Prefix increment
+		iterator& operator++() {
+			current = current->p_next;
+			return *this;
+		}
+
+		// Postfix increment
+		iterator operator++(int) {
+			iterator temp = *this;
+			++(*this);
+			return temp;
+		}
+
+		friend bool operator==(const iterator& a, const iterator& b) { return a.current == b.current; }
+		friend bool operator!=(const iterator& a, const iterator& b) { return a.current != b.current; }
+
+	};
+
+	iterator begin() const { return iterator(_p_head); }
+	iterator end() const { return iterator(nullptr); }
+
+#pragma endregion
 
 #pragma region Constructors
 
@@ -264,11 +364,11 @@ public:
 
 #pragma region  Base
 
-	unsigned int get_length() { return _length; } const
+	unsigned int get_length()  const { return _length; }
 
-	T get_value(unsigned int index) const
+	T& get_value(unsigned int index) const
 	{
-		node* p_node = get_node(index);
+		std::shared_ptr<node> p_node = get_node(index);
 		return p_node->value;
 	}
 
@@ -292,8 +392,8 @@ public:
 
 	void remove(T value)
 	{
-		node* p_prev = nullptr;
-		node* p_current = _p_head;
+		std::shared_ptr<node> p_prev = nullptr;
+		std::shared_ptr<node> p_current = _p_head;
 		while (p_current != nullptr)
 		{
 			if (p_current->value == value) break;
@@ -318,7 +418,7 @@ public:
 			_p_tail = p_prev;
 		}
 
-		delete p_current;
+		p_current.reset();
 		_length--;
 	}
 
@@ -337,8 +437,8 @@ public:
 			throw std::invalid_argument("Out of range. Position should be less than length");
 		}
 
-		node* p_prev = nullptr;
-		node* p_current = _p_head;
+		std::shared_ptr<node> p_prev = nullptr;
+		std::shared_ptr<node> p_current = _p_head;
 		while (index--)
 		{
 			p_prev = p_current;
@@ -360,12 +460,12 @@ public:
 		}
 
 		_length--;
-		delete p_current;
+		p_current.reset();
 	}
 
 	bool contains(T value) const
 	{
-		node* p_current = _p_head;
+		std::shared_ptr<node> p_current = _p_head;
 		while (p_current != nullptr)
 		{
 			if (p_current->value == value) return true;
@@ -376,30 +476,46 @@ public:
 		return false;;
 	}
 
+	T* find(std::function<bool(T)> compare) const
+	{
+		std::shared_ptr<node> p_current = _p_head;
+		for (unsigned int i = 0; i < _length; i++)
+		{
+			if (compare(p_current->value))
+			{
+				return &p_current->value;
+			}
+
+			p_current = p_current->p_next;
+		}
+
+		return nullptr;
+	}
+
 #pragma endregion
 
 #pragma region Utility
 
 	void clear()
 	{
-		node* p_prev = nullptr;
-		node* p_current = _p_head;
+		std::shared_ptr<node> p_prev = nullptr;
+		std::shared_ptr<node> p_current = _p_head;
 		while (p_current != nullptr)
 		{
 			p_prev = p_current;
 			p_current = p_current->p_next;
-			delete p_prev;
+			p_prev.reset();
 		}
 
-		_p_head = nullptr;
-		_p_tail = nullptr;
+		_p_head.reset();
+		_p_tail.reset();
 		_length = 0;
 	}
 
 	linked_list copy()
 	{
 		linked_list result = linked_list();
-		node* p_current = _p_head;
+		std::shared_ptr<node> p_current = _p_head;
 		for (unsigned int i = 0; i < _length; i++)
 		{
 			auto value = p_current->value;
@@ -412,7 +528,7 @@ public:
 	void copy_to(linked_list other) const
 	{
 		other.clear();
-		node* p_current = _p_head;
+		std::shared_ptr<node> p_current = _p_head;
 		for (unsigned int i = 0; i < _length; i++)
 		{
 			auto value = p_current->value;
@@ -424,7 +540,7 @@ public:
 	void copy_from(const linked_list& other)
 	{
 		clear();
-		node* p_current = other._p_head;
+		std::shared_ptr<node> p_current = other._p_head;
 		for (unsigned int i = 0; i < other._length; i++)
 		{
 			auto value = p_current->value;
@@ -433,12 +549,12 @@ public:
 		}
 	}
 
-	std::string to_string()  const
+	std::string to_string() const
 	{
 		std::stringstream result = std::stringstream();
 		result << "{";
 
-		node* p_current = _p_head;
+		std::shared_ptr<node> p_current = _p_head;
 		while (p_current != nullptr)
 		{
 			result << p_current->value;
@@ -455,57 +571,10 @@ public:
 		return result.str();
 	}
 
-	node* split(node* head) {
-		node* fast = head;
-		node* slow = head;
-		node* prev = nullptr;
-
-		while (fast && fast->p_next) {
-			fast = fast->p_next->p_next;
-			prev = slow;
-			slow = slow->p_next;
-		}
-
-		if (prev) {
-			prev->p_next = nullptr;
-		}
-
-		return slow;
-	}
-
-	node* merge(node* left, node* right, std::function<bool(T, T)> compare)
-	{
-		if (!left) return right;
-		if (!right) return left;
-
-		if (compare(left->value, right->value)) {
-			left->p_next = merge(left->p_next, right, compare);
-			return left;
-		}
-		else {
-			right->p_next = merge(left, right->p_next, compare);
-			return right;
-		}
-	}
-
-	node* merge_sort(node* head, std::function<bool(T, T)> compare)
-	{
-		if (!head || !head->p_next) {
-			return head;
-		}
-
-		node* middle = split(head);
-		node* left = merge_sort(head, compare);
-		node* right = merge_sort(middle, compare);
-
-		return merge(left, right, compare);
-	}
-
 	void sort(std::function<bool(T, T)> compare)
 	{
 		_p_head = merge_sort(_p_head, compare);
 
-		// Update tail after sorting
 		_p_tail = _p_head;
 		if (_p_tail)
 		{
