@@ -24,10 +24,10 @@ int main()
     }
     
 
-    auto a = linear_vector(std::vector<big_float>({ 5, 3, 7, 4 }));
+    auto a = linear_vector(std::vector<big_float>({ 5, 3, 7}));
     auto b = linear_vector("[7/1, 8/1, 9/1]");
     auto c = linear_vector("[5/1, 6/1, 2/1]");
-    auto d = linear_algebra::cross(std::vector<linear_vector>({ b, c }));
+    auto d = linear_algebra::mixed_product(a, std::vector<linear_vector>({ b, c }));
     std::cout << d << std::endl;
 
 
