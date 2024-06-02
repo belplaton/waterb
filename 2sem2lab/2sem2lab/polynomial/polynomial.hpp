@@ -9,6 +9,9 @@
 #include "../big_float/big_float.hpp"
 #include "../linked_list/linked_list.hpp"
 
+static std::regex polynomial_pattern(R"(\{([^{}]+?)\})");
+static std::regex polynomial_data_pattern(R"(\[(\+|\-)\]\[(\d+\/\d+)\]x\^\[(\d+)\])");
+
 class polynomial
 {
 
@@ -92,6 +95,42 @@ public:
 		_polynomial_list.add_value(other);
 	}
 
+	polynomial(const std::string& other)
+	{
+		_polynomial_list = linked_list<polynomial_data>();
+
+		std::sregex_iterator iter(other.begin(), other.end(), polynomial_pattern);
+		std::sregex_iterator end;
+
+		if (!is_polynomial(other))
+		{
+			throw std::invalid_argument("Invalid number format! Use [<sign>][<numerator/denominator>]x^[<exponent>] with decimal format.");
+		}
+
+		if (iter != end)
+		{
+			while (iter != end)
+			{
+				auto match = *iter;
+				auto data_matches = std::smatch();
+				auto current = match.str();
+				if (std::regex_search(current, data_matches, polynomial_data_pattern))
+				{
+					auto is_negate = data_matches[1].str() == "-";
+					auto coefficient = big_float(data_matches[2].str());
+					if (is_negate) coefficient = -coefficient;
+
+					auto degree = big_int(data_matches[3].str());
+					auto temp_data = polynomial_data(degree, coefficient);
+
+					*this += temp_data;
+				}
+
+				++iter;
+			}
+		}
+	}
+
 	polynomial(const polynomial& other)
 	{
 		_polynomial_list = linked_list<polynomial_data>(other._polynomial_list);
@@ -160,19 +199,21 @@ public:
 
 	static polynomial diff(const polynomial& other)
 	{
-		auto result = polynomial();
+		auto temp = polynomial();
 
 		for (auto& element : other._polynomial_list)
 		{
-			result += diff(element);
+			temp += diff(element);
 		}
+
+		return temp;
 	}
 
-	static polynomial_data diff(const polynomial_data& other)
+	static polynomial_data integr(const polynomial_data& other)
 	{
 		auto temp = polynomial_data();
-		temp.coefficient = other.coefficient * other.degree;
-		temp.degree = other.degree - 1;
+		temp.coefficient = other.coefficient / (other.degree + 1);
+		temp.degree = other.degree + 1;
 
 		return temp;
 	}
@@ -185,13 +226,6 @@ public:
 		{
 			temp += integr(element);
 		}
-	}
-
-	static polynomial_data integr(const polynomial_data& other)
-	{
-		auto temp = polynomial_data();
-		temp.coefficient = other.coefficient / (other.degree + 1);
-		temp.degree = other.degree + 1;
 
 		return temp;
 	}
@@ -252,12 +286,6 @@ public:
 		{
 			value.coefficient /= other.coefficient;
 			value.degree -= other.degree;
-
-			if (value.degree < 0)
-			{
-				value.coefficient = 1 / value.coefficient;
-				value.degree = -value.degree;
-			}
 		}
 
 		return *this;
@@ -353,34 +381,34 @@ public:
 
 	polynomial operator + (const polynomial_data& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp += other;
 
-		return *this;
+		return temp;
 	}
 
 	polynomial operator - (const polynomial_data& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp -= other;
 
-		return *this;
+		return temp;
 	}
 
 	polynomial operator * (const polynomial_data& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp += other;
 
-		return *this;
+		return temp;
 	}
 
 	polynomial operator / (const polynomial_data& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp /= other;
 
-		return *this;
+		return temp;
 	}
 
 #pragma endregion
@@ -389,34 +417,34 @@ public:
 
 	polynomial operator + (const polynomial& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp += other;
 
-		return *this;
+		return temp;
 	}
 
 	polynomial operator - (const polynomial& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp -= other;
 
-		return *this;
+		return temp;
 	}
 
 	polynomial operator * (const polynomial& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp *= other;
 
-		return *this;
+		return temp;
 	}
 
 	polynomial operator / (const polynomial& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp /= other;
 
-		return *this;
+		return temp;
 	}
 
 #pragma endregion
@@ -425,34 +453,34 @@ public:
 
 	polynomial operator + (const big_float& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp += other;
 
-		return *this;
+		return temp;
 	}
 
 	polynomial operator - (const big_float& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp -= other;
 
-		return *this;
+		return temp;
 	}
 
 	polynomial operator * (const big_float& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp *= other;
 
-		return *this;
+		return temp;
 	}
 
 	polynomial operator / (const big_float& other) const
 	{
-		auto temp = polynomial(this);
+		auto temp = polynomial(*this);
 		temp /= other;
 
-		return *this;
+		return temp;
 	}
 
 #pragma endregion
@@ -473,60 +501,13 @@ public:
 		auto input = std::string();
 		stream >> input;
 
-
-		std::regex polynomial_pattern(R"(\{([^{}]+?)\})");
-		std::regex data_pattern(R"(\[(\+|\-)\]\[(\d+\/\d+)\]x\^\[(\d+)\])");
-
-		std::sregex_iterator first(input.begin(), input.end(), polynomial_pattern);
-		std::sregex_iterator end;
-
-		if (first != end)
-		{
-			while (first != end)
-			{
-				auto match = *first;
-				auto data_matches = std::smatch();
-				auto current = match.str();
-				if (!std::regex_search(current, data_matches, data_pattern))
-				{
-					stream.setstate(std::ios::failbit);
-					return stream;
-				}
-
-				++first;
-			}
-		}
-		else
+		if (!is_polynomial(input))
 		{
 			stream.setstate(std::ios::failbit);
 			return stream;
 		}
 
-		other = polynomial();
-		std::sregex_iterator second(input.begin(), input.end(), polynomial_pattern);
-
-		if (second != end)
-		{
-			while (second != end)
-			{
-				auto match = *second;
-				auto data_matches = std::smatch();
-				auto current = match.str();
-				if (std::regex_search(current, data_matches, data_pattern))
-				{
-					auto is_negate = data_matches[1].str() == "-";
-					auto coefficient = big_float(data_matches[2].str());
-					if (is_negate) coefficient = -coefficient;
-
-					auto degree = big_int(data_matches[3].str());
-					auto temp_data = polynomial_data(degree, coefficient);
-
-					other += temp_data;
-				}
-
-				++second;
-			}
-		}
+		other = polynomial(input);
 
 		return stream;
 	}
@@ -551,6 +532,35 @@ public:
 		result << ")";
 
 		return result.str();
+	}
+
+	static bool is_polynomial(std::string value)
+	{
+		polynomial* result = nullptr;
+		std::sregex_iterator iter(value.begin(), value.end(), polynomial_pattern);
+		std::sregex_iterator end;
+
+		if (iter != end)
+		{
+			while (iter != end)
+			{
+				auto match = *iter;
+				auto data_matches = std::smatch();
+				auto current = match.str();
+				if (!std::regex_search(current, data_matches, polynomial_data_pattern))
+				{
+					return false;
+				}
+
+				++iter;
+			}
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 #pragma endregion

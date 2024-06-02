@@ -2,6 +2,7 @@
 #include "big_float/big_float.hpp"
 #include "linked_list/linked_list.hpp"
 #include "polynomial/polynomial.hpp"
+#include "polynomial/polynomial_calc.hpp"
 
 #include <iostream>
 
@@ -9,7 +10,7 @@ using namespace std;
 
 int main()
 {   
-    
+    /*
     std::shared_ptr<polynomial> pol = std::make_shared<polynomial>(polynomial());
     std::shared_ptr<polynomial> pol2 = std::make_shared<polynomial>(polynomial());
     std::cout << "A" << std::endl;
@@ -58,6 +59,18 @@ int main()
     std::cout << "aaa444a" << std::endl;
 
     std::cout << pol3 << std::endl;
+    */
+
+
+    auto file_path = std::string("calc_data.txt");
+    auto calc = polynomial_calc_parser(file_path);
+
+    while (calc.check_next())
+    {
+        auto result = calc.parse_line();
+        std::cout << result << std::endl;
+    }
+
 
     return 0;
 }

@@ -42,6 +42,9 @@
     <ClInclude Include="linked_list\linked_list.hpp">
       <Filter>Файлы заголовков\linked_list</Filter>
     </ClInclude>
+    <ClInclude Include="polynomial\polynomial_calc.hpp">
+      <Filter>Файлы заголовков\polynomial</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
