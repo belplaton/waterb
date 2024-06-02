@@ -46,6 +46,11 @@ public:
 			return result.str();
 		}
 
+		big_float process_variable(const big_float& variable)
+		{
+			auto result = coefficient * pow(variable, degree);
+			return result;
+		}
 	};
 
 private:
@@ -188,43 +193,51 @@ public:
 		return temp;
 	}
 
-	static polynomial_data diff(const polynomial_data& other)
+	static big_float diff(const polynomial_data& other, const big_float& variable)
 	{
-		auto temp = polynomial_data();
-		temp.coefficient = other.coefficient * other.degree;
-		temp.degree = other.degree - 1;
+		auto temp = big_float();
+		temp = other.coefficient * other.degree;
+		temp *= pow(variable, other.degree - 1);
 
 		return temp;
 	}
 
-	static polynomial diff(const polynomial& other)
+	static big_float diff(const polynomial& other, const big_float& variable)
 	{
-		auto temp = polynomial();
+		auto temp = big_float();
 
 		for (auto& element : other._polynomial_list)
 		{
-			temp += diff(element);
+			temp += diff(element, variable);
 		}
 
 		return temp;
 	}
 
-	static polynomial_data integr(const polynomial_data& other)
+	static big_float integr(const polynomial_data& other, const big_float& variable)
 	{
-		auto temp = polynomial_data();
-		temp.coefficient = other.coefficient / (other.degree + 1);
-		temp.degree = other.degree + 1;
+		auto temp = big_float();
+		if (other.degree != -1)
+		{
+			temp = other.coefficient / (other.degree + 1);
+			temp *= pow(variable, other.degree + 1);
+		}
+		else
+		{
+			auto eps = big_float("1/10");
+			temp = other.coefficient * logn(variable, eps);
+		}
 
 		return temp;
 	}
 
-	static polynomial integr(const polynomial& other)
+	static big_float integr(const polynomial& other, const big_float& variable)
 	{
-		auto temp = polynomial();
+		auto temp = big_float();
 
 		for (auto& element : other._polynomial_list)
 		{
-			temp += integr(element);
+			temp += integr(element, variable);
 		}
 
 		return temp;
@@ -561,6 +574,17 @@ public:
 		}
 
 		return true;
+	}
+
+	big_float process_variable(const big_float& variable)
+	{
+		auto result = big_float();
+		for (auto& element : _polynomial_list)
+		{
+			result += element.process_variable(variable);
+		}
+
+		return result;
 	}
 
 #pragma endregion

@@ -25,6 +25,9 @@
     <Filter Include="Файлы заголовков\linked_list">
       <UniqueIdentifier>{bd4429ae-9c9a-4069-be14-82a566651bcd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\linear_algebra">
+      <UniqueIdentifier>{18c034f0-1294-4738-a494-be30a0f91ba9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="big_int\big_int.hpp">
@@ -44,6 +47,15 @@
     </ClInclude>
     <ClInclude Include="polynomial\polynomial_calc.hpp">
       <Filter>Файлы заголовков\polynomial</Filter>
+    </ClInclude>
+    <ClInclude Include="linear_algebra\matrix.hpp">
+      <Filter>Файлы заголовков\linear_algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="linear_algebra\linear_vector.hpp">
+      <Filter>Файлы заголовков\linear_algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="linear_algebra\linear_algebra.hpp">
+      <Filter>Файлы заголовков\linear_algebra</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

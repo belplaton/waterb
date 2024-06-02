@@ -135,6 +135,9 @@
     <ClInclude Include="big_float\big_float.hpp" />
     <ClInclude Include="big_int\big_int.hpp" />
     <ClInclude Include="big_int\external_utility.hpp" />
+    <ClInclude Include="linear_algebra\linear_algebra.hpp" />
+    <ClInclude Include="linear_algebra\linear_vector.hpp" />
+    <ClInclude Include="linear_algebra\matrix.hpp" />
     <ClInclude Include="linked_list\linked_list.hpp" />
     <ClInclude Include="polynomial\polynomial.hpp" />
     <ClInclude Include="polynomial\polynomial_calc.hpp" />

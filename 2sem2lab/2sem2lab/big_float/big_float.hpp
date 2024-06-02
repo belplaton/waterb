@@ -2,7 +2,10 @@
 #ifndef _BIGFLOAT_
 #define _BIGFLOAT_
 
+#include <regex>
 #include "../big_int/big_int.hpp"
+
+static std::regex big_float_pattern = std::regex(R"((-)?(\d+\/\d+))");
 
 class big_float
 {
@@ -26,8 +29,8 @@ public:
 
 	big_float(int digit)
 	{
-		_numerator = big_int(digit);
-		_denominator = big_int(1);
+		_numerator = big_int(digit < 0 ? -digit : digit);
+		_denominator = big_int(digit < 0 ? -1 : 1);
 	}
 
 	big_float(unsigned int digit)
@@ -780,6 +783,11 @@ public:
 	inline bool is_negate() const
 	{
 		return big_int::is_negate(_denominator);
+	}
+
+	static bool is_big_float(std::string value)
+	{
+		return std::regex_match(value, big_float_pattern);
 	}
 
 #pragma endregion

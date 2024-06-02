@@ -12,7 +12,9 @@
 #include <algorithm>
 #include <regex>
 
-static std::regex unary_op_pattern(R"(diff|integr|\+|\-)");
+static std::regex unary_op_pattern(R"(\+|\-)");
+static std::regex diff_op_pattern(R"(diff\[(\d+\/\d+)\])");
+static std::regex integr_op_pattern(R"(integr\[(\d+\/\d+)\])");
 static std::regex binary_op_pattern(R"(\+|\-|\*|\/|==|!=)");
 
 class polynomial_calc_parser
@@ -30,7 +32,8 @@ public:
 	polynomial_calc_parser(std::string file_path)
 	{
 		_opened_file = std::ifstream(file_path);
-		if (!_opened_file.is_open()) {
+		if (!_opened_file.is_open())
+		{
 			std::cerr << "Could not open the file: " << std::endl;
 			throw std::invalid_argument("Invalid file path or file is open already");
 		}
@@ -106,8 +109,8 @@ private:
 		polynomial* first;
 		std::string* op;
 
-		first = string_to_polynomial((*iter++).str());
 		op = string_to_unary((*iter++).str());
+		first = string_to_polynomial((*iter++).str());
 
 		if (first == nullptr || op == nullptr)
 		{
@@ -115,13 +118,16 @@ private:
 		}
 
 		std::string result;
-		if (*op == "diff")
+		auto match = std::smatch();
+		if (std::regex_match(*op, match, diff_op_pattern))
 		{
-			result = polynomial::diff(*first).to_string(10);
+			auto variable = big_float(match[1]);
+			result = polynomial::diff(*first, variable).to_string(10);
 		}
-		else if (*op == "integr")
+		if (std::regex_match(*op, match, integr_op_pattern))
 		{
-			result = polynomial::integr(*first).to_string(10);
+			auto variable = big_float(match[1]);
+			result = polynomial::integr(*first, variable).to_string(10);
 		}
 		else if (*op == "+")
 		{
@@ -146,7 +152,7 @@ private:
 		std::string* op;
 
 		first = string_to_polynomial((*iter++).str());
-		op = string_to_unary((*iter++).str());
+		op = string_to_binary((*iter++).str());
 		second = string_to_polynomial((*iter++).str());
 
 		if (first == nullptr || second == nullptr || op == nullptr)
@@ -199,20 +205,26 @@ private:
 		{
 			return new std::string(value);
 		}
+		else if (std::regex_match(value, diff_op_pattern))
+		{
+			return new std::string(value);
+		}
+		else if (std::regex_match(value, integr_op_pattern))
+		{
+			return new std::string(value);
+		}
 
 		return nullptr;
 	}
 
 	static std::string* string_to_binary(const std::string& value)
 	{
-		std::string* result = nullptr;
 		if (std::regex_match(value, binary_op_pattern))
 		{
-			auto temp = std::string(value);
-			result = &temp;
+			return new std::string(value);
 		}
 
-		return result;
+		return nullptr;
 	}
 
 #pragma endregion
