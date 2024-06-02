@@ -155,52 +155,67 @@ public:
         _elements = result;
     }
 
-    linear_vector& operator *= (const linear_vector& other)
-    {
-        if (_elements.size() != other._elements.size())
-        {
-            throw std::invalid_argument("Error! Vectors must be equal dimensions.");
-        }
-
-        for (size_t i = 0; i < _elements.size(); i++)
-        {
-            _elements[i] *= other._elements[i];
-        }
-    }
-
     linear_vector& operator *= (const big_float& scalar)
     {
         for (size_t i = 0; i < _elements.size(); i++)
         {
             _elements[i] *= scalar;
         }
+        
+        return *this;
     }
 
-    linear_vector operator + (const linear_vector& other)
+    linear_vector& operator /= (const big_float& scalar)
+    {
+        for (size_t i = 0; i < _elements.size(); i++)
+        {
+            _elements[i] /= scalar;
+        }
+
+        return *this;
+    }
+
+    linear_vector operator + (const linear_vector& other) const
     {
         auto temp(*this);
         temp += other;
         return temp;
     }
 
-    linear_vector operator - (const linear_vector& other)
+    linear_vector operator - (const linear_vector& other) const
     {
         auto temp(*this);
         temp -= other;
         return temp;
     }
 
-    linear_vector operator * (const linear_vector& other)
+    friend big_float operator * (const linear_vector& first, const linear_vector& second)
     {
-        auto temp(*this);
-        temp *= other;
-        return temp;
+        if (first.size() != second.size())
+        {
+            throw std::invalid_argument("Error! Vectors must be equal dimensions.");
+        }
+
+        auto temp(first);
+        for (size_t i = 0; i < first.size(); i++)
+        {
+            temp[i] *= second._elements[i];
+        }
+
+        return temp.sum();
     }
 
-    linear_vector operator * (const big_float& scalar)
+    linear_vector operator * (const big_float& scalar) const
     {
         auto temp(*this);
         temp *= scalar;
+        return temp;
+    }
+
+    linear_vector operator / (const big_float& scalar) const
+    {
+        auto temp(*this);
+        temp /= scalar;
         return temp;
     }
 
@@ -258,7 +273,7 @@ public:
         _elements.resize(size);
     }
 
-    big_float sum()
+    big_float sum() const
     {
         big_float result;
         for (auto i = 0; i < _elements.size(); i++)
@@ -267,6 +282,55 @@ public:
         }
 
         return result;
+    }
+
+    big_float magnitude() const
+    {
+        big_float result;
+        for (auto i = 0; i < _elements.size(); i++)
+        {
+            result += (_elements[i] * _elements[i]);
+        }
+
+        auto eps = big_float("1/10");
+        result = root(result, 2, eps);
+        return result;
+    }
+
+    big_float dot_product(const linear_vector& other) const
+    {
+        if (size() != other.size())
+        {
+            throw std::invalid_argument("Error! Vectors must be equal dimensions.");
+        }
+
+        big_float result;
+        for (auto i = 0; i < _elements.size(); i++)
+        {
+            result += _elements[i] * other._elements[i];
+        }
+
+        return result;
+    }
+
+    linear_vector normalize() const
+    {
+        auto eps = big_float("1/10");
+        auto temp = root(dot_product(*this), 2, eps);
+
+        return *this / temp;
+    }
+
+    linear_vector projection(const linear_vector& other) const
+    {
+        if (size() != other.size())
+        {
+            throw std::invalid_argument("Error! Vectors must be equal dimensions.");
+        }
+
+        auto temp = other.dot_product(*this) / other.dot_product(other);
+
+        return other * temp;
     }
 
     std::string to_string(unsigned int base) const

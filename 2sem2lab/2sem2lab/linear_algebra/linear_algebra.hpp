@@ -108,6 +108,24 @@ public:
         return result.sum();
     }
 
+    static matrix gram_schmidt(const matrix& value)
+    {
+        auto result = std::vector<linear_vector>(value.row_size());
+        for (auto i = 0; i < value.row_size(); i++)
+        {
+            auto ortogonal = value[i];
+            for (auto j = 0; j < i; j++)
+            {
+                auto temp = ortogonal.projection(result[j]);
+                ortogonal -= temp;
+            }
+
+            result[i] = ortogonal.normalize();
+        }
+
+        return matrix(result);
+    }
+
 #pragma endregion
 
 };

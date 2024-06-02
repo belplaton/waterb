@@ -8,6 +8,7 @@
 
 class matrix
 {
+
 private:
 
 	std::vector<linear_vector> _elements;
@@ -127,6 +128,17 @@ public:
 
 #pragma endregion
 
+#pragma region IO Operators
+
+	friend std::ostream& operator << (std::ostream& stream, const matrix& other)
+	{
+		stream << other.to_string(10);
+
+		return stream;
+	}
+
+#pragma endregion
+
 #pragma region Utility
 
 	unsigned int row_size() const
@@ -194,6 +206,21 @@ public:
 		}
 
 		return det;
+	}
+
+	std::string to_string(unsigned int base) const
+	{
+		std::string result;
+
+		auto space = false;
+		for (auto i = 0; i < _elements.size(); i++)
+		{
+			if (space) result += "\n";
+			result += _elements[i].to_string(10);
+			space = true;
+		}
+
+		return result;
 	}
 
 #pragma endregion

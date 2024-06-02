@@ -24,13 +24,17 @@ int main()
     }
     
 
-    auto a = linear_vector(std::vector<big_float>({ 5, 3, 7}));
+    auto a = linear_vector("[1/1, 2/1, 3/1]");
     auto b = linear_vector("[7/1, 8/1, 9/1]");
     auto c = linear_vector("[5/1, 6/1, 2/1]");
-    auto d = linear_algebra::mixed_product(a, std::vector<linear_vector>({ b, c }));
+    auto d = matrix({a, b, c});
     std::cout << d << std::endl;
 
+    auto k = linear_algebra::gram_schmidt(d);
+    std::cout << k << std::endl;
 
+    auto l = linear_algebra::mixed_product(a, {b, c});
+    std::cout << l << std::endl;
     auto kkk = big_float("5");
     auto eps = big_float("1/10");
 
