@@ -155,15 +155,25 @@ public:
         _elements = result;
     }
 
-    linear_vector& operator *= (const big_float& scalar)
+    linear_vector& operator *= (const linear_vector& other)
     {
-        std::vector<big_float> result(_elements.size());
-        for (size_t i = 0; i < _elements.size(); ++i)
+        if (_elements.size() != other._elements.size())
         {
-            result[i] = _elements[i] * scalar;
+            throw std::invalid_argument("Error! Vectors must be equal dimensions.");
         }
 
-        _elements = result;
+        for (size_t i = 0; i < _elements.size(); i++)
+        {
+            _elements[i] *= other._elements[i];
+        }
+    }
+
+    linear_vector& operator *= (const big_float& scalar)
+    {
+        for (size_t i = 0; i < _elements.size(); i++)
+        {
+            _elements[i] *= scalar;
+        }
     }
 
     linear_vector operator + (const linear_vector& other)
@@ -177,6 +187,13 @@ public:
     {
         auto temp(*this);
         temp -= other;
+        return temp;
+    }
+
+    linear_vector operator * (const linear_vector& other)
+    {
+        auto temp(*this);
+        temp *= other;
         return temp;
     }
 
@@ -239,6 +256,17 @@ public:
     void resize(unsigned int size)
     {
         _elements.resize(size);
+    }
+
+    big_float sum()
+    {
+        big_float result;
+        for (auto i = 0; i < _elements.size(); i++)
+        {
+            result += _elements[i];
+        }
+
+        return result;
     }
 
     std::string to_string(unsigned int base) const

@@ -110,7 +110,14 @@ public:
 
 	matrix(const matrix& other)
 	{
-		_elements = other._elements;
+		auto vectors = std::vector<linear_vector>();
+		for (auto i = 0; i < other.row_size(); i++)
+		{
+			auto temp = linear_vector(other[i]);
+			vectors.push_back(temp);
+		}
+
+		_elements = std::vector<linear_vector>(vectors);
 	}
 
 	~matrix()
@@ -135,6 +142,25 @@ public:
 		}
 
 		return 0;
+	}
+
+	void row_resize(unsigned int size)
+	{
+		_elements.resize(size);
+	}
+
+	void col_resize(unsigned int size)
+	{
+		for (auto i = 0; i < _elements.size(); i++)
+		{
+			_elements[i].resize(size);
+		}
+	}
+
+	void resize(unsigned int row_size, unsigned int col_size)
+	{
+		row_resize(row_size);
+		col_resize(col_size);
 	}
 
 	big_float determinant() const

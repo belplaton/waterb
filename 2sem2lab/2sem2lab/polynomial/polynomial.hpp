@@ -10,7 +10,7 @@
 #include "../linked_list/linked_list.hpp"
 
 static std::regex polynomial_pattern(R"(\{([^{}]+?)\})");
-static std::regex polynomial_data_pattern(R"(\[(\+|\-)\]\[(\d+\/\d+)\]x\^\[(\d+)\])");
+static std::regex polynomial_data_pattern(R"(\[(\+|\-)\]\[(\d+\/\d+)\]x\^\[((-)?(\d+))\])");
 
 class polynomial
 {

@@ -492,6 +492,22 @@ public:
 		return nullptr;
 	}
 
+	unsigned int find(const T& other) const
+	{
+		std::shared_ptr<node> p_current = _p_head;
+		for (unsigned int i = 0; i < _length; i++)
+		{
+			if (p_current->value == other)
+			{
+				return i;
+			}
+
+			p_current = p_current->p_next;
+		}
+
+		return -1;
+	}
+
 #pragma endregion
 
 #pragma region Utility

@@ -31,11 +31,14 @@ D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(41,2
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(50,22): warning C4018: <: несоответствие типов со знаком и без знака
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(62,16): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
 D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(86,16): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(127,24): warning C4267: return: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(134,28): warning C4267: return: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(142,9): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(60,2): warning C4091: static : пропускается слева от "linear_algebra", когда ни одна переменная не объявлена
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(37,27): warning C4018: <: несоответствие типов со знаком и без знака
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(40,31): warning C4018: <: несоответствие типов со знаком и без знака
-D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(43,35): warning C4018: <: несоответствие типов со знаком и без знака
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(114,22): warning C4018: <: несоответствие типов со знаком и без знака
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(134,24): warning C4267: return: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(141,28): warning C4267: return: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\matrix.hpp(168,9): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(113,2): warning C4091: static : пропускается слева от "linear_algebra", когда ни одна переменная не объявлена
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(51,27): warning C4018: <: несоответствие типов со знаком и без знака
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(54,31): warning C4018: <: несоответствие типов со знаком и без знака
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(57,35): warning C4018: <: несоответствие типов со знаком и без знака
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(82,58): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
+D:\_Platon\_Files\GitHub\waterb\2sem2lab\2sem2lab\linear_algebra\linear_algebra.hpp(98,58): warning C4267: аргумент: преобразование из "size_t" в "unsigned int"; возможна потеря данных
   2sem2lab.vcxproj -> D:\_Platon\_Files\GitHub\waterb\2sem2lab\x64\Debug\2sem2lab.exe
