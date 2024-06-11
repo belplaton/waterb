@@ -339,7 +339,7 @@ public:
 		_numerator += other._numerator * _denominator;
 		_denominator *= other._denominator;
 
-		big_float::optimize(this);
+		optimize(this);
 		return *this;
 	}
 
@@ -350,7 +350,7 @@ public:
 		_numerator -= temp;
 		_denominator *= other._denominator;
 
-		big_float::optimize(this);
+		optimize(this);
 		return *this;
 	}
 
@@ -359,7 +359,7 @@ public:
 		_numerator *= other._numerator;
 		_denominator *= other._denominator;
 
-		big_float::optimize(this);
+		optimize(this);
 		return *this;
 	}
 
@@ -368,7 +368,7 @@ public:
 		_numerator *= other._denominator;
 		_denominator *= other._numerator;
 
-		big_float::optimize(this);
+		optimize(this);
 		return *this;
 	}
 
@@ -481,13 +481,16 @@ public:
 		big_float prev = 0;
 		big_float result = 0;
 		big_int n = 0;
+		big_float sign = 1;
 
 		do
 		{
 			prev = result;
-			auto temp = (pow(x, n * 2 + 1) * pow(-1, n)) / big_float(factorial(n * 2 + 1, 1));
+			auto temp = pow(x, n * 2 + 1) / big_float(factorial(n * 2 + 1, 1)) * sign;
 			result = round(result + temp, epsilon);
 			n++;
+			sign = -sign;
+			std::cout << abs(prev - result) << " " << temp << std::endl;
 
 		} while (abs(prev - result) >= epsilon);
 
@@ -520,7 +523,7 @@ public:
 		return result;
 	}
 
-	friend big_float catan(const big_float& x, const big_float& epsilon)
+	friend big_float cotan(const big_float& x, const big_float& epsilon)
 	{
 		return 1 / tan(x, epsilon);
 	}
@@ -596,7 +599,7 @@ public:
 
 #pragma region Utility
 
-	inline static void optimize(big_float* other)
+	static void optimize(big_float* other)
 	{
 		auto min_divisor = gcd((*other)._numerator, (*other)._denominator);
 		(*other)._numerator /= min_divisor;
@@ -631,20 +634,31 @@ public:
 
 	friend big_float round(const big_float& base, const big_float& epsilon)
 	{
+		return base;
 		big_float result;
 		auto temp = big_float(base);
+		unsigned int i = 1;
 		do
 		{
 			result = big_float(temp);
-			temp._numerator >>= 1;
-			temp._denominator >>= 1;
+			temp._numerator >>= i;
+			temp._denominator >>= i;
 			if (temp._numerator == 0 || temp._denominator == 0)
 			{
-				break;
+				if (i == 1) break;
+				else
+				{
+					i = 1;
+					temp = big_float(result);
+					continue;
+				}
 			}
-			 
-			optimize(&temp);
+			
+			i <<= i;
+
 		} while (abs(base - temp) < epsilon);
+
+		optimize(&result);
 
 		return result;
 	}
@@ -694,26 +708,23 @@ public:
 		{
 			throw std::invalid_argument("Cannot compute the 0th root.");
 		}
+		
+		if (base < 0 && exponent % 2 == 0)
+		{
+			throw std::invalid_argument("Cannot compute the even root from negative number.");
+		}
 
-		big_float x = base;
+		auto exp = big_int::abs(exponent);
+		auto x = big_float::abs(round(base, epsilon));
 		big_float prev_x;
-		big_int exp = big_int::abs(exponent);
 		big_float float_exp = big_float(exp);
-
-		if (exp % 2 == 0)
-		{
-			x = base / float_exp;
-		}
-		else
-		{
-			x = base / (float_exp * float_exp);
-		}
+		exp -= 1;
 
 		do
-		{	
+		{
 			prev_x = x;
-			auto x_pow = pow(x, exp - 1);
-			auto numerator = (base / x_pow) + (x * (exp - 1));
+			auto x_pow = pow(x, exp);
+			auto numerator = base / x_pow + x * exp;
 			x = round(numerator / float_exp, epsilon);
 
 		} while (big_float::abs(x - prev_x) >= epsilon); // Проверяем на достижение точности
@@ -721,10 +732,32 @@ public:
 
 		if (exponent < 0)
 		{
-			auto numerator = x._numerator;
-			x._numerator = x._denominator;
-			x._denominator = numerator;
+			x = 1 / x;
 		}
+
+		if (base < 0)
+		{
+			x = -x;
+		}
+
+		return x;
+	}
+
+	friend big_float sqrt(const big_float& base, const big_float& epsilon)
+	{
+		if (base == 0 || base == 1) return base;
+
+		auto x = round(base, epsilon);
+		big_float prev_x;
+
+		do
+		{
+			prev_x = x;
+			auto temp = (base / x + x);
+			temp._numerator >>= 1;
+			x = round(temp, epsilon);
+
+		} while (big_float::abs(x - prev_x) >= epsilon); // Проверяем на достижение точности
 
 		return x;
 	}
@@ -785,7 +818,7 @@ public:
 		return big_int::is_negate(_denominator);
 	}
 
-	static bool is_big_float(std::string value)
+	inline static bool is_big_float(std::string value)
 	{
 		return std::regex_match(value, big_float_pattern);
 	}

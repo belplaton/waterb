@@ -43,65 +43,19 @@ public:
 
     big_int(const unsigned int* digits, unsigned int size)
     {
-        unsigned int real_size = 1;
-        unsigned int diff = 0;
+        _digits = std::vector<unsigned int>(size);
         for (auto i = 0; i < size; i++)
         {
-            if (i == 0 && ((digits[i] & ~sign_bit_mask) == 0))
-            {
-                continue;
-            }
-
-            if (digits[i] != 0)
-            {
-                auto bit = get_bit(digits[i], big_int::uint_size - 1);
-                real_size = size - i + ((i != 0) & bit);;
-                diff = i - ((i != 0) & bit);
-                break;
-            }
+            _digits[i] = digits[i];
         }
 
-        _digits = std::vector<unsigned int>(real_size);
-        for (auto i = 0; i < real_size; i++)
-        {
-            auto op = digits[i + diff];
-            if (i + diff == 0) op &= ~sign_bit_mask;
-            _digits[i] = op;
-        }
-
-        _digits[0] |= sign_bit_mask * is_negate(digits);
+        optimize(this);
     }
     
     big_int(const std::vector<unsigned int>& digits)
     {
-        unsigned int real_size = 1;
-        unsigned int diff = 0;
-
-        for (auto i = 0; i < digits.size(); i++)
-        {
-            if (i == 0 && ((digits[i] & ~sign_bit_mask) == 0))
-            {
-                continue;
-            }
-
-            if (digits[i] != 0)
-            {
-                auto bit = get_bit(digits[i], big_int::uint_size - 1);
-                real_size = digits.size() - i + ((i != 0) & bit);
-                diff = i - ((i != 0) & bit);
-                break;
-            }
-        }
-
-        _digits = std::vector<unsigned int>(real_size);
-        for (auto i = 0; i < real_size; i++)
-        {
-            auto op = digits[i + diff];
-            if (i + diff == 0) op &= ~sign_bit_mask;
-            _digits[i] = op;
-        }
-
-        _digits[0] |= sign_bit_mask * is_negate(digits);
+        _digits = std::vector<unsigned int>(digits);
+        optimize(this);
     }
 
     big_int(const std::string& number, unsigned int base)
@@ -416,7 +370,7 @@ public:
         }
 
         auto max_size = std::max(_digits.size(), other._digits.size()) + 1;
-        auto result_digits = std::vector<unsigned int>(max_size);
+        auto result_digits = new std::vector<unsigned int>(max_size);
         unsigned int carry = 0;
         for (unsigned int i = 0; i < max_size; i++)
         {
@@ -429,11 +383,12 @@ public:
             auto result = add_with_carry(op1, op2, carry);
 
             carry = result.carry;
-            result_digits[max_size - i - 1] = result.sum;
+            (*result_digits)[max_size - i - 1] = result.sum;
         }
 
-        result_digits[0] |= sign_bit_mask * is_negate(_digits);
-        *this = big_int(result_digits); // cuz constructor can fix representation
+        (*result_digits)[0] |= sign_bit_mask * is_negate(_digits);
+        this->_digits = *result_digits;
+        optimize(this);
 
         return *this;
     }
@@ -470,7 +425,7 @@ public:
         }
 
         auto max_size = std::max(_digits.size(), other._digits.size()) + 1;
-        auto result_digits = std::vector<unsigned int>(max_size);
+        auto result_digits = new std::vector<unsigned int>(max_size);
         unsigned int borrow = 0;
         for (unsigned int i = 0; i < max_size; i++)
         {
@@ -483,11 +438,12 @@ public:
             auto result = substract_with_borrow(op1, op2, borrow);
 
             borrow = result.borrow;
-            result_digits[max_size - i - 1] = result.diff;
+            (*result_digits)[max_size - i - 1] = result.diff;
         }
 
-        result_digits[0] |= sign_bit_mask * is_negate(_digits);
-        *this = big_int(result_digits); // cuz constructor can fix representation
+        (*result_digits)[0] |= sign_bit_mask * is_negate(_digits);
+        this->_digits = *result_digits;
+        optimize(this);
 
         return *this;
     }
@@ -501,7 +457,7 @@ public:
         }
 
         auto max_size = _digits.size() + other._digits.size();
-        auto result_digits = std::vector<unsigned int>(max_size);
+        auto result_digits = new std::vector<unsigned int>(max_size);
         auto k = 0ull;
         auto base = (1ull << big_int::uint_size);
 
@@ -522,17 +478,18 @@ public:
                 auto op2 = _digits[_digits.size() - j - 1];
                 if (j == _digits.size() - 1) op2 &= ~sign_bit_mask;
 
-                auto temp = (static_cast<unsigned long long>(op1) * static_cast<unsigned long long>(op2)) + carry + result_digits[k];
+                auto temp = (static_cast<unsigned long long>(op1) * static_cast<unsigned long long>(op2)) + carry + (*result_digits)[k];
 
                 carry = temp / base;
-                result_digits[k] = temp % base;
+                (*result_digits)[k] = temp % base;
             }
 
-            result_digits[k - 1] += carry;
+            (*result_digits)[k - 1] += carry;
         }
 
-        result_digits[0] |= sign_bit_mask * is_negative;
-        *this = big_int(result_digits); // cuz constructor can fix representation
+        (*result_digits)[0] |= sign_bit_mask * is_negative;
+        this->_digits = *result_digits;
+        optimize(this);
 
         return *this;
     }
@@ -558,6 +515,7 @@ public:
         auto potential_result = big_int();
         auto result = big_int();
         auto carry = big_int();
+
         do
         {
             potential_result = ((start_range + end_range) >> 1);
@@ -594,6 +552,7 @@ public:
 
         if (other == 1)
         {
+            *this = 0;
             return *this;
         }
 
@@ -696,32 +655,11 @@ public:
 
     big_int& operator <<= (unsigned int shift)
     {
-        int empty = 0;
-        int macro_diff = 0;
+        if (shift == 0) return *this;
 
-        for (auto i = 0; i < _digits.size(); i++)
-        {
-            auto finished = false;
-            for (auto j = 0; j < big_int::uint_size; j++)
-            {
-                int bit = get_bit(_digits[i], big_int::uint_size - j - 1);
-                if (i == 0) bit &= ~sign_bit_mask;
-                empty += bit > 0 ? 0 : 1;
-                if (bit)
-                {
-                    int temp1 = (shift - shift % big_int::uint_size) / big_int::uint_size;
-                    int temp2 = (shift % big_int::uint_size) - empty;
-                    macro_diff = temp1 + (temp2 > 0 ? 1 : 0);
-                    finished = true;
-                    break;
-                }
-            }
-
-            if (finished) break;
-        }
-
+        auto macro_diff = (shift - shift % big_int::uint_size) / big_int::uint_size + 1;
         int size = _digits.size() + macro_diff;
-        auto result_digits = std::vector<unsigned int>(size);
+        auto result_digits = new std::vector<unsigned int>(size);
         for (unsigned int k = 0; k < (_digits.size() * big_int::uint_size); k++)
         {
             auto i1 = (k - k % big_int::uint_size) / big_int::uint_size;
@@ -734,44 +672,24 @@ public:
             if (_digits.size() - i1 - 1 == 0) num &= ~sign_bit_mask;
 
             auto bit = get_bit(num, j1);
-            if (bit) result_digits[size - i2 - 1] |= (bit << j2);
+            if (bit) (*result_digits)[size - i2 - 1] |= (bit << j2);
         }
 
 
-        result_digits[0] |= big_int::sign_bit_mask * is_negate(*this);
-        *this = big_int(result_digits); // cuz constructor can fix representation
+        (*result_digits)[0] |= big_int::sign_bit_mask * is_negate(*this);
+        this->_digits = *result_digits;
+        optimize(this);
 
         return *this;
     }
 
     big_int& operator >>= (unsigned int shift)
     {
-        int empty = 0;
-        int macro_diff = 0;
+        if (shift == 0) return *this;
 
-        for (auto i = 0; i < _digits.size(); i++)
-        {
-            auto finished = false;
-            for (auto j = 0; j < big_int::uint_size; j++)
-            {
-                int bit = get_bit(_digits[i], big_int::uint_size - j - 1);
-                if (i == 0) bit &= ~sign_bit_mask;
-                empty += bit > 0 ? 0 : 1;
-                if (bit)
-                {
-                    int temp1 = (shift - shift % big_int::uint_size) / big_int::uint_size;
-                    int temp2 = (shift % big_int::uint_size) - (empty);
-                    macro_diff = temp1 + (temp2 > 0 ? 1 : 0);
-                    finished = true;
-                    break;
-                }
-            }
-
-            if (finished) break;
-        }
-
+        auto macro_diff = (shift - shift % big_int::uint_size) / big_int::uint_size + 1;
         int size = _digits.size() + macro_diff;
-        auto result_digits = std::vector<unsigned int>(size);
+        auto result_digits = new std::vector<unsigned int>(size);
         for (unsigned int k = 0; k < (_digits.size() * big_int::uint_size); k++)
         {
             auto i2 = (k - k % big_int::uint_size) / big_int::uint_size;
@@ -784,12 +702,13 @@ public:
             if (_digits.size() - i1 - 1 == 0) num &= ~sign_bit_mask;
 
             auto bit = get_bit(num, j1);
-            if (bit) result_digits[size - i2 - 1] |= (bit << j2);
+            if (bit) (*result_digits)[size - i2 - 1] |= (bit << j2);
         }
 
 
-        result_digits[0] |= big_int::sign_bit_mask * is_negate(*this);
-        *this = big_int(result_digits); // cuz constructor can fix representation
+        (*result_digits)[0] |= big_int::sign_bit_mask * is_negate(*this);
+        this->_digits = *result_digits;
+        optimize(this);
 
         return *this;
     }
@@ -837,6 +756,38 @@ public:
 #pragma endregion
 
 #pragma region Utility
+
+    static void optimize(big_int* other)
+    {
+        unsigned int real_size = 1;
+        unsigned int diff = 0;
+        auto is_negative = is_negate(*other);
+
+        for (auto i = 0; i < other->_digits.size(); i++)
+        {
+            if (i == 0 && ((other->_digits[i] & ~sign_bit_mask) == 0))
+            {
+                continue;
+            }
+
+            if (other->_digits[i] != 0)
+            {
+                auto bit = get_bit(other->_digits[i], big_int::uint_size - 1);
+                real_size = other->_digits.size() - i + ((i != 0) & bit);
+                diff = i - ((i != 0) & bit);
+                break;
+            }
+        }
+
+        for (auto i = 0; i < real_size; i++)
+        {
+            other->_digits[i] = other->_digits[i + diff];
+            if (i + diff == 0) other->_digits[i] &= ~sign_bit_mask;
+        }
+
+        other->_digits.resize(real_size);
+        other->_digits[0] |= sign_bit_mask * is_negative;
+    }
 
     inline static unsigned int get_bit(unsigned int num, unsigned int position)
     {
@@ -915,7 +866,7 @@ public:
             y = temp;
         }
 
-        return x;
+        return x != 0 ? x : 1;
     }
 
     friend big_int pow(const big_int& base, const big_int& exponent)

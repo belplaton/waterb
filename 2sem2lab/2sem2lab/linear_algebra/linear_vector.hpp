@@ -123,6 +123,22 @@ public:
 
 #pragma region Arithmetic Operators
 
+    linear_vector operator + () const
+    {
+        return *this;
+    }
+
+    linear_vector operator - () const
+    {
+        linear_vector temp(_elements.size());
+        for (auto i = 0; i < _elements.size(); i++)
+        {
+            temp._elements[i] = -_elements[i];
+        }
+
+        return temp;
+    }
+
     linear_vector& operator += (const linear_vector& other)
     {
         if (_elements.size() != other._elements.size())
@@ -263,12 +279,12 @@ public:
 
 #pragma region Utility
 
-    size_t size() const
+    inline size_t size() const
     {
         return _elements.size();
     }
 
-    void resize(unsigned int size)
+    inline void resize(unsigned int size)
     {
         _elements.resize(size);
     }
@@ -284,16 +300,15 @@ public:
         return result;
     }
 
-    big_float magnitude() const
+    big_float magnitude(const big_float& epsilon) const
     {
         big_float result;
         for (auto i = 0; i < _elements.size(); i++)
         {
-            result += (_elements[i] * _elements[i]);
+            result += _elements[i] * _elements[i];
         }
 
-        auto eps = big_float("1/10");
-        result = root(result, 2, eps);
+        result = sqrt(result, epsilon);
         return result;
     }
 
@@ -313,10 +328,9 @@ public:
         return result;
     }
 
-    linear_vector normalize() const
+    linear_vector normalize(const big_float& epsilon) const
     {
-        auto eps = big_float("1/10");
-        auto temp = root(dot_product(*this), 2, eps);
+        auto temp = sqrt(dot_product(*this), epsilon);
 
         return *this / temp;
     }

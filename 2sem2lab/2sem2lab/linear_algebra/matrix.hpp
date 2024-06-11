@@ -54,6 +54,11 @@ public:
 		}
 	}
 
+	matrix(const linear_vector& value)
+	{
+		_elements = std::vector<linear_vector>({value});
+	}
+
 	matrix(const std::vector<linear_vector>& values)
 	{
 		auto size = 0;
@@ -128,6 +133,115 @@ public:
 
 #pragma endregion
 
+#pragma region Arithmetic Operators
+
+	matrix operator + () const
+	{
+		return *this;
+	}
+
+	matrix operator - () const
+	{
+		matrix temp(row_size(), col_size());
+		for (auto i = 0; i < row_size(); i++)
+		{
+			temp[i] = -_elements[i];
+		}
+
+		return temp;
+	}
+
+	matrix& operator += (const matrix& other)
+	{
+		if (row_size() != other.row_size() || col_size() != other.col_size())
+		{
+			throw std::invalid_argument("Error! Matrix must be equals by rows and collumns.");
+		}
+
+		for (auto i = 0; i < row_size(); i++)
+		{
+			_elements[i] += other._elements[i];
+		}
+
+		return *this;
+	}
+
+	matrix& operator -= (const matrix& other)
+	{
+		if (row_size() != other.row_size() || col_size() != other.col_size())
+		{
+			throw std::invalid_argument("Error! Matrix must be equals by rows and collumns.");
+		}
+
+		for (auto i = 0; i < row_size(); i++)
+		{
+			_elements[i] -= other._elements[i];
+		}
+
+		return *this;
+	}
+
+	matrix& operator *= (const matrix& other)
+	{
+		if (col_size() != other.row_size())
+		{
+			throw std::invalid_argument("Error! First matrix collumns size must be equal second matrix rows size.");
+		}
+
+		auto temp = other.transpose();
+		matrix result(col_size(), other.row_size());
+		for (auto i = 0; i < col_size(); i++)
+		{
+			for (auto j = 0; j < other.row_size(); j++)
+			{
+				result._elements[i][j] = _elements[i] * temp[j];
+			}
+		}
+
+		*this = result;
+		return result;
+	}
+
+	matrix& operator *= (const big_float& other)
+	{
+		for (auto i = 0; i < row_size(); i++)
+		{
+			_elements[i] *= other;
+		}
+
+		return *this;
+	}
+
+	matrix operator + (const matrix& other)
+	{
+		auto temp(*this);
+		temp += other;
+		return temp;
+	}
+
+	matrix operator - (const matrix& other)
+	{
+		auto temp(*this);
+		temp -= other;
+		return temp;
+	}
+
+	matrix operator * (const matrix& other)
+	{
+		auto temp(*this);
+		temp *= other;
+		return temp;
+	}
+
+	matrix operator * (const big_float& scalar)
+	{
+		auto temp(*this);
+		temp *= scalar;
+		return temp;
+	}
+
+#pragma endregion
+
 #pragma region IO Operators
 
 	friend std::ostream& operator << (std::ostream& stream, const matrix& other)
@@ -177,6 +291,11 @@ public:
 
 	big_float determinant() const
 	{
+		if (row_size() != col_size())
+		{
+			throw std::invalid_argument("Error! Matrix must be equals by rows and collumns.");
+		}
+
 		int n = _elements.size();
 		if (n == 1)
 		{
@@ -208,6 +327,55 @@ public:
 		return det;
 	}
 
+	matrix transpose() const
+	{
+		matrix result(col_size(), row_size());
+		for (auto i = 0; i < row_size(); i++)
+		{
+			for (auto j = 0; j < col_size(); j++)
+			{
+				result[j][i] = _elements[i][j];
+			}
+		}
+
+		return result;
+	}
+
+	matrix invert() const
+	{
+		if (row_size() != col_size())
+		{
+			throw std::invalid_argument("Error! Matrix must be equals by rows and collumns.");
+		}
+
+		auto temp(*this);
+		auto ident = matrix::identity(row_size());
+		auto det = determinant();
+
+		if (det == 0)
+		{
+			throw std::invalid_argument("Error! Cant find invert matrix when determinant is 0.");
+		}
+
+		for (auto i = 0; i < row_size(); i++)
+		{
+			auto pivot = temp[i][i];
+			temp[i] /= pivot;
+			ident[i] /= pivot;
+
+			for (auto j = 0; j < row_size(); j++)
+			{
+				if (j == i) continue;
+
+				auto factor = temp[j][i];
+				temp[j] -= temp[i] * factor;
+				ident[j] -= ident[i] * factor;
+			}
+		}
+
+		return ident;
+	}
+
 	std::string to_string(unsigned int base) const
 	{
 		std::string result;
@@ -218,6 +386,17 @@ public:
 			if (space) result += "\n";
 			result += _elements[i].to_string(10);
 			space = true;
+		}
+
+		return result;
+	}
+
+	static matrix identity(unsigned int size)
+	{
+		matrix result(size);
+		for (auto i = 0; i < size; i++)
+		{
+			result[i][i] = 1;
 		}
 
 		return result;

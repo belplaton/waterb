@@ -41,8 +41,9 @@ static diff_with_borrow substract_with_borrow(unsigned int a, unsigned int b, un
 {
     auto result = diff_with_borrow();
     result.diff = a - b - borrow;
+    auto temp = static_cast<unsigned long long>(b) + static_cast<unsigned long long>(borrow);
 
-    if (result.diff > a)
+    if (a < temp)
     {
         result.borrow = 1;
     }
