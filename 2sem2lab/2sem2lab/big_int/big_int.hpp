@@ -9,12 +9,44 @@
 #include <iostream>
 #include "external_utility.hpp"
 
-class big_int
+class big_int final
 {
 
 private:
 
     std::vector<unsigned int> _digits;
+
+    static void optimize(big_int* other)
+    {
+        unsigned int real_size = 1;
+        unsigned int diff = 0;
+        auto is_negative = is_negate(*other);
+
+        for (auto i = 0; i < other->_digits.size(); i++)
+        {
+            if (i == 0 && ((other->_digits[i] & ~sign_bit_mask) == 0))
+            {
+                continue;
+            }
+
+            if (other->_digits[i] != 0)
+            {
+                auto bit = get_bit(other->_digits[i], big_int::uint_size - 1);
+                real_size = other->_digits.size() - i + ((i != 0) & bit);
+                diff = i - ((i != 0) & bit);
+                break;
+            }
+        }
+
+        for (auto i = 0; i < real_size; i++)
+        {
+            other->_digits[i] = other->_digits[i + diff];
+            if (i + diff == 0) other->_digits[i] &= ~sign_bit_mask;
+        }
+
+        other->_digits.resize(real_size);
+        other->_digits[0] |= sign_bit_mask * is_negative;
+    }
 
 public:
 
@@ -144,6 +176,17 @@ public:
     ~big_int()
     {
 
+    }
+
+    big_int& operator = (const big_int& other)
+    {
+        if (this != &other)
+        {
+            this->~big_int();
+            new (this) big_int(other);
+        }
+
+        return *this;
     }
 
 #pragma endregion
@@ -338,7 +381,7 @@ public:
     {
         auto temp = big_int(*this);
         *this += 1;
-        return *this;
+        return temp;
     }
 
     big_int& operator -- ()
@@ -351,7 +394,7 @@ public:
     {
         auto temp = big_int(*this);
         *this -= 1;
-        return *this;
+        return temp;
     }
 
     big_int& operator += (const big_int& other)
@@ -496,106 +539,16 @@ public:
 
     big_int& operator /= (const big_int& other)
     {
-        if (other == 0)
-        {
-            throw std::logic_error("Cant divide by zero");
-        }
-
-        if (other == 1)
-        {
-            return *this;
-        }
-
-        auto left = is_negate(*this) ? -*this : *this;
-        auto right = is_negate(other) ? -other : other;
-        auto is_negative = is_negate(*this) ^ is_negate(other);
-
-        auto start_range = big_int();
-        auto end_range = big_int(left);
-        auto potential_result = big_int();
-        auto result = big_int();
-        auto carry = big_int();
-
-        do
-        {
-            potential_result = ((start_range + end_range) >> 1);
-            result = potential_result * right;
-            carry = left - result;
-
-            if (carry >= 0 && carry < right)
-            {
-                potential_result._digits[0] |= sign_bit_mask * is_negative;
-                *this = potential_result;
-                return *this;
-            }
-
-            if (result > left)
-            {
-                end_range = potential_result;
-            }
-            else
-            {
-                start_range = potential_result;
-            }
-
-        } while (potential_result != 0);
-
-        throw std::logic_error("Error in divide function!");;
+        auto pair = divide(other);
+        *this = pair.first;
+        return *this;
     }
 
     big_int& operator %= (const big_int& other)
     {
-        if (other == 0)
-        {
-            throw std::logic_error("Cant divide by zero");
-        }
-
-        if (other == 1)
-        {
-            *this = 0;
-            return *this;
-        }
-
-        auto left = is_negate(*this) ? -*this : *this;
-        auto right = is_negate(other) ? -other : other;
-
-        auto start_range = big_int();
-        auto end_range = big_int(left);
-        auto potential_result = big_int();
-        auto result = big_int();
-        auto carry = big_int();
-
-        do
-        {
-            potential_result = ((start_range + end_range) >> 1);
-            result = potential_result * right;
-            carry = left - result;
-
-            if (carry >= 0 && carry < right)
-            {
-                if (is_negate(*this) ^ is_negate(other))
-                {
-                    carry -= right;
-                    if (carry < 0) carry = -carry;
-                }
-
-                carry._digits[0] |= sign_bit_mask * is_negate(other);
-                *this = carry;
-                return *this;
-            }
-
-            if (result > left)
-            {
-                end_range = potential_result;
-            }
-            else
-            {
-                start_range = potential_result;
-            }
-
-        } while (potential_result != 0);
-
-        throw std::logic_error("Error in divide function!");;
+        auto pair = divide(other);
+        *this = pair.second;
+        return *this;
     }
 
 #pragma endregion
@@ -757,38 +710,6 @@ public:
 
 #pragma region Utility
 
-    static void optimize(big_int* other)
-    {
-        unsigned int real_size = 1;
-        unsigned int diff = 0;
-        auto is_negative = is_negate(*other);
-
-        for (auto i = 0; i < other->_digits.size(); i++)
-        {
-            if (i == 0 && ((other->_digits[i] & ~sign_bit_mask) == 0))
-            {
-                continue;
-            }
-
-            if (other->_digits[i] != 0)
-            {
-                auto bit = get_bit(other->_digits[i], big_int::uint_size - 1);
-                real_size = other->_digits.size() - i + ((i != 0) & bit);
-                diff = i - ((i != 0) & bit);
-                break;
-            }
-        }
-
-        for (auto i = 0; i < real_size; i++)
-        {
-            other->_digits[i] = other->_digits[i + diff];
-            if (i + diff == 0) other->_digits[i] &= ~sign_bit_mask;
-        }
-
-        other->_digits.resize(real_size);
-        other->_digits[0] |= sign_bit_mask * is_negative;
-    }
-
     inline static unsigned int get_bit(unsigned int num, unsigned int position)
     {
         return (num >> position) & 1;
@@ -856,6 +777,7 @@ public:
         big_int x = big_int(a);
         big_int y = big_int(b);
 
+        if (x == 0 && y == 0) return 1;
         if (x == 0 || y == 1) return y;
         if (y == 0 || x == 1) return x;
 
@@ -902,7 +824,7 @@ public:
             throw std::invalid_argument("Cant take factorial from negative number.");
         }
 
-        auto result = big_int(1);   
+        auto result = big_int(1);
         auto temp = big_int(n);
         for (big_int i = 0; i < exponent; i++)
         {
@@ -918,9 +840,69 @@ public:
         return result;
     }
 
+    friend big_int factorial(const big_int& n)
+    {
+        return factorial(n, 1);
+    }
+
     inline bool is_negate() const
     {
         return get_bit(_digits[0], sign_bit_mask - 1);
+    }
+
+    std::pair<big_int, big_int> divide(const big_int& other) const
+    {
+        if (other == 0)
+        {
+            throw std::logic_error("Cant divide by zero");
+        }
+
+        if (other == 1)
+        {
+            return { *this, 0 };
+        }
+
+        auto left = is_negate(*this) ? -*this : *this;
+        auto right = is_negate(other) ? -other : other;
+        auto is_negative = is_negate(*this) ^ is_negate(other);
+
+        auto start_range = big_int();
+        auto end_range = big_int(left);
+        auto potential_result = big_int();
+        auto result = big_int();
+        auto carry = big_int();
+
+        do
+        {
+            potential_result = ((start_range + end_range) >> 1);
+            result = potential_result * right;
+            carry = left - result;
+
+            if (carry >= 0 && carry < right)
+            {
+                potential_result._digits[0] |= sign_bit_mask * is_negative;
+                if (is_negate(*this) ^ is_negate(other))
+                {
+                    carry -= right;
+                    if (carry < 0) carry = -carry;
+                }
+
+                carry._digits[0] |= sign_bit_mask * is_negate(other);
+                return { potential_result, carry };
+            }
+
+            if (result > left)
+            {
+                end_range = potential_result;
+            }
+            else
+            {
+                start_range = potential_result;
+            }
+
+        } while (potential_result != 0);
+
+        throw std::logic_error("Error in divide function!");;
     }
 
 #pragma endregion

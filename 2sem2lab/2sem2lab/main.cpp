@@ -19,16 +19,16 @@ int main()
     std::cout << a + b << std::endl;
     */
 
-    /*
-    auto a = big_float("32000");
-    auto eps = big_float("1/10000");
+    
+    auto a = big_float("64");
+    auto eps = big_float("1/10");
 
     std::cout << a << std::endl;
     auto b = root(a, 2, eps);
     std::cout << b << std::endl;
-    */
     
     
+    /*
     auto file_path = std::string("calc_data.txt");
     auto calc = polynomial_calc_parser(file_path);
   
@@ -63,7 +63,7 @@ int main()
     auto o = linear_algebra::eigen_values(d, eps);
     std::cout << o << std::endl;
     
-    
+    */
 
     return 0;
 }

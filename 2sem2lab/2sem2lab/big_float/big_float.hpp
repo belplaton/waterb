@@ -7,7 +7,7 @@
 
 static std::regex big_float_pattern = std::regex(R"((-)?(\d+\/\d+))");
 
-class big_float
+class big_float final
 {
 
 private:

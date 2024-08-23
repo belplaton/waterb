@@ -528,7 +528,7 @@ public:
 		_length = 0;
 	}
 
-	linked_list copy()
+	linked_list& copy()
 	{
 		linked_list result = linked_list();
 		std::shared_ptr<node> p_current = _p_head;
@@ -541,7 +541,7 @@ public:
 		return result;
 	}
 
-	void copy_to(linked_list other) const
+	void copy_to(linked_list& other) const
 	{
 		other.clear();
 		std::shared_ptr<node> p_current = _p_head;
